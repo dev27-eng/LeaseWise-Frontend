@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flask Screen Component</title>
+    <title>LeaseCheck</title>
     
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
@@ -11,13 +11,8 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body class="bg-dark">
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Flask App</a>
-        </div>
-    </nav>
-    <div class="container mt-4">
+<body>
+    <div class="container">
         {% block content %}{% endblock %}
     </div>
 </body>
