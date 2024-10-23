@@ -12,5 +12,9 @@ def index():
 def welcome():
     return render_template('welcome_screen.html')
 
+@app.route('/onboarding')
+def onboarding():
+    return render_template('onboarding_screen.html')
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
