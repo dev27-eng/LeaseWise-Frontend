@@ -6,7 +6,7 @@ app.secret_key = os.environ.get("FLASK_SECRET_KEY", "dev")
 
 @app.route('/')
 def index():
-    return render_template('screen.html')
+    return render_template('splash_screen.html')
 
 @app.route('/welcome')
 def welcome():
