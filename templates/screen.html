@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="screen">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Screen Component</h5>
+        </div>
+        <div class="card-body">
+            {{ content|safe }}
+        </div>
+    </div>
+</div>
+{% endblock %}
