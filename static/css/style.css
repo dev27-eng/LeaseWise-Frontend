@@ -1,18 +1,9 @@
-/* Custom screen component styling */
+/* Screen component styling */
 .screen {
+    background-color: #ffffff;
+    color: #000000;
+    padding: 20px;
     margin: 20px 0;
-}
-
-.card {
-    background-color: var(--bs-dark);
-    border: 1px solid var(--bs-border-color);
-}
-
-.card-header {
-    background-color: var(--bs-dark);
-    border-bottom: 1px solid var(--bs-border-color);
-}
-
-.card-body {
-    color: var(--bs-body-color);
+    border-radius: 4px;
+    min-height: 100px;
 }

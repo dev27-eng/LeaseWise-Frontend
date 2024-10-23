@@ -7,15 +7,7 @@ app.secret_key = os.environ.get("FLASK_SECRET_KEY", "dev")
 @app.route('/')
 def index():
     content = """
-    <div class="alert alert-info" role="alert">
-        Welcome to the Flask Screen Component!
-    </div>
-    <p class="lead">
-        This is a sample content area that demonstrates the screen component styling.
-    </p>
-    <div class="d-grid gap-2">
-        <button class="btn btn-secondary">Sample Button</button>
-    </div>
+    <p>This is a simple screen component with white background.</p>
     """
     return render_template('screen.html', content=content)
 
