@@ -111,11 +111,13 @@ body {
     padding: 1.5rem;
     border-radius: 15px;
     text-align: left;
+    color: #000; /* Ensure text is black */
 }
 
 .pricing-card h4 {
     margin-bottom: 1rem;
     font-weight: bold;
+    color: #000; /* Ensure headers are black */
 }
 
 .pricing-card.basic {
@@ -138,6 +140,7 @@ body {
 
 .plan-features li {
     margin-bottom: 0.5rem;
+    color: #000; /* Ensure list items are black */
 }
 
 .select-plan-btn {
@@ -165,4 +168,5 @@ body {
 .form-check-label {
     width: 100%;
     cursor: pointer;
+    color: #000; /* Ensure labels are black */
 }
