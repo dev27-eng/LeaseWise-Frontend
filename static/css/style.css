@@ -48,121 +48,82 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 1.5rem;
+}
+
+.light-gray-container {
     background-color: #f5f5f5;
+    padding: 32px;
+    flex: 1;
+    width: 450px;
+    margin: 0 auto;
 }
 
-.welcome-text {
-    font-size: 1.3rem;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-}
-
-.description {
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
+.light-gray-container p {
+    margin-bottom: 16px;
     line-height: 1.4;
+    font-size: 14px;
+}
+
+.light-gray-container p:first-of-type {
+    font-weight: 600;
+    font-size: 18px;
+    margin-bottom: 24px;
 }
 
 .what-to-know {
-    font-size: 1.2rem;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
+    font-weight: 800;
+    margin-top: 24px;
+    margin-bottom: 16px;
+    font-size: 16px;
 }
 
-.terms-text, .disclaimer-text, .refund-text {
-    font-size: 1.1rem;
-    margin-bottom: 0.75rem;
-    line-height: 1.4;
-}
-
-.why-matters {
-    font-size: 1.2rem;
-    font-weight: 500;
-    margin: 0.75rem 0 0.5rem;
-}
-
-.matters-text {
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
-    line-height: 1.4;
-}
-
-.questions {
-    font-size: 1.2rem;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-}
-
-.contact-text {
-    font-size: 1.1rem;
-    margin-bottom: 0.75rem;
-    line-height: 1.4;
-}
-
-.contact-text a {
-    color: #000;
-    text-decoration: none;
-}
-
-.ready-text {
-    font-size: 1.2rem;
-    font-weight: 500;
-    margin: 0.75rem 0 0.5rem;
-}
-
-.agreement-text, .review-text, .thanks-text {
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
-    line-height: 1.4;
+.section-title {
+    font-weight: 800;
+    margin-top: 24px;
+    margin-bottom: 16px;
+    font-size: 16px;
 }
 
 .legal-buttons {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    margin: 1.5rem 0;
+    gap: 16px;
+    margin: 32px 0;
 }
 
-.terms-link, .disclaimer-link, .refund-link {
-    background-color: #ff0000;
-    color: #000;
+.legal-link {
+    color: #ff0000;
     text-decoration: none;
-    padding: 0.75rem;
-    border-radius: 4px;
+    font-size: 14px;
     text-align: center;
-    font-size: 1.4rem;
-    font-weight: bold;
+    font-weight: normal;
 }
 
 .action-buttons {
     display: flex;
-    justify-content: space-between;
-    padding: 1rem 2rem;
-    margin-top: 1rem;
-    background-color: #f8f9fa;
-    border-top: 1px solid #dee2e6;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 32px;
 }
 
 .reject-btn {
-    background-color: #add8e6;
+    background-color: #b0e0e6;
     border: none;
-    padding: 0.75rem 2.5rem;
-    border-radius: 4px;
-    font-size: 1.2rem;
-    font-weight: 500;
+    padding: 8px 24px;
+    border-radius: 16px;
+    font-size: 14px;
     cursor: pointer;
+    color: #000;
 }
 
 .accept-btn {
     background-color: #7ed321;
     border: none;
-    padding: 0.75rem 2.5rem;
-    border-radius: 4px;
-    font-size: 1.2rem;
-    font-weight: 500;
+    padding: 8px 24px;
+    border-radius: 16px;
+    font-size: 14px;
     cursor: pointer;
+    color: #000;
 }
 
 /* Keep existing styles for other pages */
-[Previous CSS for other pages...]
