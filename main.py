@@ -24,5 +24,9 @@ def select_plan():
 def account_setup():
     return render_template('account_setup.html')
 
+@app.route('/legal-stuff')
+def legal_stuff():
+    return render_template('legal_stuff.html')
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="screen">
+    <div class="legal-stuff-content">
+        <!-- Green header bar -->
+        <div class="welcome-header">
+            <h1>Legal Stuff</h1>
+        </div>
+
+        <!-- Main content -->
+        <div class="legal-content">
+            <!-- Welcome message -->
+            <div class="welcome-message mb-4">
+                <h2 class="mb-3">Hey there! Welcome to Lease Check.</h2>
+                <p>We're excited to help you navigate your lease agreements with ease. Before you get started, we want to make sure you're aware of a few important things:</p>
+            </div>
+
+            <div class="info-section mb-4">
+                <h3>What You Need to Know</h3>
+            </div>
+
+            <!-- Terms and Privacy sections -->
+            <div class="terms-section mb-4">
+                <h3>Terms of Service:</h3>
+                <p>These are the rules and guidelines for using our app. They cover everything from how you can use Lease Check to what you can expect from us.</p>
+                <button class="btn terms-btn">Terms Of Service</button>
+            </div>
+
+            <div class="privacy-section mb-4">
+                <h3>Legal Disclaimer:</h3>
+                <p>This explains the limitations of our service. While we strive to provide accurate and helpful information, it's not a substitute for professional legal advice.</p>
+                <button class="btn privacy-btn">Legal Disclaimer</button>
+            </div>
+
+            <div class="refund-section mb-4">
+                <h3>Refund Policy:</h3>
+                <p>Learn about our policies regarding refunds for our services. We want to ensure you're satisfied with your experience.</p>
+                <button class="btn privacy-btn">Refund Policy</button>
+            </div>
+
+            <!-- Why It Matters section -->
+            <div class="why-matters mb-4">
+                <h3>Why It Matters</h3>
+                <p>Understanding these documents helps ensure that everyone has a clear and positive experience with Lease Check. It's all about keeping things transparent and straightforward for you.</p>
+            </div>
+
+            <!-- Agreement section -->
+            <div class="agreement-section mb-4">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="agreementCheck">
+                    <label class="form-check-label" for="agreementCheck">
+                        By using Lease Check, you agree to our Terms of Service, Disclaimer, and Refund Policy.
+                    </label>
+                </div>
+                <p class="mt-3">Take a moment to review them to get the most out of our app.</p>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="contact-info mb-4">
+                <h3>Got Questions?</h3>
+                <p>If anything's unclear or you need more info, don't hesitate to reach out to us at support@coloradoleasecheck.com</p>
+                <p>Thanks for choosing Lease Check! Let's make your leasing experience smooth and stress-free.</p>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="action-buttons mt-4">
+                <button class="btn btn-lg btn-light reject-btn me-3">Reject</button>
+                <button class="btn btn-lg continue-btn">Accept</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
