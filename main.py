@@ -20,5 +20,9 @@ def onboarding():
 def select_plan():
     return render_template('select_plan.html')
 
+@app.route('/account-setup')
+def account_setup():
+    return render_template('account_setup.html')
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="screen">
+    <div class="account-setup-content">
+        <!-- Green header bar -->
+        <div class="welcome-header">
+            <h1>Account Setup</h1>
+        </div>
+
+        <!-- Main content -->
+        <div class="setup-content text-center">
+            <h2 class="main-title">Why We Need Your Email</h2>
+            
+            <p class="email-explanation">
+                We need your email address to securely set up your account. It helps us verify your identity,
+                prevent fraud, and keep your lease information safe. Rest assured, your email will remain
+                confidential and will only be used to enhance your experience with Lease Check.
+            </p>
+
+            <div class="verification-section">
+                <h2>Verify Your Email</h2>
+                <div class="form-group mb-4">
+                    <input type="email" class="form-control email-input" placeholder="Enter your email">
+                </div>
+
+                <button class="btn verification-btn mb-5">Send Verification Code</button>
+
+                <h2>Enter Your Verification Code</h2>
+                <div class="form-group mb-4">
+                    <input type="text" class="form-control verification-input" placeholder="Verification code">
+                </div>
+
+                <button class="btn verification-btn mb-5">Verify Code</button>
+            </div>
+
+            <div class="almost-there">
+                <h2 class="almost-text">Almost there!</h2>
+            </div>
+
+            <button class="btn legal-stuff-btn">Legal Stuff</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
