@@ -28,5 +28,9 @@ def account_setup():
 def legal_stuff():
     return render_template('legal_stuff.html')
 
+@app.route('/terms-of-service')
+def terms_of_service():
+    return render_template('terms_of_service.html')
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
