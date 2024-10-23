@@ -16,5 +16,9 @@ def welcome():
 def onboarding():
     return render_template('onboarding_screen.html')
 
+@app.route('/select-plan')
+def select_plan():
+    return render_template('select_plan.html')
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

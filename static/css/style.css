@@ -22,7 +22,7 @@ body {
     text-align: center;
 }
 
-/* Existing styles for logo and buttons */
+/* Logo and clipboard styles */
 .logo-container {
     position: relative;
     margin: 2rem auto;
@@ -50,13 +50,7 @@ body {
     z-index: 1;
 }
 
-/* New Onboarding Screen Styles */
-.onboarding-content {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-}
-
+/* Common header styles */
 .welcome-header {
     background-color: #7ed321;
     padding: 1rem;
@@ -70,7 +64,14 @@ body {
     font-size: 2.5rem;
 }
 
-.welcome-text {
+/* Select Plan specific styles */
+.select-plan-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.plan-content {
     padding: 0 2rem;
 }
 
@@ -81,63 +82,65 @@ body {
     color: #000;
 }
 
-.lead {
-    font-size: 1.25rem;
-    color: #333;
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.tagline {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #000;
-}
-
-.description {
-    font-size: 1.25rem;
-    color: #333;
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.key-features {
-    padding: 2rem;
-    text-align: left;
-}
-
-.features-title {
+.included-title {
     font-size: 2rem;
-    font-weight: bold;
     color: #000;
-    text-align: center;
 }
 
-.feature-item {
+.features-list {
+    text-align: left;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.feature-row {
     margin-bottom: 1.5rem;
     font-size: 1.1rem;
     color: #333;
 }
 
-.feature-label {
-    color: #7ed321;
+.pricing-tiers {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.pricing-card {
+    padding: 1.5rem;
+    border-radius: 15px;
+    text-align: left;
+}
+
+.pricing-card h4 {
+    margin-bottom: 1rem;
     font-weight: bold;
-    margin-right: 0.5rem;
 }
 
-.cta-section {
-    padding: 2rem;
-    background-color: #f8f9fa;
-    margin-top: 2rem;
+.pricing-card.basic {
+    background-color: #e6f7ff;
 }
 
-.ready-message {
-    font-size: 1.25rem;
-    margin-bottom: 2rem;
-    color: #333;
+.pricing-card.standard {
+    background-color: #f0ffe6;
 }
 
-.choose-plan-btn {
+.pricing-card.premium {
+    background-color: #fff7e6;
+}
+
+.plan-features {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+.plan-features li {
+    margin-bottom: 0.5rem;
+}
+
+.select-plan-btn {
     background-color: #7ed321;
     border: none;
     padding: 0.75rem 2.5rem;
@@ -145,12 +148,21 @@ body {
     border-radius: 25px;
     transition: all 0.3s ease;
     color: #000;
-    margin-top: 1rem;
+    margin-top: 2rem;
+    min-width: 200px;
 }
 
-.choose-plan-btn:hover {
+.select-plan-btn:hover {
     background-color: #6cb71d;
     transform: scale(1.05);
-    color: #000;
-    text-decoration: none;
+}
+
+/* Form styling */
+.form-check-input {
+    margin-top: 0.5rem;
+}
+
+.form-check-label {
+    width: 100%;
+    cursor: pointer;
 }
