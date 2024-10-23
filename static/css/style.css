@@ -1,53 +1,26 @@
-/* Base styles from previous implementation */
+/* Base styles */
 body {
     background-color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
     margin: 0;
     padding: 0;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .screen {
     background-color: #ffffff;
     width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 0;
-}
-
-/* Welcome screen styles */
-.welcome-content {
-    text-align: center;
-}
-
-/* Logo and clipboard styles */
-.logo-container {
-    position: relative;
-    margin: 2rem auto;
-    width: 200px;
-    height: 280px;
-}
-
-.logo-image {
-    width: 120px;
-    height: 120px;
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2;
-}
-
-.clipboard-image {
-    width: 160px;
-    height: 160px;
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Common header styles */
@@ -55,7 +28,6 @@ body {
     background-color: #7ed321;
     padding: 1rem;
     text-align: center;
-    margin-bottom: 2rem;
 }
 
 .welcome-header h1 {
@@ -66,13 +38,17 @@ body {
 
 /* Select Plan specific styles */
 .select-plan-content {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    width: 100%;
 }
 
 .plan-content {
-    padding: 0 2rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    text-align: center;
 }
 
 .main-title {
@@ -85,7 +61,7 @@ body {
 .included-title {
     font-size: 2rem;
     color: #000;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .features-list {
@@ -95,44 +71,32 @@ body {
 }
 
 .feature-row {
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     font-size: 1.1rem;
     color: #000;
-    display: flex;
-    align-items: flex-start;
 }
 
 .feature-row strong {
-    margin-right: 0.5rem;
     color: #000;
 }
 
 .pricing-tiers {
     display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 1.5rem;
-    margin: 0 auto;
-    padding: 0 1rem;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin: auto 0;
+    max-width: 500px;
+    padding: 2rem;
+    align-self: center;
 }
 
 .pricing-card {
-    flex: 1;
-    min-width: 220px;
-    max-width: 280px;
+    width: 100%;
     padding: 1.5rem;
-    border-radius: 15px;
+    border-radius: 25px;
     text-align: left;
     position: relative;
-    margin-bottom: 1rem;
-}
-
-.pricing-card h4 {
-    margin-bottom: 1rem;
-    font-weight: bold;
-    color: #000;
-    font-size: 1.2rem;
 }
 
 .pricing-card.basic {
@@ -140,72 +104,56 @@ body {
 }
 
 .pricing-card.standard {
-    background-color: #f0ffe6;
+    background-color: #e8ffd9;
 }
 
 .pricing-card.premium {
-    background-color: #fff7e6;
-}
-
-.plan-features {
-    list-style: none;
-    padding-left: 0;
-    margin-bottom: 0;
-}
-
-.plan-features li {
-    margin-bottom: 0.5rem;
-    color: #000;
-    font-size: 1rem;
+    background-color: #ffc107;
 }
 
 .form-check {
     padding: 0;
     margin: 0;
     position: relative;
+    display: flex;
+    align-items: flex-start;
 }
 
 .form-check-input {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    margin: 0;
+    margin: 0.5rem 1rem 0 0;
     cursor: pointer;
 }
 
 .form-check-label {
-    width: 100%;
+    flex: 1;
     cursor: pointer;
     color: #000;
-    padding-right: 2rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.plan-features {
+    margin-top: 0.5rem;
+    font-weight: normal;
+    font-size: 1rem;
+    line-height: 1.5;
 }
 
 .select-plan-btn {
     background-color: #7ed321;
     border: none;
-    padding: 0.75rem 2.5rem;
+    padding: 1rem 2rem;
     font-size: 1.2rem;
-    border-radius: 25px;
-    transition: all 0.3s ease;
+    border-radius: 50px;
     color: #000;
-    margin: 2rem 0;
+    margin: 2rem auto;
     min-width: 200px;
+    display: block;
     font-weight: bold;
+    width: 100%;
+    max-width: 500px;
 }
 
 .select-plan-btn:hover {
-    background-color: #6cb71d;
-    transform: scale(1.05);
-}
-
-@media (max-width: 768px) {
-    .pricing-tiers {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .pricing-card {
-        width: 100%;
-        max-width: none;
-    }
+    background-color: #72bf1e;
 }
