@@ -62,12 +62,14 @@ body {
     margin-bottom: 16px;
     line-height: 1.4;
     font-size: 14px;
+    color: #000000;
 }
 
 .light-gray-container p:first-of-type {
     font-weight: 600;
     font-size: 18px;
     margin-bottom: 24px;
+    color: #000000;
 }
 
 .what-to-know {
@@ -75,6 +77,7 @@ body {
     margin-top: 24px;
     margin-bottom: 16px;
     font-size: 16px;
+    color: #000000;
 }
 
 .section-title {
@@ -82,6 +85,7 @@ body {
     margin-top: 24px;
     margin-bottom: 16px;
     font-size: 16px;
+    color: #000000;
 }
 
 .legal-buttons {
