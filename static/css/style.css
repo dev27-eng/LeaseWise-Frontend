@@ -37,6 +37,63 @@ body {
     font-size: 2.5rem;
 }
 
+/* Terms of Service specific styles */
+.terms-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.terms-container {
+    flex: 1;
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.terms-container h2 {
+    color: #000;
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.terms-section {
+    color: #000;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.terms-section ol {
+    padding-left: 1.5rem;
+}
+
+.terms-section li {
+    margin-bottom: 1.5rem;
+}
+
+.terms-section strong {
+    font-weight: 600;
+}
+
+.return-btn {
+    background-color: #7ed321;
+    color: #000;
+    border: none;
+    padding: 8px 24px;
+    border-radius: 16px;
+    font-size: 14px;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 2rem;
+}
+
+.return-btn:hover {
+    background-color: #6db31d;
+    color: #000;
+}
+
+/* Keep existing styles */
 /* Legal Stuff specific styles */
 .legal-stuff-content {
     flex: 1;
@@ -129,5 +186,3 @@ body {
     cursor: pointer;
     color: #000;
 }
-
-/* Keep existing styles for other pages */
