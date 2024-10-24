@@ -34,91 +34,100 @@ body {
 .welcome-header h1 {
     margin: 0;
     color: #000;
-    font-size: 2rem;
-    font-weight: normal;
+    font-size: 2.5rem;
 }
 
-/* Terms of Service specific styles */
-.terms-content {
+/* Legal Stuff specific styles */
+.legal-stuff-content {
     flex: 1;
     display: flex;
     flex-direction: column;
 }
 
-.terms-main-content {
+.legal-content {
     flex: 1;
-    padding: 1.5rem;
-    max-width: 800px;
-    margin: 0 auto;
-    width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
-.terms-title {
-    text-align: center;
-    font-size: 1.2rem;
-    margin-bottom: 2rem;
-    font-weight: normal;
-    color: #000;
-    line-height: 1.5;
-}
-
-.terms-container {
+.light-gray-container {
     background-color: #f5f5f5;
-    padding: 2rem;
-    border-radius: 8px;
-    margin-bottom: 2rem;
+    padding: 32px;
+    flex: 1;
+    width: 450px;
+    margin: 0 auto;
 }
 
-.terms-list {
-    list-style: decimal;
-    padding-left: 2rem;
-    margin: 0;
+.light-gray-container p {
+    margin-bottom: 16px;
+    line-height: 1.4;
+    font-size: 14px;
+    color: #000000;
 }
 
-.terms-list li {
-    margin-bottom: 1.5rem;
-    font-size: 0.9rem;
-    line-height: 1.5;
-    color: #000;
-}
-
-.terms-list strong {
+.light-gray-container p:first-of-type {
     font-weight: 600;
-    display: block;
-    margin-bottom: 0.5rem;
-    font-size: 0.9rem;
+    font-size: 18px;
+    margin-bottom: 24px;
+    color: #000000;
 }
 
-.ai-disclaimer {
-    margin-top: 2rem;
-    font-size: 0.9rem;
-    line-height: 1.5;
-    color: #000;
+.what-to-know {
+    font-weight: 800;
+    margin-top: 24px;
+    margin-bottom: 16px;
+    font-size: 16px;
+    color: #000000;
 }
 
-.ai-disclaimer p {
-    margin-bottom: 1rem;
+.section-title {
+    font-weight: 800;
+    margin-top: 24px;
+    margin-bottom: 16px;
+    font-size: 16px;
+    color: #000000;
 }
 
-.return-btn {
-    display: block;
-    width: fit-content;
-    margin: 2.5rem auto;
-    background-color: #7ed321;
-    border: none;
-    padding: 0.75rem 2rem;
-    font-size: 1rem;
+.legal-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 32px 0;
+}
+
+.legal-link {
+    color: #ff0000;
+    text-decoration: none;
+    font-size: 14px;
+    text-align: center;
     font-weight: normal;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 32px;
+}
+
+.reject-btn {
+    background-color: #b0e0e6;
+    border: none;
+    padding: 8px 24px;
+    border-radius: 16px;
+    font-size: 14px;
     cursor: pointer;
     color: #000;
-    text-decoration: none;
-    text-align: center;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
 }
 
-.return-btn:hover {
-    background-color: #6cb11d;
+.accept-btn {
+    background-color: #7ed321;
+    border: none;
+    padding: 8px 24px;
+    border-radius: 16px;
+    font-size: 14px;
+    cursor: pointer;
     color: #000;
-    text-decoration: none;
 }
+
+/* Keep existing styles for other pages */
