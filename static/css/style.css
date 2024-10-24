@@ -12,7 +12,8 @@ body {
 
 main {
     flex: 1;
-    padding: 2rem 0;
+    padding: 0;
+    background-color: white;
 }
 
 /* Header styles */
@@ -124,43 +125,61 @@ main {
 
 /* Terms of Service styles */
 .terms-container {
-    max-width: 900px;
-    margin: 0 auto;
+    width: 100%;
+    margin: 0;
     padding: 0;
     background-color: #ffffff;
 }
 
-.terms-header {
-    background-color: #7FFF00;
-    padding: 0.75rem;
-    text-align: center;
+.terms-container .terms-header {
+    width: 100% !important;
+    height: 90px !important;
+    background: #7FFF00 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    position: static !important;
+    border: none !important;
 }
 
-.terms-container h1 {
-    color: black;
-    margin: 0;
-    font-size: 1.25em;
-    font-weight: normal;
+.terms-container .terms-header h1 {
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 24px !important;
+    font-weight: 500 !important;
+    text-align: center !important;
+    font-family: Arial, sans-serif !important;
+    line-height: 90px !important;
 }
 
 .secondary-title {
+    text-align: center;
     font-weight: bold;
-    margin: 1rem 0;
-    font-size: 1.1em;
+    margin: 24px 0;
+    font-size: 18px;
+    color: #000000;
 }
 
 .terms-content {
-    padding: 1rem 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px 48px;
+    background-color: #ffffff;
 }
 
 .terms-section {
-    margin-bottom: 1rem;
+    margin-bottom: 16px;
 }
 
 .terms-section p {
-    margin: 0 0 1rem 0;
-    font-size: 0.9em;
+    margin: 0;
+    font-size: 14px;
     line-height: 1.5;
+    color: #000000;
 }
 
 /* Improve readability on mobile devices */
@@ -174,12 +193,21 @@ main {
         gap: 1.5rem;
     }
 
+    .terms-container .terms-header {
+        height: 70px !important;
+    }
+
+    .terms-container .terms-header h1 {
+        font-size: 20px !important;
+        line-height: 70px !important;
+    }
+
     .terms-content {
-        padding: 1rem;
+        padding: 0 16px 32px;
     }
     
     .terms-section p {
-        font-size: 0.85em;
+        font-size: 13px;
     }
 
     .footer-content {
