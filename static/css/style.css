@@ -126,84 +126,41 @@ main {
 .terms-container {
     max-width: 900px;
     margin: 0 auto;
-    padding: 3rem;
+    padding: 0;
     background-color: #ffffff;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-    border-radius: 12px;
+}
+
+.terms-header {
+    background-color: #7FFF00;
+    padding: 0.75rem;
+    text-align: center;
 }
 
 .terms-container h1 {
-    text-align: center;
-    color: #1a237e;
-    margin-bottom: 1.5rem;
-    font-size: 2.75em;
-    font-weight: 800;
-    letter-spacing: -0.5px;
+    color: black;
+    margin: 0;
+    font-size: 1.25em;
+    font-weight: normal;
 }
 
-.last-updated {
-    text-align: center;
-    color: #424242;
-    margin-bottom: 3rem;
-    font-size: 1.15em;
-    font-weight: 500;
+.secondary-title {
+    font-weight: bold;
+    margin: 1rem 0;
+    font-size: 1.1em;
+}
+
+.terms-content {
+    padding: 1rem 2rem;
 }
 
 .terms-section {
-    margin-bottom: 2.5rem;
-    padding: 2rem;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-}
-
-.terms-section h2 {
-    color: #1a237e;
-    margin-bottom: 1.5rem;
-    font-size: 1.8em;
-    font-weight: 700;
-    border-bottom: 2px solid #e3e6f0;
-    padding-bottom: 0.75rem;
+    margin-bottom: 1rem;
 }
 
 .terms-section p {
-    color: #2c3e50;
-    margin-bottom: 1.25rem;
-    font-size: 1.15em;
-    line-height: 1.8;
-    letter-spacing: 0.2px;
-}
-
-/* Make the container scrollable if content is too long */
-.terms-container {
-    height: auto;
-    overflow-y: auto;
-    max-height: calc(100vh - 200px);
-}
-
-/* Style for bullet points */
-.terms-section p br + span {
-    display: block;
-    margin-left: 1.5rem;
-}
-
-/* Style for lists within sections */
-.terms-section ul {
-    margin-left: 1.5rem;
-    margin-bottom: 1.25rem;
-}
-
-.terms-section li {
-    margin-bottom: 0.75rem;
-    color: #2c3e50;
-    font-size: 1.15em;
-    line-height: 1.7;
-}
-
-/* Add some spacing between sections */
-.terms-section + .terms-section {
-    border-top: 1px solid #e3e6f0;
-    padding-top: 2.5rem;
+    margin: 0 0 1rem 0;
+    font-size: 0.9em;
+    line-height: 1.5;
 }
 
 /* Improve readability on mobile devices */
@@ -217,25 +174,12 @@ main {
         gap: 1.5rem;
     }
 
-    .terms-container {
-        margin: 1rem;
-        padding: 1.5rem;
-    }
-    
-    .terms-container h1 {
-        font-size: 2.25em;
-    }
-    
-    .terms-section {
-        padding: 1.5rem;
-    }
-    
-    .terms-section h2 {
-        font-size: 1.6em;
+    .terms-content {
+        padding: 1rem;
     }
     
     .terms-section p {
-        font-size: 1.1em;
+        font-size: 0.85em;
     }
 
     .footer-content {
