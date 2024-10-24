@@ -24,74 +24,95 @@ body {
     flex-direction: column;
 }
 
-/* Common header styles */
+/* Header styles */
 .welcome-header {
     background-color: #9AD745;
-    padding: 0.75rem;
+    padding: 20px;
     text-align: center;
 }
 
 .welcome-header h1 {
     margin: 0;
     color: #000;
-    font-size: 1.5rem;
+    font-size: 28px;
     font-weight: normal;
+    letter-spacing: -0.5px;
 }
 
 /* Terms of Service specific styles */
-.terms-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
 .terms-container {
     flex: 1;
-    padding: 2rem;
-    max-width: 800px;
+    padding: 1.75rem 1.5rem;
+    max-width: 600px;
     margin: 0 auto;
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
 .terms-title {
     color: #000;
-    font-size: 1.25rem;
+    font-size: 20px;
     text-align: center;
     font-weight: normal;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+}
+
+.last-updated {
+    color: #666;
+    font-size: 13px;
+    text-align: center;
     margin-bottom: 2rem;
-    line-height: 1.4;
 }
 
 .terms-section {
     color: #000;
-    font-size: 12px;
-    line-height: 1.6;
-    width: 100%;
-    max-width: 650px;
+    font-size: 13px;
+    line-height: 1.5;
 }
 
 .terms-section ol {
     padding-left: 2rem;
-    margin-top: 0;
-    list-style-type: decimal;
+    margin: 0;
+    counter-reset: terms-counter;
 }
 
 .terms-section ol > li {
     margin-bottom: 1rem;
-    color: #000;
     position: relative;
-    padding-left: 0.5rem;
+    list-style-type: none;
+    counter-increment: terms-counter;
+}
+
+.terms-section ol > li::before {
+    content: counter(terms-counter) ".";
+    position: absolute;
+    left: -2rem;
+    color: #000;
+    font-weight: normal;
 }
 
 .terms-section strong {
-    font-weight: 600;
-    color: #000;
     display: block;
-    margin-bottom: 0.35rem;
-    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #000;
+    font-size: 13px;
+}
+
+.terms-section .subsection {
+    display: inline;
+    margin-bottom: 0;
+    font-weight: 600;
+}
+
+.responsibility-section {
+    margin-left: 1.25rem;
+    margin-top: 0.25rem;
+}
+
+.terms-subsection {
+    margin-left: 1.25rem;
+    margin-top: 0.25rem;
 }
 
 .terms-section br {
@@ -104,19 +125,23 @@ body {
     color: #000;
     display: inline-block;
     margin: 0.25rem 0;
+    text-decoration: none;
 }
 
+/* Return button */
 .return-btn {
     background-color: #9AD745;
     color: #000;
     border: none;
-    padding: 10px 30px;
-    border-radius: 20px;
-    font-size: 14px;
+    padding: 12px 24px;
+    border-radius: 24px;
+    font-size: 15px;
     text-decoration: none;
-    display: inline-block;
-    margin-top: 2rem;
+    display: block;
+    margin: 2rem auto 1rem;
     text-align: center;
+    width: fit-content;
+    min-width: 180px;
     font-weight: 500;
 }
 
