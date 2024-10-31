@@ -6,143 +6,118 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* Account Setup Page */
-body.account-setup-page {
+/* Legal Stuff Page */
+body.legal-stuff-page {
     min-height: 100vh;
     background-color: white;
 }
 
-.account-setup-screen {
-    width: 100%;
-    max-width: 700px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
 .green-header {
     background-color: #7ED321;
-    padding: 2.5rem 1rem;
+    padding: 1.5rem;
     text-align: center;
-    margin-bottom: 4rem;
+    width: 100%;
 }
 
 .green-header h1 {
-    font-size: 4.5rem;
+    font-size: 2.5rem;
     font-weight: 500;
     color: black;
     line-height: 1.2;
 }
 
-.setup-content {
-    padding: 0 1rem;
+.legal-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem;
 }
 
-.setup-content section {
-    margin-bottom: 4rem;
-}
-
-.setup-content h2 {
-    font-size: 3rem;
-    font-weight: 500;
-    color: black;
-    margin-bottom: 2rem;
-    text-align: center;
-    line-height: 1.2;
-}
-
-.setup-content p {
-    font-size: 1.5rem;
-    line-height: 1.5;
-    color: black;
-    text-align: center;
-    max-width: 650px;
-    margin: 0 auto 2.5rem;
-}
-
-.input-group {
-    margin-bottom: 1.5rem;
-}
-
-.input-group input {
-    width: 100%;
-    padding: 1.75rem 2rem;
-    font-size: 1.5rem;
-    border: none;
-    border-radius: 3rem;
+.light-gray-container {
     background-color: #F8F9FA;
-    color: #212529;
+    border-radius: 0;
+    padding: 1.5rem;
+    margin-top: 1rem;
 }
 
-.input-group input::placeholder {
-    color: #ADB5BD;
-    opacity: 0.8;
-}
-
-.orange-button {
-    width: 100%;
-    padding: 1.75rem;
-    font-size: 2rem;
-    font-weight: 500;
-    border: none;
-    border-radius: 3rem;
-    background-color: #FF9500;
+.light-gray-container p {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
     color: black;
+}
+
+.legal-links {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.legal-link {
+    display: block;
+    font-size: 1.25rem;
+    font-weight: normal;
+    text-align: left;
+    text-decoration: none;
+    color: #FF0000;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 0;
+}
+
+.action-buttons button {
+    flex: 1;
+    padding: 0.75rem;
+    font-size: 1.25rem;
+    font-weight: normal;
+    border: none;
+    border-radius: 999px;
     cursor: pointer;
     transition: background-color 0.3s;
-    margin-bottom: 3rem;
-    line-height: 1.2;
+    min-width: 120px;
 }
 
-.orange-button:hover {
-    background-color: #FF8000;
+.reject-btn {
+    background-color: #E9ECEF;
+    color: black;
 }
 
-.almost-there {
-    text-align: center;
-    margin-top: 2rem;
-}
-
-.almost-there h2 {
-    font-style: italic;
-    margin-bottom: 2.5rem;
-}
-
-.green-button {
-    width: 100%;
-    padding: 1.75rem;
-    font-size: 2rem;
-    font-weight: 500;
-    border: none;
-    border-radius: 3rem;
+.accept-btn {
     background-color: #7ED321;
     color: black;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    line-height: 1.2;
 }
 
-.green-button:hover {
+.reject-btn:hover {
+    background-color: #DEE2E6;
+}
+
+.accept-btn:hover {
     background-color: #72BF1B;
 }
 
 /* Mobile responsiveness */
 @media (max-width: 768px) {
     .green-header h1 {
-        font-size: 3.5rem;
+        font-size: 2rem;
     }
     
-    .setup-content h2 {
-        font-size: 2.5rem;
+    .light-gray-container p {
+        font-size: 0.875rem;
     }
     
-    .setup-content p {
-        font-size: 1.25rem;
+    .legal-link {
+        font-size: 1rem;
     }
     
-    .input-group input,
-    .orange-button,
-    .green-button {
-        padding: 1.5rem;
-        font-size: 1.5rem;
+    .action-buttons button {
+        font-size: 1rem;
+        padding: 0.5rem;
     }
 }
