@@ -1,0 +1,3 @@
+include leasecheck/templates/*.html
+include leasecheck/static/css/*.css
+include leasecheck/static/images/*

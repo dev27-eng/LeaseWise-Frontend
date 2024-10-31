@@ -1,0 +1,11 @@
+Metadata-Version: 2.1
+Name: repl-nix-reactfrontendbuilder
+Version: 0.1.0
+Summary: Add your description here
+Requires-Python: >=3.8
+Requires-Dist: email-validator>=2.2.0
+Requires-Dist: flask>=3.0.3
+Requires-Dist: flask-sqlalchemy>=3.1.1
+Requires-Dist: psycopg2-binary>=2.9.10
+Requires-Dist: requests>=2.32.3
+Requires-Dist: repl-nix-reactfrontendbuilder

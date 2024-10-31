@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="screen">
+    <div class="select-plan-content">
+        <!-- Green header bar -->
+        <div class="welcome-header">
+            <h1>Select A Plan</h1>
+        </div>
+
+        <!-- Main content -->
+        <div class="plan-content text-center">
+            <h2 class="main-title">Choose Your Plan</h2>
+            
+            <h3 class="included-title">All Plans Include:</h3>
+            
+            <div class="features-list">
+                <div class="feature-row">
+                    <strong>- Risk Analysis:</strong> 
+                    <span>Spot potential issues and red flags in your lease.</span>
+                </div>
+                <div class="feature-row">
+                    <strong>- Easy Navigation:</strong>
+                    <span>Enjoy a simple, user-friendly experience with a shareable PDF report.</span>
+                </div>
+                <div class="feature-row">
+                    <strong>- Connect with Local Attorneys:</strong>
+                    <span>Get referrals to local legal experts if you need more help.</span>
+                </div>
+            </div>
+
+            <!-- Pricing Tiers -->
+            <div class="pricing-tiers">
+                <!-- Basic Plan -->
+                <div class="pricing-card basic">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="plan" id="basicPlan" value="basic">
+                        <label class="form-check-label" for="basicPlan">
+                            Basic Plan - $9.95
+                            <div class="plan-features">
+                                - 1 Lease Analysis<br>
+                                - Ideal for single lease
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Standard Plan -->
+                <div class="pricing-card standard">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="plan" id="standardPlan" value="standard">
+                        <label class="form-check-label" for="standardPlan">
+                            Standard Plan - $19.95
+                            <div class="plan-features">
+                                - 3 uses in 30 days<br>
+                                - Great for comparing options
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Premium Plan -->
+                <div class="pricing-card premium">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="plan" id="premiumPlan" value="premium">
+                        <label class="form-check-label" for="premiumPlan">
+                            Premium Plan - $29.95
+                            <div class="plan-features">
+                                - 6 uses in 30 days<br>
+                                - Best value for multiple reviews
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Select Plan Button -->
+            <button class="btn select-plan-btn">Select Plan</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
