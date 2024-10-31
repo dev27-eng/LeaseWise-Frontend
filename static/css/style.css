@@ -14,13 +14,14 @@ body.legal-stuff-page {
 
 .green-header {
     background-color: #7ED321;
-    padding: 1rem;
+    padding: 1.5rem;
     text-align: center;
     width: 100%;
+    margin-bottom: 2rem;
 }
 
 .green-header h1 {
-    font-size: 2.5rem;
+    font-size: 3rem;
     font-weight: 400;
     color: black;
     line-height: 1.2;
@@ -35,26 +36,27 @@ body.legal-stuff-page {
 .light-gray-container {
     background-color: #F8F9FA;
     padding: 2rem;
-    border-radius: 0.5rem;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
 }
 
 .light-gray-container p {
-    font-size: 1rem;
+    font-size: 1.125rem;
     line-height: 1.5;
-    margin-bottom: 1rem;
-    color: #000;
+    margin-bottom: 1.5rem;
+    color: black;
 }
 
 .legal-links {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
-    margin: 2rem 0;
+    gap: 2rem;
+    margin: 3rem 0;
 }
 
-.legal-links a {
-    font-size: 1.25rem;
+.legal-link {
+    font-size: 2rem;
     text-decoration: none;
     color: #FF0000;
 }
@@ -63,16 +65,16 @@ body.legal-stuff-page {
     display: flex;
     justify-content: center;
     gap: 2rem;
-    margin-top: 2rem;
+    margin-top: 3rem;
 }
 
 .action-buttons button {
-    padding: 0.75rem 2rem;
-    font-size: 1.25rem;
+    padding: 0.75rem 3rem;
+    font-size: 1.5rem;
     border: none;
     border-radius: 999px;
     cursor: pointer;
-    min-width: 120px;
+    min-width: 150px;
 }
 
 .reject-btn {
@@ -88,19 +90,20 @@ body.legal-stuff-page {
 /* Mobile responsiveness */
 @media (max-width: 768px) {
     .green-header h1 {
-        font-size: 2rem;
+        font-size: 2.5rem;
     }
     
     .light-gray-container p {
-        font-size: 0.875rem;
+        font-size: 1rem;
     }
     
-    .legal-links a {
-        font-size: 1.125rem;
+    .legal-link {
+        font-size: 1.75rem;
     }
     
     .action-buttons button {
-        font-size: 1rem;
-        padding: 0.5rem 1.5rem;
+        font-size: 1.25rem;
+        padding: 0.75rem 2rem;
+        min-width: 120px;
     }
 }
