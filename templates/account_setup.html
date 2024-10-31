@@ -8,31 +8,37 @@
 </head>
 <body class="account-setup-page">
     <div class="account-setup-screen">
-        <div class="green-header">
+        <header class="green-header">
             <h1>Account Setup</h1>
-        </div>
+        </header>
         
-        <div class="setup-content">
-            <h2>Why We Need Your Email</h2>
-            <p>We need your email address to securely set up your account. It helps us verify your identity, prevent fraud, and keep your lease information safe. Rest assured, your email will remain confidential and will only be used to enhance your experience with Lease Check.</p>
+        <main class="setup-content">
+            <section>
+                <h2>Why We Need Your Email</h2>
+                <p>We need your email address to securely set up your account. It helps us verify your identity, prevent fraud, and keep your lease information safe. Rest assured, your email will remain confidential and will only be used to enhance your experience with Lease Check.</p>
+            </section>
             
-            <h2>Verify Your Email</h2>
-            <div class="input-group">
-                <input type="email" id="email" placeholder="Enter your email" required>
-                <button class="orange-button" id="sendCode">Send Verification Code</button>
-            </div>
+            <section>
+                <h2>Verify Your Email</h2>
+                <div class="input-group">
+                    <input type="email" id="email" placeholder="Enter your email" required>
+                </div>
+                <button class="orange-button">Send Verification Code</button>
+            </section>
             
-            <h2>Enter Your Verification Code</h2>
-            <div class="input-group">
-                <input type="text" id="verificationCode" placeholder="Verification code">
-                <button class="orange-button" id="verifyCode">Verify Code</button>
-            </div>
+            <section>
+                <h2>Enter Your Verification Code</h2>
+                <div class="input-group">
+                    <input type="text" id="verificationCode" placeholder="Verification code">
+                </div>
+                <button class="orange-button">Verify Code</button>
+            </section>
             
-            <div class="almost-there">
+            <section class="almost-there">
                 <h2>Almost there!</h2>
-                <button class="green-button" id="legalStuff">Legal Stuff</button>
-            </div>
-        </div>
+                <button class="green-button">Legal Stuff</button>
+            </section>
+        </main>
     </div>
 </body>
 </html>
