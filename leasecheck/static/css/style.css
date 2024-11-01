@@ -41,17 +41,11 @@
 .legal-container p {
     font-size: 1rem;
     line-height: 1.4;
+    margin-bottom: 0.5rem;
     color: black;
-    margin-bottom: 1rem;
 }
 
-.section-title {
-    font-weight: 600;
-    margin-top: 1.25rem !important;
-    margin-bottom: 0.75rem !important;
-}
-
-.legal-container strong {
+.legal-container p strong {
     font-weight: 600;
 }
 
@@ -59,8 +53,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.25rem;
-    margin: 2rem 0;
+    gap: 1rem;
+    margin: 1.5rem 0;
 }
 
 .legal-links a {
