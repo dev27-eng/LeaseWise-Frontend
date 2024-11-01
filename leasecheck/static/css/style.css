@@ -6,110 +6,132 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* Legal Stuff Page */
-.legal-stuff-page {
+/* Welcome Screen styles */
+.welcome-screen {
     min-height: 100vh;
     background-color: white;
 }
 
-.legal-header {
+.green-header {
     background-color: #7ED321;
-    padding: 1.25rem;
+    padding: 1.5rem;
     text-align: center;
 }
 
-.legal-header h1 {
-    font-size: 2.25rem;
+.green-header h1 {
+    font-size: 2.5rem;
     font-weight: 400;
     color: black;
     margin: 0;
 }
 
-.legal-content {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 1rem;
+.welcome-content {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
 }
 
-.legal-container {
+.welcome-container {
     background-color: #F8F9FA;
-    padding: 1.5rem;
-    border-radius: 8px;
-    margin-top: 0.75rem;
+    padding: 2rem;
+    border-radius: 12px;
 }
 
-.legal-container p {
-    font-size: 1rem;
-    line-height: 1.4;
-    margin-bottom: 0.5rem;
+.welcome-intro, .welcome-features, .welcome-cta {
+    margin-bottom: 2.5rem;
+}
+
+.welcome-container h2 {
+    font-size: 2rem;
+    font-weight: 500;
     color: black;
+    margin-bottom: 1rem;
 }
 
-.legal-container p strong {
-    font-weight: 600;
+.welcome-container p {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    color: #333;
+    margin-bottom: 1rem;
 }
 
-.legal-links {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    margin: 1.5rem 0;
+.welcome-features ul {
+    list-style: none;
+    margin-left: 1rem;
 }
 
-.legal-links a {
+.welcome-features li {
+    font-size: 1.25rem;
+    line-height: 1.8;
+    color: #333;
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.welcome-features li:before {
+    content: "•";
+    color: #7ED321;
     font-size: 1.5rem;
-    text-decoration: none;
-    color: #FF0000;
-    font-weight: 400;
+    position: absolute;
+    left: 0;
 }
 
-.legal-actions {
+.cta-buttons {
     display: flex;
-    justify-content: center;
     gap: 1.5rem;
-    margin-top: 1.5rem;
+    justify-content: center;
+    margin-top: 2rem;
 }
 
-.legal-actions button {
-    padding: 0.5rem 2rem;
+.button-primary, .button-secondary {
+    padding: 1rem 2rem;
     font-size: 1.25rem;
     border: none;
     border-radius: 999px;
     cursor: pointer;
-    min-width: 100px;
+    text-decoration: none;
+    text-align: center;
+    min-width: 200px;
 }
 
-.reject-btn {
-    background-color: #87CEEB;
+.button-primary {
+    background-color: #7ED321;
     color: black;
 }
 
-.accept-btn {
-    background-color: #7ED321;
+.button-secondary {
+    background-color: #87CEEB;
     color: black;
 }
 
 /* Mobile responsiveness */
 @media (max-width: 768px) {
-    .legal-header h1 {
+    .green-header h1 {
         font-size: 2rem;
     }
     
-    .legal-container {
-        padding: 1.25rem;
+    .welcome-container {
+        padding: 1.5rem;
     }
     
-    .legal-container p {
-        font-size: 0.9375rem;
+    .welcome-container h2 {
+        font-size: 1.75rem;
     }
     
-    .legal-links a {
-        font-size: 1.375rem;
+    .welcome-container p,
+    .welcome-features li {
+        font-size: 1.125rem;
     }
     
-    .legal-actions button {
-        padding: 0.4375rem 1.75rem;
+    .cta-buttons {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .button-primary,
+    .button-secondary {
+        width: 100%;
+        padding: 0.875rem 1.5rem;
         font-size: 1.125rem;
     }
 }

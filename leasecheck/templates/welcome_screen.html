@@ -1,18 +1,41 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - Lease Check</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="welcome-screen">
+    <header class="green-header">
+        <h1>Welcome to Lease Check</h1>
+    </header>
+    
+    <main class="welcome-content">
+        <div class="welcome-container">
+            <section class="welcome-intro">
+                <h2>Your Lease Analysis Partner</h2>
+                <p>We're here to help you understand your lease agreement better and make informed decisions.</p>
+            </section>
 
-{% block content %}
-<div class="screen">
-    <div class="welcome-content text-center">
-        <h1 class="mb-4">LeaseCheck</h1>
-        
-        <div class="logo-container">
-            <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="LeaseCheck Logo" class="logo-image mb-3">
-            <img src="{{ url_for('static', filename='images/clipboard.svg') }}" alt="Clipboard" class="clipboard-image">
+            <section class="welcome-features">
+                <h2>What We Offer</h2>
+                <ul>
+                    <li>Detailed lease analysis</li>
+                    <li>Legal compliance checks</li>
+                    <li>Risk identification</li>
+                    <li>Professional support</li>
+                </ul>
+            </section>
+
+            <section class="welcome-cta">
+                <h2>Ready to Get Started?</h2>
+                <div class="cta-buttons">
+                    <a href="/select-plan" class="button-primary">Choose Your Plan</a>
+                    <a href="/learn-more" class="button-secondary">Learn More</a>
+                </div>
+            </section>
         </div>
-        
-        <h2 class="mb-4">Verify legal compliance easily</h2>
-        
-        <button class="btn btn-lg start-review-btn">Upload Document</button>
-    </div>
-</div>
-{% endblock %}
+    </main>
+</body>
+</html>
