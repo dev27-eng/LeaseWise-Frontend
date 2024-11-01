@@ -17,13 +17,14 @@ To access certain features of the Service, you may need to create an account. Yo
 Compliance: You agree to use the Service only for lawful purposes and in accordance with these Terms.
 Accuracy: You agree to provide truthful and accurate information when using the Service.
 Security: You are responsible for safeguarding your account information and for any activities that occur under your account.
+
 6. Prohibited Activities
 You agree not to:
-
 Use the Service for any illegal or unauthorized purpose.
 Attempt to interfere with or disrupt the integrity or performance of the Service.
 Upload, post, or transmit any content that is harmful, offensive, or violates any laws or third-party rights.
 Reverse engineer, decompile, or disassemble any part of the Service.
+
 7. Intellectual Property
 All content, features, and functionality of Lease Check, including but not limited to text, graphics, logos, and software, are owned by or licensed to us and are protected by intellectual property laws. You may not reproduce, distribute, modify, or create derivative works of any content without our prior written consent.
 
@@ -31,6 +32,7 @@ All content, features, and functionality of Lease Check, including but not limit
 Pricing Plans: We offer different pricing plans (Basic, Standard, Premium) as outlined on our Pricing page.
 Billing: Payments are processed securely through our payment partners. By selecting a plan, you agree to pay the associated fees.
 Refunds: Refunds are subject to our Refund Policy, which can be found here.
+
 9. Termination
 We reserve the right to suspend or terminate your access to the Service at our sole discretion, without notice, for conduct that we believe violates these Terms or is harmful to other users or us.
 
@@ -38,6 +40,7 @@ We reserve the right to suspend or terminate your access to the Service at our s
 No Legal Advice: Lease Check provides information for general purposes only and does not constitute legal advice. Consult a qualified attorney for specific legal concerns.
 As-Is Basis: The Service is provided "as is" without warranties of any kind, either express or implied.
 Additional Disclaimer: For more details, please review our Disclaimer.
+
 11. Limitation of Liability
 To the fullest extent permitted by law, Lease Check shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising out of your use of the Service.
 
@@ -52,8 +55,8 @@ We may update these Terms from time to time. Any changes will be effective immed
 
 15. Contact Us
 If you have any questions or concerns about these Terms, please contact us at:
-
 Email: support@coloradoleasecheck.com
+
 16. AI and Software Errors
 While we strive to provide accurate lease analyses, our Service utilizes AI and software systems that may occasionally produce errors or inaccuracies. If you identify any errors in your analysis report, please submit the details to us for evaluation by our AI training team by contacting training@coloradoleasecheck.com. Upon verification, we will offer:
 

@@ -6,46 +6,51 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
+/* Account Setup Page styles... */
+/* [Previous Account Setup styles remain unchanged] */
+
+/* Legal Stuff Page */
 .legal-stuff-page {
     min-height: 100vh;
     background-color: white;
+    display: flex;
+    flex-direction: column;
 }
 
-.green-header {
+.legal-header {
     background-color: #7ED321;
-    padding: 1rem;
+    padding: 1.5rem;
     text-align: center;
+    width: 100%;
 }
 
-.green-header h1 {
+.legal-header h1 {
     font-size: 3rem;
     font-weight: 400;
     color: black;
     margin: 0;
+    line-height: 1.2;
 }
 
 .legal-content {
     max-width: 800px;
-    margin: 0 auto;
-    padding: 1rem;
+    margin: 1.5rem auto;
+    padding: 0 1rem;
+    flex: 1;
 }
 
-.light-gray-container {
+.legal-container {
     background-color: #F8F9FA;
     padding: 2rem;
-    border-radius: 8px;
+    border-radius: 12px;
+    margin-bottom: 1rem;
 }
 
-.light-gray-container p {
-    font-size: 1.125rem;
-    line-height: 1.5;
+.legal-container p {
+    font-size: 1.25rem;
+    line-height: 1.6;
     color: black;
-    margin-bottom: 1.25rem;
-}
-
-.light-gray-container a {
-    color: inherit;
-    text-decoration: none;
+    margin-bottom: 1.5rem;
 }
 
 .legal-links {
@@ -60,22 +65,26 @@
     font-size: 2rem;
     text-decoration: none;
     color: #FF0000;
+    font-weight: 400;
 }
 
-.action-buttons {
+.legal-actions {
     display: flex;
     justify-content: center;
     gap: 2rem;
     margin-top: 3rem;
 }
 
-.action-buttons button {
+.legal-actions button {
     padding: 1rem 3rem;
-    font-size: 1.75rem;
+    font-size: 2rem;
     border: none;
     border-radius: 999px;
     cursor: pointer;
-    min-width: 160px;
+    width: 180px;
+    font-weight: 400;
+    line-height: 1.2;
+    display: inline-block;
 }
 
 .reject-btn {
@@ -90,21 +99,25 @@
 
 /* Mobile responsiveness */
 @media (max-width: 768px) {
-    .green-header h1 {
+    .legal-header h1 {
         font-size: 2.5rem;
     }
     
-    .light-gray-container p {
-        font-size: 1rem;
+    .legal-container {
+        padding: 1.5rem;
+    }
+    
+    .legal-container p {
+        font-size: 1.125rem;
     }
     
     .legal-links a {
         font-size: 1.75rem;
     }
     
-    .action-buttons button {
+    .legal-actions button {
         padding: 0.75rem 2rem;
-        min-width: 140px;
-        font-size: 1.5rem;
+        font-size: 1.75rem;
+        width: 150px;
     }
 }
