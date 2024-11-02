@@ -16,32 +16,31 @@
 }
 
 .welcome-container {
-    max-width: 1200px;
     width: 100%;
+    max-width: 800px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0 20px;
+    gap: 80px;
+    padding: 20px;
 }
 
 .logo-text {
-    font-size: 150px;
+    font-size: 180px;
     font-weight: 900;
     color: black;
     text-align: center;
-    letter-spacing: -0.05em;
-    margin-bottom: 40px;
+    letter-spacing: -0.02em;
     line-height: 1;
 }
 
 .logo-wrapper {
-    width: 500px;
-    height: 500px;
+    width: 350px;
+    height: 350px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 60px;
 }
 
 .logo-image {
@@ -55,25 +54,22 @@
     color: black;
     font-weight: normal;
     text-align: center;
-    margin-bottom: 60px;
     line-height: 1.2;
 }
 
 .start-review-btn {
     background-color: #7ED321;
     color: black;
-    padding: 20px 60px;
+    padding: 25px 60px;
     border-radius: 999px;
-    font-size: 52px;
+    font-size: 64px;
     text-decoration: none;
     border: none;
     cursor: pointer;
     font-style: italic;
-    min-width: 500px;
+    min-width: 600px;
     text-align: center;
     transition: background-color 0.3s ease;
-    display: inline-block;
-    line-height: 1.2;
 }
 
 .start-review-btn:hover {
@@ -82,25 +78,26 @@
 
 /* Mobile responsiveness */
 @media (max-width: 768px) {
+    .welcome-container {
+        gap: 40px;
+    }
+
     .logo-text {
-        font-size: 72px;
-        margin-bottom: 30px;
+        font-size: 80px;
     }
     
     .logo-wrapper {
-        width: 300px;
-        height: 300px;
-        margin-bottom: 40px;
+        width: 250px;
+        height: 250px;
     }
     
     .verify-text {
-        font-size: 36px;
-        margin-bottom: 40px;
+        font-size: 32px;
     }
     
     .start-review-btn {
-        padding: 15px 40px;
+        padding: 15px 30px;
         font-size: 36px;
-        min-width: 300px;
+        min-width: 280px;
     }
 }
