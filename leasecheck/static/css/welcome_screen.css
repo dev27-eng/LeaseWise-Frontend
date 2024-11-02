@@ -1,0 +1,105 @@
+/* Reset default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.welcome-screen {
+    min-height: 100vh;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.welcome-container {
+    max-width: 800px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.logo-text {
+    font-size: 180px;
+    font-weight: 900;
+    color: black;
+    text-align: center;
+    letter-spacing: -0.15em;
+    margin-bottom: 80px;
+    line-height: 1;
+}
+
+.logo-wrapper {
+    width: 400px;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 120px;
+}
+
+.logo-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.verify-text {
+    font-size: 64px;
+    color: black;
+    font-weight: normal;
+    text-align: center;
+    margin-bottom: 120px;
+    line-height: 1.2;
+}
+
+.start-review-btn {
+    background-color: #7ED321;
+    color: black;
+    padding: 35px 100px;
+    border-radius: 999px;
+    font-size: 64px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    font-style: italic;
+    min-width: 650px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+}
+
+.start-review-btn:hover {
+    background-color: #6db91d;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .logo-text {
+        font-size: 80px;
+        margin-bottom: 40px;
+    }
+    
+    .logo-wrapper {
+        width: 280px;
+        height: 280px;
+        margin-bottom: 60px;
+    }
+    
+    .verify-text {
+        font-size: 36px;
+        margin-bottom: 60px;
+    }
+    
+    .start-review-btn {
+        padding: 25px 60px;
+        font-size: 36px;
+        min-width: 320px;
+    }
+}
