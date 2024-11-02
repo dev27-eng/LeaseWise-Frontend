@@ -14,45 +14,47 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 2rem 1rem;
+    padding: 1rem;
 }
 
 .welcome-container {
     max-width: 600px;
     width: 100%;
-    text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4rem;
+    gap: 2rem;
+    margin-top: -5vh;
 }
 
 .logo-text {
-    font-size: 5.5rem;
+    font-size: 5rem;
     font-weight: 900;
     color: black;
-    letter-spacing: -0.02em;
-    margin-bottom: 0;
+    letter-spacing: -0.08em;
+    line-height: 1;
 }
 
 .logo-image {
-    width: 400px;
+    width: 360px;
     height: auto;
-    margin: 3rem 0;
+    margin: 1rem 0 2rem;
 }
 
 .verify-text {
-    font-size: 3rem;
+    font-size: 2.75rem;
     color: black;
     font-weight: normal;
-    margin-bottom: 2rem;
+    white-space: nowrap;
+    line-height: 1.2;
+    margin-bottom: 1rem;
 }
 
 .start-review-btn {
     background-color: #7ED321;
     color: black;
-    padding: 1.5rem 6rem;
-    border-radius: 60px;
+    padding: 1.25rem 4rem;
+    border-radius: 999px;
     font-size: 2.75rem;
     text-decoration: none;
     border: none;
@@ -62,6 +64,7 @@
     font-weight: 500;
     display: inline-block;
     white-space: nowrap;
+    min-width: 450px;
 }
 
 .start-review-btn:hover {
@@ -70,21 +73,26 @@
 
 /* Mobile responsiveness */
 @media (max-width: 768px) {
+    .welcome-screen {
+        padding: 1rem;
+    }
+
     .logo-text {
         font-size: 4rem;
     }
     
     .logo-image {
         width: 300px;
-        margin: 2rem 0;
+        margin: 0.75rem 0 1.5rem;
     }
     
     .verify-text {
-        font-size: 2.5rem;
+        font-size: 2.25rem;
     }
     
     .start-review-btn {
-        padding: 1.25rem 4rem;
+        padding: 1rem 3rem;
         font-size: 2.25rem;
+        min-width: 350px;
     }
 }
