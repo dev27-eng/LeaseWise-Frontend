@@ -4,16 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome - LeaseCheck</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/welcome_screen.css') }}">
 </head>
-<body class="welcome-screen">
-    <div class="welcome-container">
-        <h1 class="logo-text">LeaseCheck</h1>
-        <div class="logo-wrapper">
-            <img src="{{ url_for('static', filename='images/Logo v2.png') }}" alt="LeaseCheck Logo" class="logo-image">
+<body>
+    <div class="welcome-screen">
+        <div class="welcome-container">
+            <h1 class="logo-text">LeaseCheck</h1>
+            <div class="logo-wrapper">
+                <img src="{{ url_for('static', filename='images/Logo v2.png') }}" alt="LeaseCheck Logo" class="logo-image">
+            </div>
+            <h2 class="verify-text">Verify legal compliance easily</h2>
+            <a href="{{ url_for('onboarding') }}" class="start-review-btn">Start Your Review</a>
         </div>
-        <h2 class="verify-text">Verify legal compliance easily</h2>
-        <a href="/start-review" class="start-review-btn">Start Your Review</a>
     </div>
 </body>
 </html>
