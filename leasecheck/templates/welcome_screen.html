@@ -9,7 +9,9 @@
 <body class="welcome-screen">
     <div class="welcome-container">
         <h1 class="logo-text">LeaseCheck</h1>
-        <img src="{{ url_for('static', filename='images/Logo v2.png') }}" alt="Green circular logo with clipboard" class="logo-image">
+        <div class="logo-wrapper">
+            <img src="{{ url_for('static', filename='images/Logo v2.png') }}" alt="LeaseCheck Logo" class="logo-image">
+        </div>
         <h2 class="verify-text">Verify legal compliance easily</h2>
         <a href="/start-review" class="start-review-btn">Start Your Review</a>
     </div>

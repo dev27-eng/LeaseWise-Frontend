@@ -14,57 +14,78 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 1rem;
+    position: relative;
 }
 
 .welcome-container {
-    max-width: 600px;
+    max-width: 1200px;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2rem;
-    margin-top: -5vh;
+    padding: 0 20px;
+    position: relative;
+    z-index: 1;
 }
 
 .logo-text {
-    font-size: 5rem;
+    font-size: 90px;
     font-weight: 900;
     color: black;
-    letter-spacing: -0.08em;
+    text-align: center;
+    letter-spacing: -0.05em;
     line-height: 1;
+    margin-bottom: 40px;
+    position: relative;
+    z-index: 2;
+}
+
+.logo-wrapper {
+    position: relative;
+    width: 350px;
+    height: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0 40px;
+    z-index: 2;
 }
 
 .logo-image {
-    width: 360px;
+    width: 100%;
     height: auto;
-    margin: 1rem 0 2rem;
+    position: relative;
+    display: block;
 }
 
 .verify-text {
-    font-size: 2.75rem;
+    font-size: 48px;
     color: black;
     font-weight: normal;
+    text-align: center;
+    margin-bottom: 50px;
     white-space: nowrap;
-    line-height: 1.2;
-    margin-bottom: 1rem;
+    position: relative;
+    z-index: 2;
 }
 
 .start-review-btn {
     background-color: #7ED321;
     color: black;
-    padding: 1.25rem 4rem;
+    padding: 20px 70px;
     border-radius: 999px;
-    font-size: 2.75rem;
+    font-size: 48px;
     text-decoration: none;
     border: none;
     cursor: pointer;
-    transition: background-color 0.3s ease;
     font-style: italic;
     font-weight: 500;
+    min-width: 500px;
+    text-align: center;
+    transition: background-color 0.3s ease;
     display: inline-block;
-    white-space: nowrap;
-    min-width: 450px;
+    position: relative;
+    z-index: 2;
 }
 
 .start-review-btn:hover {
@@ -73,26 +94,25 @@
 
 /* Mobile responsiveness */
 @media (max-width: 768px) {
-    .welcome-screen {
-        padding: 1rem;
-    }
-
     .logo-text {
-        font-size: 4rem;
+        font-size: 56px;
     }
     
-    .logo-image {
-        width: 300px;
-        margin: 0.75rem 0 1.5rem;
+    .logo-wrapper {
+        width: 280px;
+        height: 280px;
+        margin: 15px 0 30px;
     }
     
     .verify-text {
-        font-size: 2.25rem;
+        font-size: 36px;
+        white-space: normal;
+        margin-bottom: 40px;
     }
     
     .start-review-btn {
-        padding: 1rem 3rem;
-        font-size: 2.25rem;
-        min-width: 350px;
+        padding: 15px 40px;
+        font-size: 36px;
+        min-width: 320px;
     }
 }
