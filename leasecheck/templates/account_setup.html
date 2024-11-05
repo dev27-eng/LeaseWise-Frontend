@@ -1,44 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account Setup - Lease Check</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body class="account-setup-page">
-    <div class="account-setup-screen">
-        <header class="green-header">
-            <h1>Account Setup</h1>
-        </header>
-        
-        <main class="setup-content">
-            <section>
-                <h2>Why We Need Your Email</h2>
-                <p>We need your email address to securely set up your account. It helps us verify your identity, prevent fraud, and keep your lease information safe. Rest assured, your email will remain confidential and will only be used to enhance your experience with Lease Check.</p>
-            </section>
-            
-            <section>
-                <h2>Verify Your Email</h2>
-                <div class="input-group">
-                    <input type="email" id="email" placeholder="Enter your email" required>
-                </div>
+{% extends "base.html" %}
+
+{% block title %}Account Setup - LeaseCheck{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/account_setup.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="account-setup-screen">
+    <!-- Green header -->
+    <header class="green-header">
+        <h1>Account Setup</h1>
+    </header>
+
+    <main class="setup-content">
+        <!-- Email verification section -->
+        <section class="email-section">
+            <h2>Verify Your Email</h2>
+            <p>Please enter your email address to continue</p>
+            <div class="input-group">
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
                 <button class="orange-button">Send Verification Code</button>
-            </section>
-            
-            <section>
-                <h2>Enter Your Verification Code</h2>
-                <div class="input-group">
-                    <input type="text" id="verificationCode" placeholder="Verification code">
-                </div>
+            </div>
+        </section>
+
+        <!-- Verification code section -->
+        <section class="verification-section">
+            <h2>Enter Verification Code</h2>
+            <p>Enter the 6-digit code sent to your email</p>
+            <div class="input-group">
+                <input type="text" id="verification-code" name="verification-code" placeholder="Enter verification code" maxlength="6">
                 <button class="orange-button">Verify Code</button>
-            </section>
-            
-            <section class="almost-there">
-                <h2>Almost there!</h2>
-                <button class="green-button">Legal Stuff</button>
-            </section>
-        </main>
-    </div>
-</body>
-</html>
+            </div>
+        </section>
+
+        <!-- Final section -->
+        <section class="final-section">
+            <h2>Almost there!</h2>
+            <p>Just one more step to complete your account setup</p>
+            <a href="/legal-stuff" class="green-button">Legal Stuff</a>
+        </section>
+    </main>
+</div>
+{% endblock %}
