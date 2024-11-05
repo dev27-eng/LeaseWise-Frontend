@@ -1,19 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LeaseCheck</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/welcome_screen.css') }}">
-</head>
-<body>
-    <div class="welcome-container">
-        <h1 class="logo-text">LeaseCheck</h1>
-        <div class="logo-wrapper">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="LeaseCheck Logo" class="logo-image">
-        </div>
-        <h2 class="verify-text">Verify legal compliance easily</h2>
-        <a href="/onboarding" class="start-review-btn">Start Your Review</a>
+{% extends "base.html" %}
+
+{% block title %}Welcome - LeaseCheck{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/welcome_screen.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="welcome-container">
+    <h1 class="logo-text">LeaseCheck</h1>
+    <div class="logo-wrapper">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="LeaseCheck Logo" class="logo-image">
     </div>
-</body>
-</html>
+    <h2 class="verify-text">Verify legal compliance easily</h2>
+    <a href="/onboarding" class="start-review-btn">Start Your Review</a>
+</div>
+{% endblock %}
