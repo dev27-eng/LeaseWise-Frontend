@@ -1,4 +1,4 @@
-/* Reset and base styles */
+/* Reset default styles */
 * {
     margin: 0;
     padding: 0;
@@ -25,6 +25,7 @@ body {
     max-width: 800px;
 }
 
+/* LeaseCheck text styling */
 .logo-text {
     font-size: 150px;
     font-weight: 900;
@@ -32,8 +33,10 @@ body {
     text-align: center;
     margin-bottom: 60px;
     line-height: 1;
+    letter-spacing: -0.02em;
 }
 
+/* Logo container styling */
 .logo-wrapper {
     width: 350px;
     height: 350px;
@@ -49,14 +52,17 @@ body {
     object-fit: contain;
 }
 
+/* Verify text styling */
 .verify-text {
     font-size: 52px;
     color: black;
     font-weight: normal;
     text-align: center;
     margin-bottom: 80px;
+    max-width: 600px;
 }
 
+/* Green button styling */
 .start-review-btn {
     background-color: #7ED321;
     color: black;
@@ -76,7 +82,7 @@ body {
     background-color: #6db91d;
 }
 
-/* Mobile responsiveness */
+/* Responsive design */
 @media (max-width: 768px) {
     .logo-text {
         font-size: 80px;
@@ -92,11 +98,29 @@ body {
     .verify-text {
         font-size: 36px;
         margin-bottom: 60px;
+        max-width: 90%;
     }
     
     .start-review-btn {
         padding: 20px 40px;
         font-size: 36px;
         min-width: 280px;
+    }
+}
+
+/* Additional mobile adjustments */
+@media (max-width: 480px) {
+    .logo-text {
+        font-size: 60px;
+    }
+    
+    .verify-text {
+        font-size: 28px;
+    }
+    
+    .start-review-btn {
+        min-width: 240px;
+        font-size: 28px;
+        padding: 15px 30px;
     }
 }
