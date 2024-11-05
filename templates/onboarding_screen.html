@@ -1,111 +1,67 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Lease Check</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-    <header class="app-header">
-        <div class="header-content">
-            <nav class="nav-links">
-                <a href="/welcome">Home</a>
-                <a href="/select-plan">Plans</a>
-                <a href="/terms-of-service">Terms</a>
-                <a href="/contact">Contact</a>
-            </nav>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="screen">
+    <div class="onboarding-content">
+        <!-- Green header bar -->
+        <div class="welcome-header">
+            <h1>Welcome</h1>
         </div>
-    </header>
 
-    <main>
-        <div class="screen">
-            <div class="onboarding-content">
-                <!-- Green header bar -->
-                <div class="welcome-header">
-                    <h1>Welcome</h1>
-                </div>
+        <!-- Main content -->
+        <div class="welcome-text text-center">
+            <h2 class="main-title">Welcome to<br>LeaseCheck</h2>
+            
+            <p class="lead mb-4">
+                Ensure your lease agreement is legally compliant with local, state, and federal laws.
+            </p>
+            
+            <p class="tagline mb-5">Sign your lease with confidence!</p>
+            
+            <p class="description mb-5">
+                Lease Check empowers you to understand your lease agreement before you commit.
+            </p>
+        </div>
 
-                <!-- Main content -->
-                <div class="welcome-text text-center">
-                    <h2 class="main-title">Welcome to<br>LeaseCheck</h2>
-                    
-                    <p class="lead mb-4">
-                        Ensure your lease agreement is legally compliant with local, state, and federal laws.
-                    </p>
-                    
-                    <p class="tagline mb-5">Sign your lease with confidence!</p>
-                    
-                    <p class="description mb-5">
-                        Lease Check empowers you to understand your lease agreement before you commit.
-                    </p>
-                </div>
-
-                <!-- Key Features section -->
-                <div class="key-features">
-                    <h3 class="features-title mb-4">Key Features</h3>
-                    
-                    <div class="feature-item">
-                        <span class="feature-label">Legal Compliance:</span>
-                        Ensure your lease aligns with applicable laws.
-                    </div>
-                    
-                    <div class="feature-item">
-                        <span class="feature-label">Risk Identification:</span>
-                        Uncover potential risks in your lease.
-                    </div>
-                    
-                    <div class="feature-item">
-                        <span class="feature-label">User-Friendly Interface:</span>
-                        Easy to navigate with a PDF report you can share.
-                    </div>
-                    
-                    <div class="feature-item">
-                        <span class="feature-label">Empowerment:</span>
-                        Make informed decisions to protect your rights as a tenant.
-                    </div>
-                    
-                    <div class="feature-item">
-                        <span class="feature-label">Peace of Mind:</span>
-                        Gain confidence knowing you've thoroughly reviewed your lease.
-                    </div>
-                </div>
-
-                <!-- Call to action section -->
-                <div class="cta-section text-center">
-                    <div class="ready-message">
-                        <p>Ready to take control of your leasing experience?</p>
-                        <p>Choose the plan that best suits your needs and begin your new home search today!</p>
-                    </div>
-                    
-                    <a href="/select-plan" class="btn btn-lg choose-plan-btn">Choose A Plan</a>
-                </div>
+        <!-- Key Features section -->
+        <div class="key-features">
+            <h3 class="features-title mb-4">Key Features</h3>
+            
+            <div class="feature-item">
+                <span class="feature-label">Legal Compliance:</span>
+                Ensure your lease aligns with applicable laws.
+            </div>
+            
+            <div class="feature-item">
+                <span class="feature-label">Risk Identification:</span>
+                Uncover potential risks in your lease.
+            </div>
+            
+            <div class="feature-item">
+                <span class="feature-label">User-Friendly Interface:</span>
+                Easy to navigate with a PDF report you can share.
+            </div>
+            
+            <div class="feature-item">
+                <span class="feature-label">Empowerment:</span>
+                Make informed decisions to protect your rights as a tenant.
+            </div>
+            
+            <div class="feature-item">
+                <span class="feature-label">Peace of Mind:</span>
+                Gain confidence knowing you've thoroughly reviewed your lease.
             </div>
         </div>
-    </main>
 
-    <footer class="app-footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <p>Helping you understand your lease agreement better.</p>
+        <!-- Call to action section -->
+        <div class="cta-section text-center">
+            <div class="ready-message">
+                <p>Ready to take control of your leasing experience?</p>
+                <p>Choose the plan that best suits your needs and begin your new home search today!</p>
             </div>
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="/welcome">Home</a></li>
-                    <li><a href="/select-plan">Plans</a></li>
-                    <li><a href="/terms-of-service">Terms</a></li>
-                    <li><a href="/contact">Contact</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Contact Us</h3>
-                <p>Email: support@coloradoleasecheck.com</p>
-            </div>
+            
+            <a href="#" class="btn btn-lg choose-plan-btn">Choose A Plan</a>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 Lease Check. All rights reserved.</p>
-        </div>
-    </footer>
-</body>
-</html>
+    </div>
+</div>
+{% endblock %}
