@@ -1,102 +1,146 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - Lease Check</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-content">
+            <nav class="nav-links">
+                <a href="/welcome">Home</a>
+                <a href="/select-plan">Plans</a>
+                <a href="/terms-of-service">Terms</a>
+                <a href="/contact">Contact</a>
+            </nav>
+        </div>
+    </header>
 
-{% block content %}
-<div class="terms-container">
-    <h1>Terms of Service</h1>
-    <p class="last-updated">Last Updated: October 24, 2024</p>
+    <main>
+        <div class="terms-container">
+            <h1>Terms of Service</h1>
+            <p class="last-updated">Last Updated: October 24, 2024</p>
 
-    <div class="terms-section">
-        <h2>1. Acceptance of Terms</h2>
-        <p>Welcome to Lease Check! By accessing or using our app (the "Service"), you agree to comply with and be bound by these Terms of Service ("Terms"). Please read them carefully. If you do not agree to these Terms, you should not use the Service.</p>
-    </div>
+            <div class="terms-section">
+                <h2>1. Acceptance of Terms</h2>
+                <p>Welcome to Lease Check! By accessing or using our app (the "Service"), you agree to comply with and be bound by these Terms of Service ("Terms"). Please read them carefully. If you do not agree to these Terms, you should not use the Service.</p>
+            </div>
 
-    <div class="terms-section">
-        <h2>2. Description of Service</h2>
-        <p>Lease Check provides users with tools to analyze lease agreements for legal compliance and potential risks. Our Service includes lease analysis reports, risk identification, and referrals to local attorneys.</p>
-    </div>
+            <div class="terms-section">
+                <h2>2. Description of Service</h2>
+                <p>Lease Check provides users with tools to analyze lease agreements for legal compliance and potential risks. Our Service includes lease analysis reports, risk identification, and referrals to local attorneys.</p>
+            </div>
 
-    <div class="terms-section">
-        <h2>3. Eligibility</h2>
-        <p>You must be at least 18 years old to use the Service. By using Lease Check, you represent and warrant that you meet this eligibility requirement.</p>
-    </div>
+            <div class="terms-section">
+                <h2>3. Eligibility</h2>
+                <p>You must be at least 18 years old to use the Service. By using Lease Check, you represent and warrant that you meet this eligibility requirement.</p>
+            </div>
 
-    <div class="terms-section">
-        <h2>4. Account Registration</h2>
-        <p>To access certain features of the Service, you may need to create an account. You agree to provide accurate, current, and complete information during registration and to update such information to keep it accurate. You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account.</p>
-    </div>
+            <div class="terms-section">
+                <h2>4. Account Registration</h2>
+                <p>To access certain features of the Service, you may need to create an account. You agree to provide accurate, current, and complete information during registration and to update such information to keep it accurate. You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account.</p>
+            </div>
 
-    <div class="terms-section">
-        <h2>5. User Responsibilities</h2>
-        <p>Compliance: You agree to use the Service only for lawful purposes and in accordance with these Terms.<br>
-        Accuracy: You agree to provide truthful and accurate information when using the Service.<br>
-        Security: You are responsible for safeguarding your account information and for any activities that occur under your account.</p>
-    </div>
+            <div class="terms-section">
+                <h2>5. User Responsibilities</h2>
+                <p>Compliance: You agree to use the Service only for lawful purposes and in accordance with these Terms.<br>
+                Accuracy: You agree to provide truthful and accurate information when using the Service.<br>
+                Security: You are responsible for safeguarding your account information and for any activities that occur under your account.</p>
+            </div>
 
-    <div class="terms-section">
-        <h2>6. Prohibited Activities</h2>
-        <p>You agree not to:<br>
-        - Use the Service for any illegal or unauthorized purpose.<br>
-        - Attempt to interfere with or disrupt the integrity or performance of the Service.<br>
-        - Upload, post, or transmit any content that is harmful, offensive, or violates any laws or third-party rights.<br>
-        - Reverse engineer, decompile, or disassemble any part of the Service.</p>
-    </div>
+            <div class="terms-section">
+                <h2>6. Prohibited Activities</h2>
+                <p>You agree not to:<br>
+                - Use the Service for any illegal or unauthorized purpose.<br>
+                - Attempt to interfere with or disrupt the integrity or performance of the Service.<br>
+                - Upload, post, or transmit any content that is harmful, offensive, or violates any laws or third-party rights.<br>
+                - Reverse engineer, decompile, or disassemble any part of the Service.</p>
+            </div>
 
-    <div class="terms-section">
-        <h2>7. Intellectual Property</h2>
-        <p>All content, features, and functionality of Lease Check, including but not limited to text, graphics, logos, and software, are owned by or licensed to us and are protected by intellectual property laws. You may not reproduce, distribute, modify, or create derivative works of any content without our prior written consent.</p>
-    </div>
+            <div class="terms-section">
+                <h2>7. Intellectual Property</h2>
+                <p>All content, features, and functionality of Lease Check, including but not limited to text, graphics, logos, and software, are owned by or licensed to us and are protected by intellectual property laws. You may not reproduce, distribute, modify, or create derivative works of any content without our prior written consent.</p>
+            </div>
 
-    <div class="terms-section">
-        <h2>8. Payment and Refunds</h2>
-        <p>Pricing Plans: We offer different pricing plans (Basic, Standard, Premium) as outlined on our Pricing page.<br>
-        Billing: Payments are processed securely through our payment partners. By selecting a plan, you agree to pay the associated fees.<br>
-        Refunds: Refunds are subject to our Refund Policy, which can be found here.</p>
-    </div>
+            <div class="terms-section">
+                <h2>8. Payment and Refunds</h2>
+                <p>Pricing Plans: We offer different pricing plans (Basic, Standard, Premium) as outlined on our Pricing page.<br>
+                Billing: Payments are processed securely through our payment partners. By selecting a plan, you agree to pay the associated fees.<br>
+                Refunds: Refunds are subject to our Refund Policy, which can be found here.</p>
+            </div>
 
-    <div class="terms-section">
-        <h2>9. Termination</h2>
-        <p>We reserve the right to suspend or terminate your access to the Service at our sole discretion, without notice, for conduct that we believe violates these Terms or is harmful to other users or us.</p>
-    </div>
+            <div class="terms-section">
+                <h2>9. Termination</h2>
+                <p>We reserve the right to suspend or terminate your access to the Service at our sole discretion, without notice, for conduct that we believe violates these Terms or is harmful to other users or us.</p>
+            </div>
 
-    <div class="terms-section">
-        <h2>10. Disclaimers</h2>
-        <p>No Legal Advice: Lease Check provides information for general purposes only and does not constitute legal advice. Consult a qualified attorney for specific legal concerns.<br>
-        As-Is Basis: The Service is provided "as is" without warranties of any kind, either express or implied.<br>
-        Additional Disclaimer: For more details, please review our Disclaimer.</p>
-    </div>
+            <div class="terms-section">
+                <h2>10. Disclaimers</h2>
+                <p>No Legal Advice: Lease Check provides information for general purposes only and does not constitute legal advice. Consult a qualified attorney for specific legal concerns.<br>
+                As-Is Basis: The Service is provided "as is" without warranties of any kind, either express or implied.<br>
+                Additional Disclaimer: For more details, please review our Disclaimer.</p>
+            </div>
 
-    <div class="terms-section">
-        <h2>11. Limitation of Liability</h2>
-        <p>To the fullest extent permitted by law, Lease Check shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising out of your use of the Service.</p>
-    </div>
+            <div class="terms-section">
+                <h2>11. Limitation of Liability</h2>
+                <p>To the fullest extent permitted by law, Lease Check shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising out of your use of the Service.</p>
+            </div>
 
-    <div class="terms-section">
-        <h2>12. Indemnification</h2>
-        <p>You agree to indemnify, defend, and hold harmless Lease Check, its affiliates, and their respective officers, directors, employees, and agents from and against any claims, liabilities, damages, losses, and expenses arising out of your use of the Service or your violation of these Terms.</p>
-    </div>
+            <div class="terms-section">
+                <h2>12. Indemnification</h2>
+                <p>You agree to indemnify, defend, and hold harmless Lease Check, its affiliates, and their respective officers, directors, employees, and agents from and against any claims, liabilities, damages, losses, and expenses arising out of your use of the Service or your violation of these Terms.</p>
+            </div>
 
-    <div class="terms-section">
-        <h2>13. Governing Law</h2>
-        <p>These Terms are governed by and construed in accordance with the laws of the State of Colorado, without regard to its conflict of law principles.</p>
-    </div>
+            <div class="terms-section">
+                <h2>13. Governing Law</h2>
+                <p>These Terms are governed by and construed in accordance with the laws of the State of Colorado, without regard to its conflict of law principles.</p>
+            </div>
 
-    <div class="terms-section">
-        <h2>14. Changes to Terms</h2>
-        <p>We may update these Terms from time to time. Any changes will be effective immediately upon posting the revised Terms. Your continued use of the Service after such changes constitutes your acceptance of the new Terms.</p>
-    </div>
+            <div class="terms-section">
+                <h2>14. Changes to Terms</h2>
+                <p>We may update these Terms from time to time. Any changes will be effective immediately upon posting the revised Terms. Your continued use of the Service after such changes constitutes your acceptance of the new Terms.</p>
+            </div>
 
-    <div class="terms-section">
-        <h2>15. Contact Us</h2>
-        <p>If you have any questions or concerns about these Terms, please contact us at:<br>
-        Email: support@coloradoleasecheck.com</p>
-    </div>
+            <div class="terms-section">
+                <h2>15. Contact Us</h2>
+                <p>If you have any questions or concerns about these Terms, please contact us at:<br>
+                Email: support@coloradoleasecheck.com</p>
+            </div>
 
-    <div class="terms-section">
-        <h2>16. AI and Software Errors</h2>
-        <p>While we strive to provide accurate lease analyses, our Service utilizes AI and software systems that may occasionally produce errors or inaccuracies. If you identify any errors in your analysis report, please submit the details to us for evaluation by our AI training team by contacting training@coloradoleasecheck.com. Upon verification, we will offer:<br>
-        - A free rerun of the subject lease analysis.<br>
-        - A free additional lease analysis credit.<br>
-        This process helps us improve the performance and understanding of our AI systems to better serve you and other users.</p>
-    </div>
-</div>
-{% endblock %}
+            <div class="terms-section">
+                <h2>16. AI and Software Errors</h2>
+                <p>While we strive to provide accurate lease analyses, our Service utilizes AI and software systems that may occasionally produce errors or inaccuracies. If you identify any errors in your analysis report, please submit the details to us for evaluation by our AI training team by contacting training@coloradoleasecheck.com. Upon verification, we will offer:<br>
+                - A free rerun of the subject lease analysis.<br>
+                - A free additional lease analysis credit.<br>
+                This process helps us improve the performance and understanding of our AI systems to better serve you and other users.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <p>Helping you understand your lease agreement better.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="/welcome">Home</a></li>
+                    <li><a href="/select-plan">Plans</a></li>
+                    <li><a href="/terms-of-service">Terms</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>Email: support@coloradoleasecheck.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Lease Check. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
