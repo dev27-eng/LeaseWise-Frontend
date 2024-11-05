@@ -2,6 +2,10 @@
 
 {% block title %}Onboarding - LeaseCheck{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/onboarding.css') }}">
+{% endblock %}
+
 {% block content %}
 <div class="screen">
     <div class="onboarding-content">
@@ -62,7 +66,7 @@
                 <p>Choose the plan that best suits your needs and begin your new home search today!</p>
             </div>
             
-            <a href="/select-plan" class="btn btn-lg choose-plan-btn">Choose A Plan</a>
+            <a href="/select-plan" class="choose-plan-btn">Choose A Plan</a>
         </div>
     </div>
 </div>
