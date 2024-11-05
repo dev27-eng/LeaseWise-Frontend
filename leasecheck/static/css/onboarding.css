@@ -1,0 +1,198 @@
+/* Reset default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Green header bar */
+.welcome-header {
+    background-color: #7ED321;
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+}
+
+.welcome-header h1 {
+    color: black;
+    font-size: 48px;
+    font-weight: bold;
+}
+
+/* Main content container */
+.onboarding-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* Welcome text and LeaseCheck title */
+.welcome-text {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.main-title {
+    font-size: 42px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: black;
+}
+
+/* Lead text about legal compliance */
+.lead {
+    font-size: 24px;
+    line-height: 1.5;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+/* Sign your lease with confidence tagline */
+.tagline {
+    font-size: 32px;
+    font-weight: bold;
+    color: black;
+    margin-bottom: 40px;
+}
+
+.description {
+    font-size: 20px;
+    color: #555;
+    margin-bottom: 50px;
+}
+
+/* Key Features section */
+.key-features {
+    margin-bottom: 60px;
+}
+
+.features-title {
+    font-size: 36px;
+    font-weight: bold;
+    color: black;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.feature-item {
+    margin-bottom: 25px;
+    font-size: 20px;
+    line-height: 1.5;
+    color: #333;
+}
+
+.feature-label {
+    font-weight: bold;
+    color: black;
+    margin-right: 10px;
+}
+
+/* CTA section */
+.cta-section {
+    text-align: center;
+    margin-top: 60px;
+}
+
+.ready-message {
+    margin-bottom: 40px;
+}
+
+.ready-message p {
+    font-size: 24px;
+    line-height: 1.5;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.choose-plan-btn {
+    background-color: #7ED321;
+    color: black;
+    padding: 20px 40px;
+    border-radius: 999px;
+    font-size: 24px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+.choose-plan-btn:hover {
+    background-color: #6db91d;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .welcome-header h1 {
+        font-size: 36px;
+    }
+
+    .main-title {
+        font-size: 32px;
+    }
+
+    .lead {
+        font-size: 20px;
+    }
+
+    .tagline {
+        font-size: 26px;
+    }
+
+    .description {
+        font-size: 18px;
+    }
+
+    .features-title {
+        font-size: 28px;
+    }
+
+    .feature-item {
+        font-size: 18px;
+    }
+
+    .ready-message p {
+        font-size: 20px;
+    }
+
+    .choose-plan-btn {
+        padding: 15px 30px;
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .welcome-header h1 {
+        font-size: 28px;
+    }
+
+    .main-title {
+        font-size: 26px;
+    }
+
+    .lead {
+        font-size: 18px;
+    }
+
+    .tagline {
+        font-size: 22px;
+    }
+
+    .description {
+        font-size: 16px;
+    }
+
+    .feature-item {
+        font-size: 16px;
+    }
+
+    .ready-message p {
+        font-size: 18px;
+    }
+
+    .choose-plan-btn {
+        padding: 12px 25px;
+        font-size: 18px;
+    }
+}

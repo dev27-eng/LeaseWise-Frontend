@@ -1,0 +1,79 @@
+/* Terms of Service specific styles */
+.terms-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.terms-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.terms-header h1 {
+    font-size: 48px;
+    color: black;
+    margin-bottom: 20px;
+}
+
+.terms-content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.terms-section {
+    margin-bottom: 30px;
+}
+
+.terms-section h2 {
+    font-size: 24px;
+    color: black;
+    margin-bottom: 15px;
+}
+
+.terms-section p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.terms-section ul {
+    list-style-type: disc;
+    margin-left: 20px;
+    margin-bottom: 15px;
+}
+
+.terms-section li {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.terms-footer {
+    margin-top: 40px;
+    text-align: center;
+}
+
+.terms-footer p {
+    font-size: 14px;
+    color: #666;
+}
+
+@media (max-width: 768px) {
+    .terms-header h1 {
+        font-size: 36px;
+    }
+    
+    .terms-section h2 {
+        font-size: 20px;
+    }
+    
+    .terms-section p,
+    .terms-section li {
+        font-size: 14px;
+    }
+}

@@ -1,0 +1,98 @@
+/* Account Setup specific styles */
+.green-header {
+    background-color: #7ED321;
+    padding: 20px;
+    text-align: center;
+}
+
+.green-header h1 {
+    color: black;
+    font-size: 48px;
+}
+
+.setup-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.setup-content section {
+    margin-bottom: 40px;
+}
+
+.setup-content h2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+    color: black;
+}
+
+.setup-content p {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    font-size: 18px;
+    background-color: #f5f5f5;
+}
+
+.orange-button {
+    background-color: #FF9500;
+    color: black;
+    padding: 15px 30px;
+    border-radius: 999px;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.green-button {
+    background-color: #7ED321;
+    color: black;
+    padding: 15px 30px;
+    border-radius: 999px;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.almost-there {
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .green-header h1 {
+        font-size: 36px;
+    }
+    
+    .setup-content h2 {
+        font-size: 24px;
+    }
+    
+    .setup-content p {
+        font-size: 16px;
+    }
+    
+    .input-group input {
+        font-size: 16px;
+    }
+    
+    .orange-button,
+    .green-button {
+        font-size: 18px;
+        padding: 12px 24px;
+    }
+}
