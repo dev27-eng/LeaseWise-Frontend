@@ -7,6 +7,43 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-   
+    <header class="app-header">
+        <div class="header-content">
+            <nav class="nav-links">
+                <a href="/welcome">Home</a>
+                <a href="/select-plan">Plans</a>
+                <a href="/terms-of-service">Terms</a>
+                <a href="/contact">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="app-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <p>Helping you understand your lease agreement better.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="/welcome">Home</a></li>
+                    <li><a href="/select-plan">Plans</a></li>
+                    <li><a href="/terms-of-service">Terms</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>Email: support@coloradoleasecheck.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Lease Check. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>
