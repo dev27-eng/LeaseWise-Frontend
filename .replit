@@ -27,11 +27,15 @@ task = "packager.installForAll"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python -m leasecheck.app"
+args = "python main.py"
 waitForPort = 5000
 
 [deployment]
-run = ["sh", "-c", "python -m leasecheck.app"]
+run = ["sh", "-c", "python main.py"]
+
+[[ports]]
+localPort = 80
+externalPort = 3000
 
 [[ports]]
 localPort = 5000
