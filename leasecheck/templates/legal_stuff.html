@@ -15,6 +15,14 @@
 
     <main class="legal-content">
         <div class="legal-container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
             <h2 class="welcome-text">Hey there! Welcome to Lease Check.</h2>
             
             <div class="explanation-text">
@@ -39,16 +47,59 @@
             </div>
 
             <div class="legal-links">
-                <a href="{{ url_for('terms_of_service') }}">Terms Of Service</a>
-                <a href="{{ url_for('legal_disclaimer') }}">Legal Disclaimer</a>
-                <a href="{{ url_for('refund_policy') }}">Refund Policy</a>
+                <a href="{{ url_for('terms_of_service') }}" target="_blank" rel="noopener noreferrer">Terms Of Service</a>
+                <a href="{{ url_for('legal_disclaimer') }}" target="_blank" rel="noopener noreferrer">Legal Disclaimer</a>
+                <a href="{{ url_for('refund_policy') }}" target="_blank" rel="noopener noreferrer">Refund Policy</a>
             </div>
 
-            <div class="legal-actions">
-                <a href="{{ url_for('handle_terms', action='reject') }}" class="reject-btn">Reject</a>
-                <a href="{{ url_for('handle_terms', action='accept') }}" class="accept-btn">Accept</a>
-            </div>
+            <form method="POST" class="terms-form" id="termsForm" novalidate>
+                {{ form.csrf_token }}
+                <div class="terms-checkbox">
+                    {{ form.accept_terms(required=true) }}
+                    <label for="accept_terms">I have read and accept the Terms of Service, Legal Disclaimer, and Refund Policy</label>
+                    {% if form.accept_terms.errors %}
+                        <div class="error-message">
+                            {% for error in form.accept_terms.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="legal-actions">
+                    <a href="{{ url_for('terms_declined') }}" class="reject-btn">Reject</a>
+                    <button type="submit" class="accept-btn">Accept</button>
+                </div>
+            </form>
         </div>
     </main>
 </div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('termsForm');
+    const checkbox = document.getElementById('accept_terms');
+    const submitBtn = form.querySelector('.accept-btn');
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    
+    form.addEventListener('submit', function(e) {
+        if (!checkbox.checked) {
+            e.preventDefault();
+            errorDiv.innerHTML = '<p>You must accept the terms to continue</p>';
+            if (!document.querySelector('.error-message')) {
+                checkbox.parentNode.appendChild(errorDiv);
+            }
+            checkbox.focus();
+        }
+    });
+
+    checkbox.addEventListener('change', function() {
+        if (checkbox.checked && document.querySelector('.error-message')) {
+            document.querySelector('.error-message').remove();
+        }
+    });
+});
+</script>
+{% endblock %}
 {% endblock %}

@@ -9,3 +9,8 @@ Requires-Dist: flask-sqlalchemy>=3.1.1
 Requires-Dist: psycopg2-binary>=2.9.10
 Requires-Dist: requests>=2.32.3
 Requires-Dist: repl-nix-reactfrontendbuilder
+Requires-Dist: google-api-python-client>=2.151.0
+Requires-Dist: google-auth-httplib2>=0.2.0
+Requires-Dist: google-auth-oauthlib>=1.2.1
+Requires-Dist: flask-wtf>=1.2.2
+Requires-Dist: wtforms>=3.2.1

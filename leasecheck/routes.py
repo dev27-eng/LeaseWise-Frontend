@@ -1,5 +1,6 @@
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, flash, request
 from . import app
+from .forms import TermsAcceptanceForm
 
 @app.route('/')
 @app.route('/welcome')
@@ -18,9 +19,19 @@ def select_plan():
 def account_setup():
     return render_template('account_setup.html')
 
-@app.route('/legal-stuff')
+@app.route('/legal-stuff', methods=['GET', 'POST'])
 def legal_stuff():
-    return render_template('legal_stuff.html')
+    form = TermsAcceptanceForm()
+    if request.method == 'POST':
+        if not form.validate_on_submit():
+            flash('You must accept the terms to continue', 'error')
+            return render_template('legal_stuff.html', form=form)
+        
+        if form.accept_terms.data:
+            flash('Terms accepted successfully!', 'success')
+            return redirect(url_for('account_setup'))
+        return redirect(url_for('terms_declined'))
+    return render_template('legal_stuff.html', form=form)
 
 @app.route('/terms-of-service')
 def terms_of_service():
@@ -37,12 +48,3 @@ def legal_disclaimer():
 @app.route('/terms-declined')
 def terms_declined():
     return render_template('terms_declined.html')
-
-# Add routes for handling terms acceptance/rejection
-@app.route('/handle-terms/<action>')
-def handle_terms(action):
-    if action == 'accept':
-        # In the next step, we'll implement proper tracking in the database
-        return redirect(url_for('welcome'))
-    else:
-        return redirect(url_for('terms_declined'))
