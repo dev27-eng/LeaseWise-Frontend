@@ -68,35 +68,24 @@
 
 .navigation-buttons {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     margin-top: 40px;
 }
 
-.back-btn,
-.continue-btn {
+.back-btn {
     padding: 15px 30px;
     border-radius: 999px;
     text-decoration: none;
     font-weight: bold;
     font-size: 18px;
     transition: background-color 0.3s ease;
-}
-
-.back-btn {
-    background-color: #B8E3FF;
+    background-color: #7ED321;
     color: black;
+    min-width: 200px;
+    text-align: center;
 }
 
 .back-btn:hover {
-    background-color: #a6d1ed;
-}
-
-.continue-btn {
-    background-color: #7ED321;
-    color: black;
-}
-
-.continue-btn:hover {
     background-color: #6db91d;
 }
 
@@ -113,16 +102,8 @@
         font-size: 20px;
     }
 
-    .navigation-buttons {
-        flex-direction: column;
-        gap: 20px;
-        align-items: center;
-    }
-
-    .back-btn,
-    .continue-btn {
+    .back-btn {
         width: 100%;
-        text-align: center;
         max-width: 280px;
     }
 }
