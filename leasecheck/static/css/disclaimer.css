@@ -68,7 +68,7 @@
 
 .navigation-buttons {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     margin-top: 40px;
 }
 
@@ -83,12 +83,14 @@
 }
 
 .back-btn {
-    background-color: #B8E3FF;
+    background-color: #7ED321;
     color: black;
+    min-width: 200px;
+    text-align: center;
 }
 
 .back-btn:hover {
-    background-color: #a6d1ed;
+    background-color: #6db91d;
 }
 
 .continue-btn {

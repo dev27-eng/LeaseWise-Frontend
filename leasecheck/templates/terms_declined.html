@@ -7,16 +7,16 @@
 {% endblock %}
 
 {% block content %}
-<div class="declined-screen">
-    <header class="declined-header">
+<div class="legal-stuff-screen">
+    <header class="legal-header">
         <h1>Terms Declined</h1>
     </header>
 
-    <main class="declined-content">
-        <div class="declined-container">
+    <main class="legal-content">
+        <div class="legal-container">
             <div class="declined-message">
-                <h2>We understand your decision</h2>
-                <p>You have chosen not to accept our Terms of Service, Refund Policy, and Legal Disclaimer. Unfortunately, we cannot proceed with providing our services without your acceptance of these terms.</p>
+                <h2>Sorry you don't agree</h2>
+                <p>Unfortunately, we cannot provide our services without your acceptance of our terms and conditions.</p>
                 
                 <div class="options-section">
                     <h3>Your Options</h3>
@@ -34,8 +34,8 @@
             </div>
 
             <div class="action-buttons">
-                <a href="/legal-stuff" class="review-terms-btn">Review Terms Again</a>
-                <a href="/" class="exit-btn">Exit to Homepage</a>
+                <a href="{{ url_for('legal_stuff') }}" class="review-terms-btn">Review Terms Again</a>
+                <button onclick="window.close()" class="exit-btn">Exit Application</button>
             </div>
         </div>
     </main>
