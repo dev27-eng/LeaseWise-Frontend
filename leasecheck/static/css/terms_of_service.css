@@ -8,6 +8,8 @@
 .terms-header {
     text-align: center;
     margin-bottom: 40px;
+    background-color: #7ED321;
+    padding: 25px 20px;
 }
 
 .terms-header h1 {
@@ -53,14 +55,44 @@
     margin-bottom: 10px;
 }
 
-.terms-footer {
-    margin-top: 40px;
+.last-updated {
     text-align: center;
+    color: #666;
+    margin-bottom: 30px;
 }
 
-.terms-footer p {
-    font-size: 14px;
-    color: #666;
+.navigation-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.back-btn,
+.continue-btn {
+    padding: 15px 30px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+}
+
+.back-btn {
+    background-color: #B8E3FF;
+    color: black;
+}
+
+.back-btn:hover {
+    background-color: #a6d1ed;
+}
+
+.continue-btn {
+    background-color: #7ED321;
+    color: black;
+}
+
+.continue-btn:hover {
+    background-color: #6db91d;
 }
 
 @media (max-width: 768px) {
@@ -75,5 +107,18 @@
     .terms-section p,
     .terms-section li {
         font-size: 14px;
+    }
+
+    .navigation-buttons {
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .back-btn,
+    .continue-btn {
+        width: 100%;
+        text-align: center;
+        max-width: 280px;
     }
 }
