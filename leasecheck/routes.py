@@ -42,10 +42,6 @@ def onboarding():
 def select_plan():
     return render_template('select_plan.html')
 
-@app.route('/account-setup')
-def account_setup():
-    return render_template('account_setup.html')
-
 @app.route('/checkout/<plan_id>')
 def checkout(plan_id):
     if plan_id not in PLANS:
@@ -67,9 +63,11 @@ def create_payment():
         payment_method_id = data.get('payment_method_id')
         user_info = data.get('user_info', {})
 
+        # Validate required fields including phone number
         if not all([
             user_info.get('full_name'),
             user_info.get('email'),
+            user_info.get('phone'),  # Now required
             user_info.get('address', {}).get('street'),
             user_info.get('address', {}).get('city'),
             user_info.get('address', {}).get('state'),
@@ -94,8 +92,9 @@ def create_payment():
             metadata={
                 'full_name': user_info['full_name'],
                 'email': user_info['email'],
-                'phone': user_info.get('phone', ''),
+                'phone': user_info['phone'],
                 'address_street': user_info['address']['street'],
+                'address_street2': user_info['address'].get('street2', ''),
                 'address_city': user_info['address']['city'],
                 'address_state': user_info['address']['state'],
                 'address_zip': user_info['address']['zip_code'],

@@ -52,8 +52,8 @@
                         <div class="error-message" id="email-error"></div>
                     </div>
                     <div class="form-group">
-                        <label for="phone">Phone Number (optional)</label>
-                        <input type="tel" id="phone" name="phone">
+                        <label for="phone">Phone Number *</label>
+                        <input type="tel" id="phone" name="phone" required>
                         <div class="error-message" id="phone-error"></div>
                     </div>
                 </div>
@@ -65,6 +65,11 @@
                         <label for="street">Street Address *</label>
                         <input type="text" id="street" name="street" required>
                         <div class="error-message" id="street-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="street2">Apartment, suite, etc. (optional)</label>
+                        <input type="text" id="street2" name="street2">
+                        <div class="error-message" id="street2-error"></div>
                     </div>
                     <div class="form-group">
                         <label for="city">City *</label>
@@ -107,13 +112,17 @@
 
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-    const stripe = Stripe('{{ stripe_public_key }}');
-    const elements = stripe.elements();
-    const card = elements.create('card');
+    var stripe = Stripe('{{ stripe_public_key }}');
+    var elements = stripe.elements();
+    var card = elements.create('card');
     card.mount('#card-element');
 
     function validateEmail(email) {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function validatePhone(phone) {
+        return /^\+?[\d\s-()]{10,}$/.test(phone);
     }
 
     function validateRequired(value, fieldName) {
@@ -124,10 +133,11 @@
     }
 
     function validateForm() {
-        let isValid = true;
-        const fields = {
+        var isValid = true;
+        var fields = {
             'fullName': 'Full Name',
             'email': 'Email Address',
+            'phone': 'Phone Number',
             'street': 'Street Address',
             'city': 'City',
             'state': 'State/Province',
@@ -135,10 +145,10 @@
             'country': 'Country'
         };
 
-        for (const [id, label] of Object.entries(fields)) {
-            const element = document.getElementById(id);
-            const errorElement = document.getElementById(`${id}-error`);
-            const error = validateRequired(element.value, label);
+        for (var id in fields) {
+            var element = document.getElementById(id);
+            var errorElement = document.getElementById(`${id}-error`);
+            var error = validateRequired(element.value, fields[id]);
             
             if (error) {
                 errorElement.textContent = error;
@@ -151,26 +161,35 @@
         }
 
         // Additional email validation
-        const emailElement = document.getElementById('email');
-        const emailErrorElement = document.getElementById('email-error');
+        var emailElement = document.getElementById('email');
+        var emailErrorElement = document.getElementById('email-error');
         if (!validateEmail(emailElement.value)) {
             emailErrorElement.textContent = 'Please enter a valid email address';
             emailErrorElement.style.display = 'block';
             isValid = false;
         }
 
+        // Additional phone validation
+        var phoneElement = document.getElementById('phone');
+        var phoneErrorElement = document.getElementById('phone-error');
+        if (!validatePhone(phoneElement.value)) {
+            phoneErrorElement.textContent = 'Please enter a valid phone number';
+            phoneErrorElement.style.display = 'block';
+            isValid = false;
+        }
+
         return isValid;
     }
 
-    const form = document.getElementById('payment-form');
-    form.addEventListener('submit', async (event) => {
+    var form = document.getElementById('payment-form');
+    form.addEventListener('submit', async function(event) {
         event.preventDefault();
         
         if (!validateForm()) {
             return;
         }
 
-        const {paymentMethod, error} = await stripe.createPaymentMethod({
+        var {paymentMethod, error} = await stripe.createPaymentMethod({
             type: 'card',
             card: card,
             billing_details: {
@@ -179,6 +198,7 @@
                 phone: document.getElementById('phone').value,
                 address: {
                     line1: document.getElementById('street').value,
+                    line2: document.getElementById('street2').value,
                     city: document.getElementById('city').value,
                     state: document.getElementById('state').value,
                     postal_code: document.getElementById('zipCode').value,
@@ -188,10 +208,10 @@
         });
 
         if (error) {
-            const errorElement = document.getElementById('card-errors');
+            var errorElement = document.getElementById('card-errors');
             errorElement.textContent = error.message;
         } else {
-            const formData = {
+            var formData = {
                 payment_method_id: paymentMethod.id,
                 plan_id: '{{ plan_id }}',
                 user_info: {
@@ -200,6 +220,7 @@
                     phone: document.getElementById('phone').value,
                     address: {
                         street: document.getElementById('street').value,
+                        street2: document.getElementById('street2').value,
                         city: document.getElementById('city').value,
                         state: document.getElementById('state').value,
                         zip_code: document.getElementById('zipCode').value,
@@ -215,12 +236,12 @@
                 },
                 body: JSON.stringify(formData)
             })
-            .then(response => response.json())
-            .then(data => {
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
                 if (data.requires_action) {
                     stripe.confirmCardPayment(data.client_secret).then(function(result) {
                         if (result.error) {
-                            const errorElement = document.getElementById('card-errors');
+                            var errorElement = document.getElementById('card-errors');
                             errorElement.textContent = result.error.message;
                         } else {
                             window.location.href = '/payment-status?status=success';
