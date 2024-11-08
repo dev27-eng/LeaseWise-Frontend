@@ -10,6 +10,9 @@ dependencies = [
     "psycopg2-binary>=2.9.10",
     "requests>=2.32.3",
     "repl-nix-reactfrontendbuilder",
+    "google-api-python-client>=2.151.0",
+    "google-auth-httplib2>=0.2.0",
+    "google-auth-oauthlib>=1.2.1",
 ]
 
 [tool.uv.sources]
