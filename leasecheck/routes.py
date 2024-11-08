@@ -53,6 +53,7 @@ def checkout(plan_id):
                          plan_id=plan_id,
                          plan_name=plan['name'],
                          plan_price=plan['price'] / 100,  # Convert cents to dollars
+                         PLANS=PLANS,  # Add this line
                          stripe_public_key=os.environ.get('STRIPE_PUBLISHABLE_KEY'))
 
 @app.route('/create-payment', methods=['POST'])

@@ -116,11 +116,11 @@
 <script src="https://js.stripe.com/v3/"></script>
 <script>
     // Initialize Stripe
-    let stripe = Stripe('{{ stripe_public_key }}');
-    let elements = stripe.elements();
+    const stripe = Stripe('{{ stripe_public_key }}');
+    const elements = stripe.elements();
 
     // Card element styling
-    let cardElementOptions = {
+    const cardElementOptions = {
         style: {
             base: {
                 fontSize: '16px',
@@ -213,7 +213,7 @@
 
     // Handle card element errors
     card.addEventListener('change', function(event) {
-        let displayError = document.getElementById('card-errors');
+        const displayError = document.getElementById('card-errors');
         if (event.error) {
             switch(event.error.code) {
                 case 'incomplete_cvc':
@@ -242,7 +242,7 @@
             return;
         }
 
-        let submitButton = document.querySelector('.pay-button');
+        const submitButton = document.querySelector('.pay-button');
         submitButton.disabled = true;
         
         try {
@@ -265,7 +265,7 @@
             });
 
             if (paymentMethodError) {
-                let errorElement = document.getElementById('card-errors');
+                const errorElement = document.getElementById('card-errors');
                 switch(paymentMethodError.code) {
                     case 'incomplete_cvc':
                     case 'invalid_cvc':
@@ -315,7 +315,7 @@
             if (data.requires_action) {
                 const { error: confirmError } = await stripe.confirmCardPayment(data.client_secret);
                 if (confirmError) {
-                    let errorElement = document.getElementById('card-errors');
+                    const errorElement = document.getElementById('card-errors');
                     switch(confirmError.code) {
                         case 'incomplete_cvc':
                         case 'invalid_cvc':
@@ -334,15 +334,16 @@
             } else if (data.success) {
                 window.location.href = '/payment-status?status=success';
             } else if (data.error) {
-                let errorElement = document.getElementById('card-errors');
+                const errorElement = document.getElementById('card-errors');
                 errorElement.textContent = data.error;
                 submitButton.disabled = false;
             } else {
                 window.location.href = '/payment-status?status=failed';
             }
         } catch (error) {
-            let errorElement = document.getElementById('card-errors');
-            errorElement.textContent = 'An error occurred processing your payment. Please try again.';
+            const errorElement = document.getElementById('card-errors');
+            console.error('Payment processing error:', error);
+            errorElement.textContent = 'An error occurred processing your payment. Please check your card details and try again.';
             submitButton.disabled = false;
         }
     });

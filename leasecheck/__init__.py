@@ -14,15 +14,16 @@ db = SQLAlchemy(app)
 
 # Configure security headers with Talisman
 csp = {
-    'default-src': "'self'",
+    'default-src': ["'self'"],
     'script-src': [
         "'self'",
         'https://js.stripe.com',
-        "'unsafe-inline'"  # Required for Stripe.js
+        "'unsafe-inline'",
+        "'unsafe-eval'"  # Required for Stripe.js
     ],
     'style-src': [
         "'self'",
-        "'unsafe-inline'"  # Required for dynamic styles
+        "'unsafe-inline'"
     ],
     'frame-src': [
         "'self'",
@@ -32,11 +33,16 @@ csp = {
     'img-src': ["'self'", 'data:', 'https:'],
     'connect-src': [
         "'self'",
-        'https://api.stripe.com'
-    ]
+        'https://api.stripe.com',
+        'https://js.stripe.com'
+    ],
+    'font-src': ["'self'", 'data:']
 }
 
-Talisman(app, content_security_policy=csp, force_https=False)
+Talisman(app, 
+         content_security_policy=csp,
+         content_security_policy_nonce_in=['script-src'],
+         force_https=False)
 
 # Create all database tables
 with app.app_context():
