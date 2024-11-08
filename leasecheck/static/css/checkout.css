@@ -22,6 +22,38 @@
     padding: 0 20px;
 }
 
+.test-mode-notice {
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.test-mode-notice h4 {
+    color: #856404;
+    margin: 0 0 15px 0;
+    font-size: 18px;
+}
+
+.test-mode-notice ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.test-mode-notice li {
+    margin-bottom: 10px;
+    color: #666;
+    font-family: monospace;
+}
+
+.test-mode-notice li strong {
+    color: #333;
+    display: inline-block;
+    min-width: 120px;
+}
+
 .order-summary {
     background-color: #f5f5f5;
     border-radius: 10px;

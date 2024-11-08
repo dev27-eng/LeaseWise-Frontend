@@ -13,6 +13,19 @@
     </header>
 
     <main class="checkout-content">
+        <!-- Test Mode Notice -->
+        <div class="test-mode-notice">
+            <h4>🔔 Test Mode Enabled</h4>
+            <p>Use these test cards to simulate different payment scenarios:</p>
+            <ul>
+                <li><strong>Success:</strong> 4242 4242 4242 4242</li>
+                <li><strong>3D Secure:</strong> 4000 0025 0000 3155</li>
+                <li><strong>Decline:</strong> 4000 0000 0000 9995</li>
+                <li><strong>Exp Date:</strong> Any future date</li>
+                <li><strong>CVV:</strong> Any 3 digits</li>
+            </ul>
+        </div>
+
         <div class="order-summary">
             <h2>Order Summary</h2>
             <div class="plan-details">
@@ -112,11 +125,13 @@
 
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-    var stripe = Stripe('{{ stripe_public_key }}');
-    var elements = stripe.elements();
-    var card = elements.create('card');
+    // Initialize Stripe and elements
+    const stripe = Stripe('{{ stripe_public_key }}');
+    const elements = stripe.elements();
+    const card = elements.create('card');
     card.mount('#card-element');
 
+    // Validation functions
     function validateEmail(email) {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
@@ -133,8 +148,8 @@
     }
 
     function validateForm() {
-        var isValid = true;
-        var fields = {
+        let isValid = true;
+        const fields = {
             'fullName': 'Full Name',
             'email': 'Email Address',
             'phone': 'Phone Number',
@@ -145,10 +160,10 @@
             'country': 'Country'
         };
 
-        for (var id in fields) {
-            var element = document.getElementById(id);
-            var errorElement = document.getElementById(`${id}-error`);
-            var error = validateRequired(element.value, fields[id]);
+        for (const id in fields) {
+            const element = document.getElementById(id);
+            const errorElement = document.getElementById(`${id}-error`);
+            const error = validateRequired(element.value, fields[id]);
             
             if (error) {
                 errorElement.textContent = error;
@@ -160,18 +175,16 @@
             }
         }
 
-        // Additional email validation
-        var emailElement = document.getElementById('email');
-        var emailErrorElement = document.getElementById('email-error');
+        const emailElement = document.getElementById('email');
+        const emailErrorElement = document.getElementById('email-error');
         if (!validateEmail(emailElement.value)) {
             emailErrorElement.textContent = 'Please enter a valid email address';
             emailErrorElement.style.display = 'block';
             isValid = false;
         }
 
-        // Additional phone validation
-        var phoneElement = document.getElementById('phone');
-        var phoneErrorElement = document.getElementById('phone-error');
+        const phoneElement = document.getElementById('phone');
+        const phoneErrorElement = document.getElementById('phone-error');
         if (!validatePhone(phoneElement.value)) {
             phoneErrorElement.textContent = 'Please enter a valid phone number';
             phoneErrorElement.style.display = 'block';
@@ -181,37 +194,40 @@
         return isValid;
     }
 
-    var form = document.getElementById('payment-form');
-    form.addEventListener('submit', async function(event) {
+    // Form submission handler
+    document.getElementById('payment-form').addEventListener('submit', async function(event) {
         event.preventDefault();
         
         if (!validateForm()) {
             return;
         }
 
-        var {paymentMethod, error} = await stripe.createPaymentMethod({
-            type: 'card',
-            card: card,
-            billing_details: {
-                name: document.getElementById('fullName').value,
-                email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value,
-                address: {
-                    line1: document.getElementById('street').value,
-                    line2: document.getElementById('street2').value,
-                    city: document.getElementById('city').value,
-                    state: document.getElementById('state').value,
-                    postal_code: document.getElementById('zipCode').value,
-                    country: document.getElementById('country').value
+        try {
+            const { paymentMethod, error: paymentMethodError } = await stripe.createPaymentMethod({
+                type: 'card',
+                card: card,
+                billing_details: {
+                    name: document.getElementById('fullName').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    address: {
+                        line1: document.getElementById('street').value,
+                        line2: document.getElementById('street2').value,
+                        city: document.getElementById('city').value,
+                        state: document.getElementById('state').value,
+                        postal_code: document.getElementById('zipCode').value,
+                        country: document.getElementById('country').value
+                    }
                 }
-            }
-        });
+            });
 
-        if (error) {
-            var errorElement = document.getElementById('card-errors');
-            errorElement.textContent = error.message;
-        } else {
-            var formData = {
+            if (paymentMethodError) {
+                const errorElement = document.getElementById('card-errors');
+                errorElement.textContent = paymentMethodError.message;
+                return;
+            }
+
+            const formData = {
                 payment_method_id: paymentMethod.id,
                 plan_id: '{{ plan_id }}',
                 user_info: {
@@ -229,30 +245,32 @@
                 }
             };
 
-            fetch('/create-payment', {
+            const response = await fetch('/create-payment', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(formData)
-            })
-            .then(function(response) { return response.json(); })
-            .then(function(data) {
-                if (data.requires_action) {
-                    stripe.confirmCardPayment(data.client_secret).then(function(result) {
-                        if (result.error) {
-                            var errorElement = document.getElementById('card-errors');
-                            errorElement.textContent = result.error.message;
-                        } else {
-                            window.location.href = '/payment-status?status=success';
-                        }
-                    });
-                } else if (data.success) {
-                    window.location.href = '/payment-status?status=success';
-                } else {
-                    window.location.href = '/payment-status?status=failed';
-                }
             });
+
+            const data = await response.json();
+
+            if (data.requires_action) {
+                const { error: confirmError } = await stripe.confirmCardPayment(data.client_secret);
+                if (confirmError) {
+                    const errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = confirmError.message;
+                } else {
+                    window.location.href = '/payment-status?status=success';
+                }
+            } else if (data.success) {
+                window.location.href = '/payment-status?status=success';
+            } else {
+                window.location.href = '/payment-status?status=failed';
+            }
+        } catch (error) {
+            const errorElement = document.getElementById('card-errors');
+            errorElement.textContent = 'An error occurred processing your payment. Please try again.';
         }
     });
 </script>
