@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Terms Declined - LeaseCheck{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/terms_declined.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="declined-screen">
+    <header class="declined-header">
+        <h1>Terms Declined</h1>
+    </header>
+
+    <main class="declined-content">
+        <div class="declined-container">
+            <div class="declined-message">
+                <h2>We understand your decision</h2>
+                <p>You have chosen not to accept our Terms of Service, Refund Policy, and Legal Disclaimer. Unfortunately, we cannot proceed with providing our services without your acceptance of these terms.</p>
+                
+                <div class="options-section">
+                    <h3>Your Options</h3>
+                    <ul>
+                        <li>Review our terms again</li>
+                        <li>Contact our support team for clarification</li>
+                        <li>Exit the application</li>
+                    </ul>
+                </div>
+
+                <div class="contact-section">
+                    <p>If you have any questions or concerns, please contact us at:</p>
+                    <a href="mailto:support@coloradoleasecheck.com">support@coloradoleasecheck.com</a>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="/legal-stuff" class="review-terms-btn">Review Terms Again</a>
+                <a href="/" class="exit-btn">Exit to Homepage</a>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for
 import os
 
 app = Flask(__name__, 
@@ -33,6 +33,26 @@ def legal_stuff():
 @app.route('/terms-of-service')
 def terms_of_service():
     return render_template('terms_of_service.html')
+
+@app.route('/refund-policy')
+def refund_policy():
+    return render_template('refund_policy.html')
+
+@app.route('/legal-disclaimer')
+def legal_disclaimer():
+    return render_template('disclaimer.html')
+
+@app.route('/terms-declined')
+def terms_declined():
+    return render_template('terms_declined.html')
+
+@app.route('/handle-terms/<action>')
+def handle_terms(action):
+    if action == 'accept':
+        # For now, redirect to welcome page on acceptance
+        return redirect(url_for('welcome'))
+    else:
+        return redirect(url_for('terms_declined'))
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

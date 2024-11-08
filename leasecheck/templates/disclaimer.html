@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Legal Disclaimer - LeaseCheck{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/disclaimer.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="legal-stuff-screen">
+    <header class="legal-header">
+        <h1>Legal Disclaimer</h1>
+    </header>
+
+    <main class="legal-content">
+        <div class="legal-container">
+            <div class="disclaimer-content">
+                <h2>Important Notice</h2>
+                
+                <div class="disclaimer-section">
+                    <h3>Not Legal Advice</h3>
+                    <p>LeaseCheck is a lease analysis tool that provides information for general purposes only. The information provided through our service:</p>
+                    <ul>
+                        <li>Is not legal advice</li>
+                        <li>Does not create an attorney-client relationship</li>
+                        <li>Should not be relied upon as a substitute for legal counsel</li>
+                    </ul>
+                </div>
+
+                <div class="disclaimer-section">
+                    <h3>Accuracy of Information</h3>
+                    <p>While we strive to keep the information on LeaseCheck accurate and up-to-date:</p>
+                    <ul>
+                        <li>Laws and regulations change frequently</li>
+                        <li>Information may not be complete or current</li>
+                        <li>Results may vary based on specific circumstances</li>
+                    </ul>
+                </div>
+
+                <div class="disclaimer-section">
+                    <h3>Recommendation</h3>
+                    <p>We strongly recommend:</p>
+                    <ul>
+                        <li>Consulting with a qualified attorney for legal advice</li>
+                        <li>Verifying any information provided through our service</li>
+                        <li>Understanding local laws and regulations that may apply to your situation</li>
+                    </ul>
+                </div>
+
+                <div class="disclaimer-section">
+                    <h3>Limitation of Liability</h3>
+                    <p>LeaseCheck and its operators are not liable for:</p>
+                    <ul>
+                        <li>Any decisions made based on our analysis</li>
+                        <li>Accuracy of lease analysis results</li>
+                        <li>Any damages arising from the use of our service</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <a href="/refund-policy" class="back-btn">Back to Refund Policy</a>
+                <a href="/terms-of-service" class="continue-btn">Continue to Terms</a>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

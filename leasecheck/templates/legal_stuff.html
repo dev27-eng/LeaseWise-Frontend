@@ -35,22 +35,18 @@
                 <p>If anything's unclear or you need more info, don't hesitate to reach out to us at <a href="mailto:support@coloradoleasecheck.com">support@coloradoleasecheck.com</a>. We're here to help!</p>
                 
                 <h3>Ready to Dive In?</h3>
-                <p>By using Lease Check, you agree to our Terms of Service, Disclaimer, and Refund Policy.</p>
-                
-                <p>Take a moment to review them to get the most out of our app.</p>
-                
-                <p>Thanks for choosing Lease Check! Let's make your leasing experience smooth and stress-free.</p>
+                <p>Please review our Terms of Service, Disclaimer, and Refund Policy to get started.</p>
             </div>
 
             <div class="legal-links">
-                <a href="/terms-of-service">Terms Of Service</a>
-                <a href="/legal-disclaimer">Legal Disclaimer</a>
-                <a href="/refund-policy">Refund Policy</a>
+                <a href="{{ url_for('terms_of_service') }}">Terms Of Service</a>
+                <a href="{{ url_for('legal_disclaimer') }}">Legal Disclaimer</a>
+                <a href="{{ url_for('refund_policy') }}">Refund Policy</a>
             </div>
 
             <div class="legal-actions">
-                <button class="reject-btn">Reject</button>
-                <button class="accept-btn">Accept</button>
+                <a href="{{ url_for('handle_terms', action='reject') }}" class="reject-btn">Reject</a>
+                <a href="{{ url_for('handle_terms', action='accept') }}" class="accept-btn">Accept</a>
             </div>
         </div>
     </main>

@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Refund Policy - LeaseCheck{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/refund_policy.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="legal-stuff-screen">
+    <header class="legal-header">
+        <h1>Refund Policy</h1>
+    </header>
+
+    <main class="legal-content">
+        <div class="legal-container">
+            <div class="policy-content">
+                <h2>Our Refund Policy</h2>
+                
+                <div class="policy-section">
+                    <h3>30-Day Money-Back Guarantee</h3>
+                    <p>We stand behind our service with a 30-day money-back guarantee. If you're not satisfied with your lease analysis, you can request a full refund within 30 days of your purchase.</p>
+                </div>
+
+                <div class="policy-section">
+                    <h3>Eligibility for Refund</h3>
+                    <ul>
+                        <li>Request must be made within 30 days of purchase</li>
+                        <li>Service has not been fully utilized (lease analysis not completed)</li>
+                        <li>Valid reason for dissatisfaction provided</li>
+                    </ul>
+                </div>
+
+                <div class="policy-section">
+                    <h3>How to Request a Refund</h3>
+                    <p>To request a refund, please contact our support team at support@coloradoleasecheck.com with your:</p>
+                    <ul>
+                        <li>Order number</li>
+                        <li>Reason for refund request</li>
+                        <li>Date of purchase</li>
+                    </ul>
+                </div>
+
+                <div class="policy-section">
+                    <h3>Processing Time</h3>
+                    <p>Refund requests are typically processed within 5-7 business days. The refund will be issued to the original payment method used for the purchase.</p>
+                </div>
+
+                <div class="policy-section">
+                    <h3>Exceptions</h3>
+                    <p>Refunds may not be available if:</p>
+                    <ul>
+                        <li>The 30-day period has expired</li>
+                        <li>The lease analysis service has been fully utilized</li>
+                        <li>The request violates our Terms of Service</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <a href="/legal-stuff" class="back-btn">Back to Legal Stuff</a>
+                <a href="/terms-of-service" class="continue-btn">Continue to Terms</a>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

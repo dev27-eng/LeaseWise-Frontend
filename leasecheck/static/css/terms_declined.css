@@ -1,0 +1,149 @@
+/* Terms Declined specific styles */
+.declined-screen {
+    min-height: 100vh;
+    background-color: #ffffff;
+}
+
+.declined-header {
+    background-color: #FF6B6B;
+    padding: 25px 20px;
+    text-align: center;
+}
+
+.declined-header h1 {
+    color: white;
+    font-size: 48px;
+    font-weight: normal;
+    margin: 0;
+}
+
+.declined-content {
+    padding: 40px 20px;
+}
+
+.declined-container {
+    background-color: #f5f5f5;
+    padding: 40px;
+    border-radius: 10px;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.declined-message h2 {
+    font-size: 32px;
+    color: black;
+    margin-bottom: 30px;
+}
+
+.declined-message p {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.options-section {
+    margin: 40px 0;
+    text-align: left;
+}
+
+.options-section h3 {
+    font-size: 24px;
+    color: black;
+    margin-bottom: 15px;
+}
+
+.options-section ul {
+    list-style-type: disc;
+    margin-left: 20px;
+    margin-bottom: 15px;
+}
+
+.options-section li {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.contact-section {
+    margin: 30px 0;
+}
+
+.contact-section p {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.contact-section a {
+    color: #FF0000;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.contact-section a:hover {
+    text-decoration: underline;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.review-terms-btn,
+.exit-btn {
+    padding: 15px 30px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+}
+
+.review-terms-btn {
+    background-color: #7ED321;
+    color: black;
+}
+
+.review-terms-btn:hover {
+    background-color: #6db91d;
+}
+
+.exit-btn {
+    background-color: #B8E3FF;
+    color: black;
+}
+
+.exit-btn:hover {
+    background-color: #a6d1ed;
+}
+
+@media (max-width: 768px) {
+    .declined-header h1 {
+        font-size: 36px;
+    }
+
+    .declined-message h2 {
+        font-size: 28px;
+    }
+
+    .declined-message p {
+        font-size: 16px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .review-terms-btn,
+    .exit-btn {
+        width: 100%;
+        text-align: center;
+        max-width: 280px;
+    }
+}
