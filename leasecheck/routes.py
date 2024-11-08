@@ -65,27 +65,48 @@ def create_payment():
         data = request.json
         plan_id = data.get('plan_id')
         payment_method_id = data.get('payment_method_id')
-        user_email = data.get('email')
+        user_info = data.get('user_info', {})
+
+        if not all([
+            user_info.get('full_name'),
+            user_info.get('email'),
+            user_info.get('address', {}).get('street'),
+            user_info.get('address', {}).get('city'),
+            user_info.get('address', {}).get('state'),
+            user_info.get('address', {}).get('zip_code'),
+            user_info.get('address', {}).get('country')
+        ]):
+            return jsonify({'error': 'Missing required user information'}), 400
 
         if plan_id not in PLANS:
             return jsonify({'error': 'Invalid plan'}), 400
 
         plan = PLANS[plan_id]
         
-        # Create payment intent
+        # Create payment intent with customer details
         intent = stripe.PaymentIntent.create(
             amount=plan['price'],
             currency='usd',
             payment_method=payment_method_id,
             confirmation_method='manual',
             confirm=True,
-            return_url=url_for('payment_status', _external=True)
+            return_url=url_for('payment_status', _external=True),
+            metadata={
+                'full_name': user_info['full_name'],
+                'email': user_info['email'],
+                'phone': user_info.get('phone', ''),
+                'address_street': user_info['address']['street'],
+                'address_city': user_info['address']['city'],
+                'address_state': user_info['address']['state'],
+                'address_zip': user_info['address']['zip_code'],
+                'address_country': user_info['address']['country']
+            }
         )
 
         # Record the payment
         payment = Payment(
             stripe_payment_id=intent.id,
-            user_email=user_email,
+            user_email=user_info['email'],
             amount=plan['price'],
             currency='USD',
             status=intent.status,

@@ -38,10 +38,67 @@
 
         <div class="payment-form">
             <form id="payment-form">
-                <div class="form-group">
-                    <div id="card-element"></div>
-                    <div id="card-errors" role="alert"></div>
+                <!-- User Information Section -->
+                <div class="form-section">
+                    <h3>User Information</h3>
+                    <div class="form-group">
+                        <label for="fullName">Full Name *</label>
+                        <input type="text" id="fullName" name="fullName" required>
+                        <div class="error-message" id="fullName-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" name="email" required>
+                        <div class="error-message" id="email-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number (optional)</label>
+                        <input type="tel" id="phone" name="phone">
+                        <div class="error-message" id="phone-error"></div>
+                    </div>
                 </div>
+
+                <!-- Billing Address Section -->
+                <div class="form-section">
+                    <h3>Billing Address</h3>
+                    <div class="form-group">
+                        <label for="street">Street Address *</label>
+                        <input type="text" id="street" name="street" required>
+                        <div class="error-message" id="street-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="city">City *</label>
+                        <input type="text" id="city" name="city" required>
+                        <div class="error-message" id="city-error"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="state">State/Province *</label>
+                            <input type="text" id="state" name="state" required>
+                            <div class="error-message" id="state-error"></div>
+                        </div>
+                        <div class="form-group half">
+                            <label for="zipCode">ZIP/Postal Code *</label>
+                            <input type="text" id="zipCode" name="zipCode" required>
+                            <div class="error-message" id="zipCode-error"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="country">Country *</label>
+                        <input type="text" id="country" name="country" required>
+                        <div class="error-message" id="country-error"></div>
+                    </div>
+                </div>
+
+                <!-- Payment Section -->
+                <div class="form-section">
+                    <h3>Payment Details</h3>
+                    <div class="form-group">
+                        <div id="card-element"></div>
+                        <div id="card-errors" role="alert"></div>
+                    </div>
+                </div>
+
                 <button type="submit" class="pay-button">Pay Now</button>
             </form>
         </div>
@@ -55,28 +112,108 @@
     const card = elements.create('card');
     card.mount('#card-element');
 
+    function validateEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function validateRequired(value, fieldName) {
+        if (!value || value.trim() === '') {
+            return `${fieldName} is required`;
+        }
+        return '';
+    }
+
+    function validateForm() {
+        let isValid = true;
+        const fields = {
+            'fullName': 'Full Name',
+            'email': 'Email Address',
+            'street': 'Street Address',
+            'city': 'City',
+            'state': 'State/Province',
+            'zipCode': 'ZIP/Postal Code',
+            'country': 'Country'
+        };
+
+        for (const [id, label] of Object.entries(fields)) {
+            const element = document.getElementById(id);
+            const errorElement = document.getElementById(`${id}-error`);
+            const error = validateRequired(element.value, label);
+            
+            if (error) {
+                errorElement.textContent = error;
+                errorElement.style.display = 'block';
+                isValid = false;
+            } else {
+                errorElement.textContent = '';
+                errorElement.style.display = 'none';
+            }
+        }
+
+        // Additional email validation
+        const emailElement = document.getElementById('email');
+        const emailErrorElement = document.getElementById('email-error');
+        if (!validateEmail(emailElement.value)) {
+            emailErrorElement.textContent = 'Please enter a valid email address';
+            emailErrorElement.style.display = 'block';
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
     const form = document.getElementById('payment-form');
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
         
+        if (!validateForm()) {
+            return;
+        }
+
         const {paymentMethod, error} = await stripe.createPaymentMethod({
             type: 'card',
             card: card,
+            billing_details: {
+                name: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                address: {
+                    line1: document.getElementById('street').value,
+                    city: document.getElementById('city').value,
+                    state: document.getElementById('state').value,
+                    postal_code: document.getElementById('zipCode').value,
+                    country: document.getElementById('country').value
+                }
+            }
         });
 
         if (error) {
             const errorElement = document.getElementById('card-errors');
             errorElement.textContent = error.message;
         } else {
+            const formData = {
+                payment_method_id: paymentMethod.id,
+                plan_id: '{{ plan_id }}',
+                user_info: {
+                    full_name: document.getElementById('fullName').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    address: {
+                        street: document.getElementById('street').value,
+                        city: document.getElementById('city').value,
+                        state: document.getElementById('state').value,
+                        zip_code: document.getElementById('zipCode').value,
+                        country: document.getElementById('country').value
+                    }
+                }
+            };
+
             fetch('/create-payment', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    payment_method_id: paymentMethod.id,
-                    plan_id: '{{ plan_id }}'
-                })
+                body: JSON.stringify(formData)
             })
             .then(response => response.json())
             .then(data => {
