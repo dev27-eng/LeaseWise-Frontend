@@ -103,7 +103,18 @@
                     </div>
                     <div class="form-group">
                         <label for="country">Country *</label>
-                        <input type="text" id="country" name="country" required>
+                        <select id="country" name="country" required>
+                            <option value="US">United States</option>
+                            <option value="CA">Canada</option>
+                            <option value="GB">United Kingdom</option>
+                            <option value="AU">Australia</option>
+                            <option value="DE">Germany</option>
+                            <option value="FR">France</option>
+                            <option value="IT">Italy</option>
+                            <option value="ES">Spain</option>
+                            <option value="NL">Netherlands</option>
+                            <option value="BE">Belgium</option>
+                        </select>
                         <div class="error-message" id="country-error"></div>
                     </div>
                 </div>
@@ -126,11 +137,11 @@
 <script src="https://js.stripe.com/v3/"></script>
 <script>
     // Initialize Stripe
-    const stripe = Stripe('{{ stripe_public_key }}');
-    const elements = stripe.elements();
+    let stripe = Stripe('{{ stripe_public_key }}');
+    let elements = stripe.elements();
 
     // Card element styling
-    const cardElementOptions = {
+    let cardElementOptions = {
         style: {
             base: {
                 fontSize: '16px',
@@ -155,19 +166,19 @@
     };
 
     // Create and mount the card element
-    const card = elements.create('card', cardElementOptions);
+    let card = elements.create('card', cardElementOptions);
     card.mount('#card-element');
 
     // Handle card element errors
-    card.addEventListener('change', ({error}) => {
-        const displayError = document.getElementById('card-errors');
-        if (error) {
-            if (error.code === 'incomplete_cvc') {
+    card.addEventListener('change', function(event) {
+        let displayError = document.getElementById('card-errors');
+        if (event.error) {
+            if (event.error.code === 'incomplete_cvc') {
                 displayError.textContent = 'Please enter a valid CVC/CVV number.';
-            } else if (error.code === 'invalid_cvc') {
+            } else if (event.error.code === 'invalid_cvc') {
                 displayError.textContent = 'The CVC/CVV number is invalid.';
             } else {
-                displayError.textContent = error.message;
+                displayError.textContent = event.error.message;
             }
         } else {
             displayError.textContent = '';
@@ -192,7 +203,7 @@
 
     function validateForm() {
         let isValid = true;
-        const fields = {
+        let fields = {
             'fullName': 'Full Name',
             'email': 'Email Address',
             'phone': 'Phone Number',
@@ -203,10 +214,10 @@
             'country': 'Country'
         };
 
-        for (const id in fields) {
-            const element = document.getElementById(id);
-            const errorElement = document.getElementById(`${id}-error`);
-            const error = validateRequired(element.value, fields[id]);
+        for (let id in fields) {
+            let element = document.getElementById(id);
+            let errorElement = document.getElementById(`${id}-error`);
+            let error = validateRequired(element.value, fields[id]);
             
             if (error) {
                 errorElement.textContent = error;
@@ -218,16 +229,16 @@
             }
         }
 
-        const emailElement = document.getElementById('email');
-        const emailErrorElement = document.getElementById('email-error');
+        let emailElement = document.getElementById('email');
+        let emailErrorElement = document.getElementById('email-error');
         if (!validateEmail(emailElement.value)) {
             emailErrorElement.textContent = 'Please enter a valid email address';
             emailErrorElement.style.display = 'block';
             isValid = false;
         }
 
-        const phoneElement = document.getElementById('phone');
-        const phoneErrorElement = document.getElementById('phone-error');
+        let phoneElement = document.getElementById('phone');
+        let phoneErrorElement = document.getElementById('phone-error');
         if (!validatePhone(phoneElement.value)) {
             phoneErrorElement.textContent = 'Please enter a valid phone number';
             phoneErrorElement.style.display = 'block';
@@ -245,11 +256,11 @@
             return;
         }
 
-        const submitButton = document.querySelector('.pay-button');
+        let submitButton = document.querySelector('.pay-button');
         submitButton.disabled = true;
 
         try {
-            const { paymentMethod, error: paymentMethodError } = await stripe.createPaymentMethod({
+            let { paymentMethod, error: paymentMethodError } = await stripe.createPaymentMethod({
                 type: 'card',
                 card: card,
                 billing_details: {
@@ -268,7 +279,7 @@
             });
 
             if (paymentMethodError) {
-                const errorElement = document.getElementById('card-errors');
+                let errorElement = document.getElementById('card-errors');
                 if (paymentMethodError.code === 'incomplete_cvc' || paymentMethodError.code === 'invalid_cvc') {
                     errorElement.textContent = 'Please enter a valid CVC/CVV number.';
                 } else {
@@ -278,7 +289,7 @@
                 return;
             }
 
-            const formData = {
+            let formData = {
                 payment_method_id: paymentMethod.id,
                 plan_id: '{{ plan_id }}',
                 user_info: {
@@ -296,7 +307,7 @@
                 }
             };
 
-            const response = await fetch('/create-payment', {
+            let response = await fetch('/create-payment', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -304,12 +315,12 @@
                 body: JSON.stringify(formData)
             });
 
-            const data = await response.json();
+            let data = await response.json();
 
             if (data.requires_action) {
-                const { error: confirmError } = await stripe.confirmCardPayment(data.client_secret);
+                let { error: confirmError } = await stripe.confirmCardPayment(data.client_secret);
                 if (confirmError) {
-                    const errorElement = document.getElementById('card-errors');
+                    let errorElement = document.getElementById('card-errors');
                     if (confirmError.code === 'incomplete_cvc' || confirmError.code === 'invalid_cvc') {
                         errorElement.textContent = 'Please enter a valid CVC/CVV number.';
                     } else {
@@ -325,7 +336,7 @@
                 window.location.href = '/payment-status?status=failed';
             }
         } catch (error) {
-            const errorElement = document.getElementById('card-errors');
+            let errorElement = document.getElementById('card-errors');
             errorElement.textContent = 'An error occurred processing your payment. Please try again.';
             submitButton.disabled = false;
         }
