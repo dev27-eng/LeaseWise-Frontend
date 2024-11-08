@@ -8,6 +8,7 @@
     background-color: #7ED321;
     padding: 25px 20px;
     text-align: center;
+    position: relative;
 }
 
 .legal-header h1 {
@@ -15,6 +16,29 @@
     font-size: 48px;
     font-weight: normal;
     margin: 0;
+}
+
+.download-button-container {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.download-btn {
+    background-color: #ffffff;
+    color: black;
+    padding: 10px 20px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+}
+
+.download-btn:hover {
+    background-color: #f0f0f0;
 }
 
 .legal-content {

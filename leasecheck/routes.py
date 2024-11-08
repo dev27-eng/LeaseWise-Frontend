@@ -1,8 +1,10 @@
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, request, send_file
 from . import app, db
 from .forms import TermsAcceptanceForm
 from .models import TermsAcceptance
 from datetime import datetime
+import weasyprint
+import io
 
 @app.route('/')
 @app.route('/welcome')
@@ -63,3 +65,20 @@ def legal_disclaimer():
 @app.route('/terms-declined')
 def terms_declined():
     return render_template('terms_declined.html')
+
+@app.route('/download-terms-pdf')
+def download_terms_pdf():
+    # Generate PDF from the terms of service template
+    html = render_template('terms_of_service.html', download_mode=True)
+    pdf = weasyprint.HTML(string=html).write_pdf()
+    
+    # Create a BytesIO object to store the PDF
+    pdf_buffer = io.BytesIO(pdf)
+    pdf_buffer.seek(0)
+    
+    return send_file(
+        pdf_buffer,
+        download_name='LeaseCheck-Terms-of-Service.pdf',
+        mimetype='application/pdf',
+        as_attachment=True
+    )

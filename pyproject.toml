@@ -16,6 +16,8 @@ dependencies = [
     "flask-wtf>=1.2.2",
     "wtforms>=3.2.1",
     "flask-mail>=0.10.0",
+    "pdfkit>=1.0.0",
+    "weasyprint>=63.0",
 ]
 
 [tool.uv.sources]
