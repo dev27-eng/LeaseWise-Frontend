@@ -125,11 +125,54 @@
 
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-    // Initialize Stripe and elements
+    // Initialize Stripe
     const stripe = Stripe('{{ stripe_public_key }}');
     const elements = stripe.elements();
-    const card = elements.create('card');
+
+    // Card element styling
+    const cardElementOptions = {
+        style: {
+            base: {
+                fontSize: '16px',
+                color: '#32325d',
+                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                fontSmoothing: 'antialiased',
+                '::placeholder': {
+                    color: '#aab7c4'
+                },
+                ':-webkit-autofill': {
+                    color: '#32325d'
+                }
+            },
+            invalid: {
+                color: '#fa755a',
+                iconColor: '#fa755a',
+                '::placeholder': {
+                    color: '#FFCCA5'
+                }
+            }
+        }
+    };
+
+    // Create and mount the card element
+    const card = elements.create('card', cardElementOptions);
     card.mount('#card-element');
+
+    // Handle card element errors
+    card.addEventListener('change', ({error}) => {
+        const displayError = document.getElementById('card-errors');
+        if (error) {
+            if (error.code === 'incomplete_cvc') {
+                displayError.textContent = 'Please enter a valid CVC/CVV number.';
+            } else if (error.code === 'invalid_cvc') {
+                displayError.textContent = 'The CVC/CVV number is invalid.';
+            } else {
+                displayError.textContent = error.message;
+            }
+        } else {
+            displayError.textContent = '';
+        }
+    });
 
     // Validation functions
     function validateEmail(email) {
@@ -202,6 +245,9 @@
             return;
         }
 
+        const submitButton = document.querySelector('.pay-button');
+        submitButton.disabled = true;
+
         try {
             const { paymentMethod, error: paymentMethodError } = await stripe.createPaymentMethod({
                 type: 'card',
@@ -223,7 +269,12 @@
 
             if (paymentMethodError) {
                 const errorElement = document.getElementById('card-errors');
-                errorElement.textContent = paymentMethodError.message;
+                if (paymentMethodError.code === 'incomplete_cvc' || paymentMethodError.code === 'invalid_cvc') {
+                    errorElement.textContent = 'Please enter a valid CVC/CVV number.';
+                } else {
+                    errorElement.textContent = paymentMethodError.message;
+                }
+                submitButton.disabled = false;
                 return;
             }
 
@@ -259,7 +310,12 @@
                 const { error: confirmError } = await stripe.confirmCardPayment(data.client_secret);
                 if (confirmError) {
                     const errorElement = document.getElementById('card-errors');
-                    errorElement.textContent = confirmError.message;
+                    if (confirmError.code === 'incomplete_cvc' || confirmError.code === 'invalid_cvc') {
+                        errorElement.textContent = 'Please enter a valid CVC/CVV number.';
+                    } else {
+                        errorElement.textContent = confirmError.message;
+                    }
+                    submitButton.disabled = false;
                 } else {
                     window.location.href = '/payment-status?status=success';
                 }
@@ -271,6 +327,7 @@
         } catch (error) {
             const errorElement = document.getElementById('card-errors');
             errorElement.textContent = 'An error occurred processing your payment. Please try again.';
+            submitButton.disabled = false;
         }
     });
 </script>
