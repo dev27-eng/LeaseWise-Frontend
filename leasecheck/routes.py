@@ -64,71 +64,92 @@ def create_payment():
         user_info = data.get('user_info', {})
 
         # Validate required fields including phone number
-        if not all([
-            user_info.get('full_name'),
-            user_info.get('email'),
-            user_info.get('phone'),  # Now required
-            user_info.get('address', {}).get('street'),
-            user_info.get('address', {}).get('city'),
-            user_info.get('address', {}).get('state'),
-            user_info.get('address', {}).get('zip_code'),
-            user_info.get('address', {}).get('country')
-        ]):
-            return jsonify({'error': 'Missing required user information'}), 400
+        required_fields = [
+            ('full_name', 'Full name is required'),
+            ('email', 'Email is required'),
+            ('phone', 'Phone number is required'),
+            ('address.street', 'Street address is required'),
+            ('address.city', 'City is required'),
+            ('address.state', 'State is required'),
+            ('address.zip_code', 'ZIP code is required'),
+            ('address.country', 'Country is required')
+        ]
+
+        for field, message in required_fields:
+            if field.startswith('address.'):
+                if not user_info.get('address', {}).get(field.split('.')[1]):
+                    app.logger.error(f'Validation error: {message}')
+                    return jsonify({'error': message}), 400
+            elif not user_info.get(field):
+                app.logger.error(f'Validation error: {message}')
+                return jsonify({'error': message}), 400
 
         if plan_id not in PLANS:
-            return jsonify({'error': 'Invalid plan'}), 400
+            app.logger.error(f'Invalid plan ID: {plan_id}')
+            return jsonify({'error': 'Invalid plan selected'}), 400
 
         plan = PLANS[plan_id]
         
-        # Create payment intent with customer details
-        intent = stripe.PaymentIntent.create(
-            amount=plan['price'],
-            currency='usd',
-            payment_method=payment_method_id,
-            confirmation_method='manual',
-            confirm=True,
-            return_url=url_for('payment_status', _external=True),
-            metadata={
-                'full_name': user_info['full_name'],
-                'email': user_info['email'],
-                'phone': user_info['phone'],
-                'address_street': user_info['address']['street'],
-                'address_street2': user_info['address'].get('street2', ''),
-                'address_city': user_info['address']['city'],
-                'address_state': user_info['address']['state'],
-                'address_zip': user_info['address']['zip_code'],
-                'address_country': user_info['address']['country']
-            }
-        )
+        try:
+            # Create payment intent with customer details
+            intent = stripe.PaymentIntent.create(
+                amount=plan['price'],
+                currency='usd',
+                payment_method=payment_method_id,
+                confirmation_method='manual',
+                confirm=True,
+                return_url=url_for('payment_status', _external=True),
+                metadata={
+                    'full_name': user_info['full_name'],
+                    'email': user_info['email'],
+                    'phone': user_info['phone'],
+                    'address_street': user_info['address']['street'],
+                    'address_street2': user_info['address'].get('street2', ''),
+                    'address_city': user_info['address']['city'],
+                    'address_state': user_info['address']['state'],
+                    'address_zip': user_info['address']['zip_code'],
+                    'address_country': user_info['address']['country']
+                }
+            )
 
-        # Record the payment
-        payment = Payment(
-            stripe_payment_id=intent.id,
-            user_email=user_info['email'],
-            amount=plan['price'],
-            currency='USD',
-            status=intent.status,
-            plan_name=plan['name']
-        )
-        db.session.add(payment)
-        db.session.commit()
+            # Record the payment
+            payment = Payment(
+                stripe_payment_id=intent.id,
+                user_email=user_info['email'],
+                amount=plan['price'],
+                currency='USD',
+                status=intent.status,
+                plan_name=plan['name']
+            )
+            db.session.add(payment)
+            db.session.commit()
 
-        if intent.status == 'requires_action':
-            return jsonify({
-                'requires_action': True,
-                'client_secret': intent.client_secret
-            })
-        
-        if intent.status == 'succeeded':
-            return jsonify({'success': True})
+            if intent.status == 'requires_action':
+                return jsonify({
+                    'requires_action': True,
+                    'client_secret': intent.client_secret
+                })
+            
+            if intent.status == 'succeeded':
+                return jsonify({'success': True})
 
-        return jsonify({'error': 'Payment failed'}), 400
+            return jsonify({'error': 'Payment failed'}), 400
 
-    except stripe.error.CardError as e:
-        return jsonify({'error': str(e.error.message)}), 400
+        except stripe.error.CardError as e:
+            # Handle card-specific errors
+            app.logger.error(f'Card error: {str(e.error)}')
+            error_msg = e.error.message
+            return jsonify({'error': error_msg}), 400
+
+        except stripe.error.StripeError as e:
+            # Handle other Stripe errors
+            app.logger.error(f'Stripe error: {str(e)}')
+            return jsonify({'error': 'Payment processing error. Please try again.'}), 400
+
     except Exception as e:
-        return jsonify({'error': 'An error occurred processing your payment'}), 400
+        # Handle unexpected errors
+        app.logger.error(f'Unexpected error in payment processing: {str(e)}')
+        return jsonify({'error': 'An unexpected error occurred. Please try again later.'}), 500
 
 @app.route('/payment-status')
 def payment_status():

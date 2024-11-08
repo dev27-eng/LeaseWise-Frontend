@@ -8,129 +8,108 @@
 
 {% block content %}
 <div class="checkout-screen">
+    <!-- Green header -->
     <header class="green-header">
         <h1>Checkout</h1>
     </header>
 
     <main class="checkout-content">
-        <!-- Test Mode Notice -->
+        <!-- Test mode notice -->
         <div class="test-mode-notice">
-            <h4>🔔 Test Mode Enabled</h4>
-            <p>Use these test cards to simulate different payment scenarios:</p>
+            <h4>🔔 Test Mode</h4>
             <ul>
-                <li><strong>Success:</strong> 4242 4242 4242 4242</li>
-                <li><strong>3D Secure:</strong> 4000 0025 0000 3155</li>
-                <li><strong>Decline:</strong> 4000 0000 0000 9995</li>
-                <li><strong>Exp Date:</strong> Any future date</li>
-                <li><strong>CVV:</strong> Any 3 digits</li>
+                <li><strong>Card Number:</strong> 4242 4242 4242 4242</li>
+                <li><strong>Expiry:</strong> Any future date</li>
+                <li><strong>CVC:</strong> Any 3 digits</li>
+                <li><strong>ZIP:</strong> Any 5 digits</li>
             </ul>
         </div>
 
+        <!-- Order summary -->
         <div class="order-summary">
             <h2>Order Summary</h2>
             <div class="plan-details">
                 <h3>{{ plan_name }}</h3>
-                <p class="plan-price">${{ plan_price }}</p>
+                <div class="plan-price">${{ "%.2f"|format(plan_price) }}</div>
                 <ul class="plan-features">
-                    {% if plan_name == 'Basic Plan' %}
-                        <li>1 Lease Analysis</li>
-                        <li>Risk Analysis Report</li>
-                        <li>PDF Export</li>
-                    {% elif plan_name == 'Standard Plan' %}
-                        <li>3 Lease Analyses</li>
-                        <li>Valid for 30 days</li>
-                        <li>Priority Support</li>
-                    {% else %}
-                        <li>6 Lease Analyses</li>
-                        <li>Valid for 30 days</li>
-                        <li>Priority Support + Consultation</li>
-                    {% endif %}
+                    {% for feature in PLANS[plan_id]['features'] %}
+                        <li>{{ feature }}</li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>
 
-        <div class="payment-form">
-            <form id="payment-form">
-                <!-- User Information Section -->
-                <div class="form-section">
-                    <h3>User Information</h3>
-                    <div class="form-group">
-                        <label for="fullName">Full Name *</label>
-                        <input type="text" id="fullName" name="fullName" required>
-                        <div class="error-message" id="fullName-error"></div>
+        <!-- Payment form -->
+        <form id="payment-form" class="payment-form">
+            <!-- Contact Information -->
+            <div class="form-section">
+                <h3>Contact Information</h3>
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" required>
+                    <div id="fullName-error" class="error-message"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" required>
+                        <div id="email-error" class="error-message"></div>
                     </div>
-                    <div class="form-group">
-                        <label for="email">Email Address *</label>
-                        <input type="email" id="email" name="email" required>
-                        <div class="error-message" id="email-error"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="phone">Phone Number *</label>
-                        <input type="tel" id="phone" name="phone" required>
-                        <div class="error-message" id="phone-error"></div>
+                    <div class="form-group half">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" required>
+                        <div id="phone-error" class="error-message"></div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Billing Address Section -->
-                <div class="form-section">
-                    <h3>Billing Address</h3>
-                    <div class="form-group">
-                        <label for="street">Street Address *</label>
-                        <input type="text" id="street" name="street" required>
-                        <div class="error-message" id="street-error"></div>
+            <!-- Billing Address -->
+            <div class="form-section">
+                <h3>Billing Address</h3>
+                <div class="form-group">
+                    <label for="street">Street Address</label>
+                    <input type="text" id="street" required>
+                    <div id="street-error" class="error-message"></div>
+                </div>
+                <div class="form-group">
+                    <label for="street2">Apartment, suite, etc. (optional)</label>
+                    <input type="text" id="street2">
+                </div>
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="city">City</label>
+                        <input type="text" id="city" required>
+                        <div id="city-error" class="error-message"></div>
                     </div>
-                    <div class="form-group">
-                        <label for="street2">Apartment, suite, etc. (optional)</label>
-                        <input type="text" id="street2" name="street2">
-                        <div class="error-message" id="street2-error"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="city">City *</label>
-                        <input type="text" id="city" name="city" required>
-                        <div class="error-message" id="city-error"></div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group half">
-                            <label for="state">State/Province *</label>
-                            <input type="text" id="state" name="state" required>
-                            <div class="error-message" id="state-error"></div>
-                        </div>
-                        <div class="form-group half">
-                            <label for="zipCode">ZIP/Postal Code *</label>
-                            <input type="text" id="zipCode" name="zipCode" required>
-                            <div class="error-message" id="zipCode-error"></div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="country">Country *</label>
-                        <select id="country" name="country" required>
-                            <option value="US">United States</option>
-                            <option value="CA">Canada</option>
-                            <option value="GB">United Kingdom</option>
-                            <option value="AU">Australia</option>
-                            <option value="DE">Germany</option>
-                            <option value="FR">France</option>
-                            <option value="IT">Italy</option>
-                            <option value="ES">Spain</option>
-                            <option value="NL">Netherlands</option>
-                            <option value="BE">Belgium</option>
-                        </select>
-                        <div class="error-message" id="country-error"></div>
+                    <div class="form-group half">
+                        <label for="state">State/Province</label>
+                        <input type="text" id="state" required>
+                        <div id="state-error" class="error-message"></div>
                     </div>
                 </div>
-
-                <!-- Payment Section -->
-                <div class="form-section">
-                    <h3>Payment Details</h3>
-                    <div class="form-group">
-                        <div id="card-element"></div>
-                        <div id="card-errors" role="alert"></div>
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="zipCode">ZIP/Postal Code</label>
+                        <input type="text" id="zipCode" required>
+                        <div id="zipCode-error" class="error-message"></div>
+                    </div>
+                    <div class="form-group half">
+                        <label for="country">Country</label>
+                        <input type="text" id="country" required>
+                        <div id="country-error" class="error-message"></div>
                     </div>
                 </div>
+            </div>
 
-                <button type="submit" class="pay-button">Pay Now</button>
-            </form>
-        </div>
+            <!-- Payment Information -->
+            <div class="form-section">
+                <h3>Payment Information</h3>
+                <div id="card-element"></div>
+                <div id="card-errors" role="alert"></div>
+            </div>
+
+            <button type="submit" class="pay-button">Pay ${{"%.2f"|format(plan_price)}}</button>
+        </form>
     </main>
 </div>
 
@@ -169,41 +148,25 @@
     let card = elements.create('card', cardElementOptions);
     card.mount('#card-element');
 
-    // Handle card element errors
-    card.addEventListener('change', function(event) {
-        let displayError = document.getElementById('card-errors');
-        if (event.error) {
-            if (event.error.code === 'incomplete_cvc') {
-                displayError.textContent = 'Please enter a valid CVC/CVV number.';
-            } else if (event.error.code === 'invalid_cvc') {
-                displayError.textContent = 'The CVC/CVV number is invalid.';
-            } else {
-                displayError.textContent = event.error.message;
-            }
-        } else {
-            displayError.textContent = '';
-        }
-    });
-
     // Validation functions
-    function validateEmail(email) {
+    const validateEmail = (email) => {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
 
-    function validatePhone(phone) {
+    const validatePhone = (phone) => {
         return /^\+?[\d\s-()]{10,}$/.test(phone);
     }
 
-    function validateRequired(value, fieldName) {
+    const validateRequired = (value, fieldName) => {
         if (!value || value.trim() === '') {
             return `${fieldName} is required`;
         }
         return '';
     }
 
-    function validateForm() {
+    const validateForm = () => {
         let isValid = true;
-        let fields = {
+        const fields = {
             'fullName': 'Full Name',
             'email': 'Email Address',
             'phone': 'Phone Number',
@@ -214,10 +177,10 @@
             'country': 'Country'
         };
 
-        for (let id in fields) {
-            let element = document.getElementById(id);
-            let errorElement = document.getElementById(`${id}-error`);
-            let error = validateRequired(element.value, fields[id]);
+        for (const id in fields) {
+            const element = document.getElementById(id);
+            const errorElement = document.getElementById(`${id}-error`);
+            const error = validateRequired(element.value, fields[id]);
             
             if (error) {
                 errorElement.textContent = error;
@@ -229,16 +192,16 @@
             }
         }
 
-        let emailElement = document.getElementById('email');
-        let emailErrorElement = document.getElementById('email-error');
+        const emailElement = document.getElementById('email');
+        const emailErrorElement = document.getElementById('email-error');
         if (!validateEmail(emailElement.value)) {
             emailErrorElement.textContent = 'Please enter a valid email address';
             emailErrorElement.style.display = 'block';
             isValid = false;
         }
 
-        let phoneElement = document.getElementById('phone');
-        let phoneErrorElement = document.getElementById('phone-error');
+        const phoneElement = document.getElementById('phone');
+        const phoneErrorElement = document.getElementById('phone-error');
         if (!validatePhone(phoneElement.value)) {
             phoneErrorElement.textContent = 'Please enter a valid phone number';
             phoneErrorElement.style.display = 'block';
@@ -247,6 +210,29 @@
 
         return isValid;
     }
+
+    // Handle card element errors
+    card.addEventListener('change', function(event) {
+        let displayError = document.getElementById('card-errors');
+        if (event.error) {
+            switch(event.error.code) {
+                case 'incomplete_cvc':
+                case 'invalid_cvc':
+                    displayError.textContent = 'Please enter a valid CVC/CVV number.';
+                    break;
+                case 'incomplete_number':
+                    displayError.textContent = 'Please enter a valid card number.';
+                    break;
+                case 'incomplete_expiry':
+                    displayError.textContent = 'Please enter a valid expiration date.';
+                    break;
+                default:
+                    displayError.textContent = event.error.message;
+            }
+        } else {
+            displayError.textContent = '';
+        }
+    });
 
     // Form submission handler
     document.getElementById('payment-form').addEventListener('submit', async function(event) {
@@ -258,9 +244,9 @@
 
         let submitButton = document.querySelector('.pay-button');
         submitButton.disabled = true;
-
+        
         try {
-            let { paymentMethod, error: paymentMethodError } = await stripe.createPaymentMethod({
+            const { paymentMethod, error: paymentMethodError } = await stripe.createPaymentMethod({
                 type: 'card',
                 card: card,
                 billing_details: {
@@ -269,7 +255,7 @@
                     phone: document.getElementById('phone').value,
                     address: {
                         line1: document.getElementById('street').value,
-                        line2: document.getElementById('street2').value,
+                        line2: document.getElementById('street2').value || '',
                         city: document.getElementById('city').value,
                         state: document.getElementById('state').value,
                         postal_code: document.getElementById('zipCode').value,
@@ -280,16 +266,25 @@
 
             if (paymentMethodError) {
                 let errorElement = document.getElementById('card-errors');
-                if (paymentMethodError.code === 'incomplete_cvc' || paymentMethodError.code === 'invalid_cvc') {
-                    errorElement.textContent = 'Please enter a valid CVC/CVV number.';
-                } else {
-                    errorElement.textContent = paymentMethodError.message;
+                switch(paymentMethodError.code) {
+                    case 'incomplete_cvc':
+                    case 'invalid_cvc':
+                        errorElement.textContent = 'Please enter a valid CVC/CVV number.';
+                        break;
+                    case 'card_declined':
+                        errorElement.textContent = 'Your card was declined. Please try a different card.';
+                        break;
+                    case 'expired_card':
+                        errorElement.textContent = 'Your card has expired. Please try a different card.';
+                        break;
+                    default:
+                        errorElement.textContent = paymentMethodError.message;
                 }
                 submitButton.disabled = false;
                 return;
             }
 
-            let formData = {
+            const formData = {
                 payment_method_id: paymentMethod.id,
                 plan_id: '{{ plan_id }}',
                 user_info: {
@@ -298,7 +293,7 @@
                     phone: document.getElementById('phone').value,
                     address: {
                         street: document.getElementById('street').value,
-                        street2: document.getElementById('street2').value,
+                        street2: document.getElementById('street2').value || '',
                         city: document.getElementById('city').value,
                         state: document.getElementById('state').value,
                         zip_code: document.getElementById('zipCode').value,
@@ -307,7 +302,7 @@
                 }
             };
 
-            let response = await fetch('/create-payment', {
+            const response = await fetch('/create-payment', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -315,16 +310,22 @@
                 body: JSON.stringify(formData)
             });
 
-            let data = await response.json();
+            const data = await response.json();
 
             if (data.requires_action) {
-                let { error: confirmError } = await stripe.confirmCardPayment(data.client_secret);
+                const { error: confirmError } = await stripe.confirmCardPayment(data.client_secret);
                 if (confirmError) {
                     let errorElement = document.getElementById('card-errors');
-                    if (confirmError.code === 'incomplete_cvc' || confirmError.code === 'invalid_cvc') {
-                        errorElement.textContent = 'Please enter a valid CVC/CVV number.';
-                    } else {
-                        errorElement.textContent = confirmError.message;
+                    switch(confirmError.code) {
+                        case 'incomplete_cvc':
+                        case 'invalid_cvc':
+                            errorElement.textContent = 'Please enter a valid CVC/CVV number.';
+                            break;
+                        case 'authentication_required':
+                            errorElement.textContent = 'Your card requires authentication. Please complete the verification process.';
+                            break;
+                        default:
+                            errorElement.textContent = confirmError.message;
                     }
                     submitButton.disabled = false;
                 } else {
@@ -332,6 +333,10 @@
                 }
             } else if (data.success) {
                 window.location.href = '/payment-status?status=success';
+            } else if (data.error) {
+                let errorElement = document.getElementById('card-errors');
+                errorElement.textContent = data.error;
+                submitButton.disabled = false;
             } else {
                 window.location.href = '/payment-status?status=failed';
             }
