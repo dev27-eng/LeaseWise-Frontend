@@ -1,6 +1,8 @@
 from flask import render_template, redirect, url_for, flash, request
-from . import app
+from . import app, db
 from .forms import TermsAcceptanceForm
+from .models import TermsAcceptance
+from datetime import datetime
 
 @app.route('/')
 @app.route('/welcome')
@@ -24,12 +26,25 @@ def legal_stuff():
     form = TermsAcceptanceForm()
     if request.method == 'POST':
         if not form.validate_on_submit():
-            flash('You must accept the terms to continue', 'error')
+            flash('Please fill in all required fields correctly', 'error')
             return render_template('legal_stuff.html', form=form)
         
         if form.accept_terms.data:
-            flash('Terms accepted successfully!', 'success')
-            return redirect(url_for('account_setup'))
+            # Record the terms acceptance
+            terms_acceptance = TermsAcceptance(
+                user_email=form.email.data,
+                ip_address=request.remote_addr,
+                terms_version='1.0'  # You can update this based on your terms versioning
+            )
+            try:
+                db.session.add(terms_acceptance)
+                db.session.commit()
+                flash('Terms accepted successfully!', 'success')
+                return redirect(url_for('account_setup'))
+            except Exception as e:
+                db.session.rollback()
+                flash('An error occurred while processing your request. Please try again.', 'error')
+                return render_template('legal_stuff.html', form=form)
         return redirect(url_for('terms_declined'))
     return render_template('legal_stuff.html', form=form)
 
