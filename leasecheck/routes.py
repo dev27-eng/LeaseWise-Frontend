@@ -1,10 +1,33 @@
-from flask import render_template, redirect, url_for, flash, request, send_file
+from flask import render_template, redirect, url_for, flash, request, send_file, jsonify
 from . import app, db
 from .forms import TermsAcceptanceForm
-from .models import TermsAcceptance
+from .models import TermsAcceptance, Payment
 from datetime import datetime
 import weasyprint
 import io
+import stripe
+import os
+
+stripe.api_key = os.environ.get('STRIPE_SECRET_KEY')
+
+# Plan configurations
+PLANS = {
+    'basic': {
+        'name': 'Basic Plan',
+        'price': 995,  # $9.95 in cents
+        'features': ['1 Lease Analysis', 'Risk Analysis Report', 'PDF Export']
+    },
+    'standard': {
+        'name': 'Standard Plan',
+        'price': 1995,  # $19.95 in cents
+        'features': ['3 Lease Analyses', 'Valid for 30 days', 'Priority Support']
+    },
+    'premium': {
+        'name': 'Premium Plan',
+        'price': 2995,  # $29.95 in cents
+        'features': ['6 Lease Analyses', 'Valid for 30 days', 'Priority Support + Consultation']
+    }
+}
 
 @app.route('/')
 @app.route('/welcome')
@@ -22,6 +45,75 @@ def select_plan():
 @app.route('/account-setup')
 def account_setup():
     return render_template('account_setup.html')
+
+@app.route('/checkout/<plan_id>')
+def checkout(plan_id):
+    if plan_id not in PLANS:
+        flash('Invalid plan selected', 'error')
+        return redirect(url_for('select_plan'))
+    
+    plan = PLANS[plan_id]
+    return render_template('checkout.html',
+                         plan_id=plan_id,
+                         plan_name=plan['name'],
+                         plan_price=plan['price'] / 100,  # Convert cents to dollars
+                         stripe_public_key=os.environ.get('STRIPE_PUBLISHABLE_KEY'))
+
+@app.route('/create-payment', methods=['POST'])
+def create_payment():
+    try:
+        data = request.json
+        plan_id = data.get('plan_id')
+        payment_method_id = data.get('payment_method_id')
+        user_email = data.get('email')
+
+        if plan_id not in PLANS:
+            return jsonify({'error': 'Invalid plan'}), 400
+
+        plan = PLANS[plan_id]
+        
+        # Create payment intent
+        intent = stripe.PaymentIntent.create(
+            amount=plan['price'],
+            currency='usd',
+            payment_method=payment_method_id,
+            confirmation_method='manual',
+            confirm=True,
+            return_url=url_for('payment_status', _external=True)
+        )
+
+        # Record the payment
+        payment = Payment(
+            stripe_payment_id=intent.id,
+            user_email=user_email,
+            amount=plan['price'],
+            currency='USD',
+            status=intent.status,
+            plan_name=plan['name']
+        )
+        db.session.add(payment)
+        db.session.commit()
+
+        if intent.status == 'requires_action':
+            return jsonify({
+                'requires_action': True,
+                'client_secret': intent.client_secret
+            })
+        
+        if intent.status == 'succeeded':
+            return jsonify({'success': True})
+
+        return jsonify({'error': 'Payment failed'}), 400
+
+    except stripe.error.CardError as e:
+        return jsonify({'error': str(e.error.message)}), 400
+    except Exception as e:
+        return jsonify({'error': 'An error occurred processing your payment'}), 400
+
+@app.route('/payment-status')
+def payment_status():
+    status = request.args.get('status', 'failed')
+    return render_template('payment_status.html', status=status)
 
 @app.route('/legal-stuff', methods=['GET', 'POST'])
 def legal_stuff():

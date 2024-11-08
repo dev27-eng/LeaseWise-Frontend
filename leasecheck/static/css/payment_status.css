@@ -1,0 +1,119 @@
+.payment-status-screen {
+    min-height: 100vh;
+    background-color: #fff;
+}
+
+.green-header {
+    background-color: #7ED321;
+    padding: 20px;
+    text-align: center;
+}
+
+.green-header h1 {
+    color: black;
+    font-size: 48px;
+    margin: 0;
+    font-weight: bold;
+}
+
+.status-content {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.status-container {
+    background-color: white;
+    border-radius: 10px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+}
+
+.status-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+}
+
+.status-icon.success {
+    background-color: #7ED321;
+    color: white;
+}
+
+.status-icon.error {
+    background-color: #dc3545;
+    color: white;
+}
+
+.status-container h2 {
+    font-size: 28px;
+    margin-bottom: 15px;
+    color: black;
+}
+
+.status-container p {
+    color: #555;
+    margin-bottom: 30px;
+}
+
+.continue-btn, .retry-btn {
+    display: inline-block;
+    padding: 15px 30px;
+    border-radius: 999px;
+    font-size: 18px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.continue-btn {
+    background-color: #7ED321;
+    color: black;
+}
+
+.retry-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.continue-btn:hover {
+    background-color: #6db91d;
+}
+
+.retry-btn:hover {
+    background-color: #c82333;
+}
+
+@media (max-width: 768px) {
+    .green-header h1 {
+        font-size: 36px;
+    }
+
+    .status-content {
+        padding: 0 15px;
+    }
+
+    .status-container {
+        padding: 30px;
+    }
+
+    .status-icon {
+        font-size: 48px;
+        width: 80px;
+        height: 80px;
+        line-height: 80px;
+    }
+
+    .status-container h2 {
+        font-size: 24px;
+    }
+
+    .continue-btn, .retry-btn {
+        padding: 12px 24px;
+        font-size: 16px;
+    }
+}

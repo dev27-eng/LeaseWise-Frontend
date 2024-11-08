@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Payment Status - LeaseCheck{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/payment_status.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="payment-status-screen">
+    <header class="green-header">
+        <h1>Payment Status</h1>
+    </header>
+
+    <main class="status-content">
+        <div class="status-container {% if status == 'success' %}success{% else %}error{% endif %}">
+            {% if status == 'success' %}
+                <div class="status-icon success">✓</div>
+                <h2>Payment Successful!</h2>
+                <p>Thank you for your purchase. You can now start using LeaseCheck's services.</p>
+                <a href="/lease-upload" class="continue-btn">Continue to Lease Upload</a>
+            {% else %}
+                <div class="status-icon error">×</div>
+                <h2>Payment Failed</h2>
+                <p>We're sorry, but there was an issue processing your payment. Please try again.</p>
+                <a href="/checkout" class="retry-btn">Retry Payment</a>
+            {% endif %}
+        </div>
+    </main>
+</div>
+{% endblock %}
