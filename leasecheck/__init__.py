@@ -41,11 +41,11 @@ csp = {
     ],
     'connect-src': [
         "'self'",
-        'https://api.stripe.com',
-        'https://js.stripe.com',
         "*.replit.dev",
         "*.repl.co",
-        "*.repl.it"
+        "*.repl.it",
+        "https://*.stripe.com",
+        "*"  # Allow all during development
     ]
 }
 

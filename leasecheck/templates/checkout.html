@@ -151,90 +151,19 @@
         }
     };
 
-    // Create card element
+    // Create card element with proper error handling
     let cardElement = null;
-
-    // Initialize card element only once
-    if (!cardElement) {
-        try {
-            cardElement = elements.create('card', cardElementOptions);
-            cardElement.mount('#card-element');
-            
-            // Add error handling for mount
-            cardElement.on('mount', () => {
-                console.log('Card element mounted successfully');
-            });
-            
-            cardElement.on('error', (event) => {
-                console.error('Card element error:', event);
-            });
-        } catch (error) {
-            console.error('Error creating card element:', error);
-            document.getElementById('card-errors').textContent = 'Error initializing payment form. Please refresh the page.';
-        }
-    }
-
-    // Validation functions
-    const validateEmail = (email) => {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
-
-    const validatePhone = (phone) => {
-        return /^\+?[\d\s-()]{10,}$/.test(phone);
-    }
-
-    const validateRequired = (value, fieldName) => {
-        if (!value || value.trim() === '') {
-            return `${fieldName} is required`;
-        }
-        return '';
-    }
-
-    const validateForm = () => {
-        let isValid = true;
-        const fields = {
-            'fullName': 'Full Name',
-            'email': 'Email Address',
-            'phone': 'Phone Number',
-            'street': 'Street Address',
-            'city': 'City',
-            'state': 'State/Province',
-            'zipCode': 'ZIP/Postal Code',
-            'country': 'Country'
-        };
-
-        for (const id in fields) {
-            const element = document.getElementById(id);
-            const errorElement = document.getElementById(`${id}-error`);
-            const error = validateRequired(element.value, fields[id]);
-            
-            if (error) {
-                errorElement.textContent = error;
-                errorElement.style.display = 'block';
-                isValid = false;
-            } else {
-                errorElement.textContent = '';
-                errorElement.style.display = 'none';
-            }
-        }
-
-        const emailElement = document.getElementById('email');
-        const emailErrorElement = document.getElementById('email-error');
-        if (!validateEmail(emailElement.value)) {
-            emailErrorElement.textContent = 'Please enter a valid email address';
-            emailErrorElement.style.display = 'block';
-            isValid = false;
-        }
-
-        const phoneElement = document.getElementById('phone');
-        const phoneErrorElement = document.getElementById('phone-error');
-        if (!validatePhone(phoneElement.value)) {
-            phoneErrorElement.textContent = 'Please enter a valid phone number';
-            phoneErrorElement.style.display = 'block';
-            isValid = false;
-        }
-
-        return isValid;
+    try {
+        cardElement = elements.create('card', cardElementOptions);
+        cardElement.mount('#card-element');
+        
+        // Add mount success handler
+        cardElement.on('ready', () => {
+            console.log('Card element ready');
+        });
+    } catch (error) {
+        console.error('Error initializing card element:', error);
+        document.getElementById('card-errors').textContent = 'Error initializing payment form. Please refresh the page.';
     }
 
     // Handle card element errors
@@ -362,5 +291,68 @@
             submitButton.disabled = false;
         }
     });
+
+    // Validation functions
+    const validateEmail = (email) => {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    const validatePhone = (phone) => {
+        return /^\+?[\d\s-()]{10,}$/.test(phone);
+    }
+
+    const validateRequired = (value, fieldName) => {
+        if (!value || value.trim() === '') {
+            return `${fieldName} is required`;
+        }
+        return '';
+    }
+
+    const validateForm = () => {
+        let isValid = true;
+        const fields = {
+            'fullName': 'Full Name',
+            'email': 'Email Address',
+            'phone': 'Phone Number',
+            'street': 'Street Address',
+            'city': 'City',
+            'state': 'State/Province',
+            'zipCode': 'ZIP/Postal Code',
+            'country': 'Country'
+        };
+
+        for (const id in fields) {
+            const element = document.getElementById(id);
+            const errorElement = document.getElementById(`${id}-error`);
+            const error = validateRequired(element.value, fields[id]);
+            
+            if (error) {
+                errorElement.textContent = error;
+                errorElement.style.display = 'block';
+                isValid = false;
+            } else {
+                errorElement.textContent = '';
+                errorElement.style.display = 'none';
+            }
+        }
+
+        const emailElement = document.getElementById('email');
+        const emailErrorElement = document.getElementById('email-error');
+        if (!validateEmail(emailElement.value)) {
+            emailErrorElement.textContent = 'Please enter a valid email address';
+            emailErrorElement.style.display = 'block';
+            isValid = false;
+        }
+
+        const phoneElement = document.getElementById('phone');
+        const phoneErrorElement = document.getElementById('phone-error');
+        if (!validatePhone(phoneElement.value)) {
+            phoneErrorElement.textContent = 'Please enter a valid phone number';
+            phoneErrorElement.style.display = 'block';
+            isValid = false;
+        }
+
+        return isValid;
+    }
 </script>
 {% endblock %}
