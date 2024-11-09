@@ -109,18 +109,20 @@
 </div>
 
 <script>
-// Modal handling using let instead of const
-let modalElement = document.getElementById('transaction-modal');
-let closeBtnElement = document.getElementsByClassName('close-modal')[0];
-let filtersForm = document.getElementById('filters-form');
-let detailsContainer = document.getElementById('transaction-details');
+// Initialize variables with let
+let modalElement = null;
+let closeBtnElement = null;
+let filtersForm = null;
+let detailsContainer = null;
 
+// Initialize elements after DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     modalElement = document.getElementById('transaction-modal');
     closeBtnElement = document.getElementsByClassName('close-modal')[0];
     filtersForm = document.getElementById('filters-form');
     detailsContainer = document.getElementById('transaction-details');
     
+    // Set up modal close handlers
     if (closeBtnElement) {
         closeBtnElement.onclick = function() {
             if (modalElement) {
@@ -129,6 +131,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // Close modal when clicking outside
     window.onclick = function(event) {
         if (event.target === modalElement) {
             modalElement.style.display = "none";
@@ -142,7 +145,10 @@ async function showTransactionDetails(transactionId) {
         if (!response.ok) throw new Error('Failed to fetch transaction details');
         
         let details = await response.json();
-        detailsContainer = document.getElementById('transaction-details');
+        
+        if (!detailsContainer) {
+            detailsContainer = document.getElementById('transaction-details');
+        }
         
         if (!detailsContainer) return;
         

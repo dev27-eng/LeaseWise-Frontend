@@ -64,6 +64,46 @@ def onboarding():
 def select_plan():
     return render_template('select_plan.html')
 
+@app.route('/admin/first-time-setup', methods=['GET', 'POST'])
+def admin_first_time_setup():
+    # Check if any admin exists
+    if AdminUser.query.first() is not None:
+        flash('Admin account already exists', 'error')
+        return redirect(url_for('admin_login'))
+    
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        
+        if not email or not password or not confirm_password:
+            flash('All fields are required', 'error')
+            return render_template('admin/first_time_setup.html')
+            
+        if password != confirm_password:
+            flash('Passwords do not match', 'error')
+            return render_template('admin/first_time_setup.html')
+            
+        if len(password) < 8:
+            flash('Password must be at least 8 characters long', 'error')
+            return render_template('admin/first_time_setup.html')
+            
+        try:
+            admin = AdminUser(
+                email=email,
+                password_hash=generate_password_hash(password)
+            )
+            db.session.add(admin)
+            db.session.commit()
+            flash('Admin account created successfully', 'success')
+            return redirect(url_for('admin_login'))
+        except Exception as e:
+            db.session.rollback()
+            logger.error(f"Error creating admin user: {e}")
+            flash('Error creating admin account', 'error')
+            
+    return render_template('admin/first_time_setup.html')
+
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
     try:
@@ -217,7 +257,7 @@ def admin_transaction_details(transaction_id):
         # Fetch additional details from Stripe
         stripe_payment = stripe.PaymentIntent.retrieve(transaction_id)
         payment_method = None
-        if stripe_payment.payment_method:
+        if hasattr(stripe_payment, 'payment_method') and stripe_payment.payment_method:
             payment_method = stripe.PaymentMethod.retrieve(stripe_payment.payment_method)
         
         details = {
@@ -228,14 +268,14 @@ def admin_transaction_details(transaction_id):
             'created_at': transaction.created_at.strftime('%Y-%m-%d %H:%M:%S'),
             'customer_name': stripe_payment.metadata.get('full_name'),
             'customer_phone': stripe_payment.metadata.get('phone'),
-            'payment_method': f"{payment_method.card.brand.title()} ending in {payment_method.card.last4}" if payment_method else None,
-            'error_log': stripe_payment.last_payment_error.message if stripe_payment.last_payment_error else None
+            'payment_method': f"{payment_method.card.brand.title()} ending in {payment_method.card.last4}" if payment_method and hasattr(payment_method, 'card') else None,
+            'error_log': stripe_payment.last_payment_error.message if hasattr(stripe_payment, 'last_payment_error') and stripe_payment.last_payment_error else None
         }
         
         return jsonify(details)
     
-    except stripe.error.StripeError as e:
-        logger.error(f"Stripe error while fetching transaction details: {str(e)}")
+    except Exception as e:
+        logger.error(f"Error while fetching transaction details: {str(e)}")
         return jsonify({
             'user_email': transaction.user_email,
             'amount': transaction.amount,
