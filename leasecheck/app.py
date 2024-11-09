@@ -14,6 +14,7 @@ db = SQLAlchemy()
 csrf = CSRFProtect()
 
 def create_app():
+    """Application factory function"""
     app = Flask(__name__)
     
     # Configure app
@@ -44,9 +45,6 @@ def create_app():
     )
 
     with app.app_context():
-        # Import models to ensure they're known to Flask-SQLAlchemy
-        from . import models
-        
         # Create all database tables
         try:
             logger.info("Creating database tables...")
@@ -56,13 +54,10 @@ def create_app():
             logger.error(f"Error creating database tables: {e}")
             raise
 
-        # Import and register routes
-        from . import routes
+        # Import and register blueprints
+        from .routes import bp
+        app.register_blueprint(bp)
         
         return app
 
-# Create the application instance
-app = create_app()
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+__all__ = ['create_app', 'db']

@@ -1,5 +1,5 @@
-from flask import render_template, redirect, url_for, flash, request, send_file, jsonify, session
-from . import app, db
+from flask import Blueprint, render_template, redirect, url_for, flash, request, send_file, jsonify, session
+from .app import db
 from .forms import TermsAcceptanceForm
 from .models import TermsAcceptance, Payment, AdminUser, Document, SupportTicket
 from datetime import datetime, timedelta
@@ -25,6 +25,9 @@ stripe.api_key = os.environ.get('STRIPE_SECRET_KEY')
 if not stripe.api_key:
     logger.error("Stripe API key is not set!")
 
+# Create blueprint
+bp = Blueprint('main', __name__)
+
 # File upload configuration
 UPLOAD_FOLDER = 'uploads'
 MAX_CONTENT_LENGTH = 10 * 1024 * 1024  # 10MB
@@ -37,11 +40,11 @@ if not os.path.exists(UPLOAD_FOLDER):
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/lease-upload')
+@bp.route('/lease-upload')
 def lease_upload():
     return render_template('lease_upload.html')
 
-@app.route('/upload-lease', methods=['POST'])
+@bp.route('/upload-lease', methods=['POST'])
 def upload_lease():
     try:
         if 'file' not in request.files:
@@ -94,17 +97,17 @@ def upload_lease():
         logger.error(f"Error uploading file: {str(e)}")
         return jsonify({'error': 'Internal server error'}), 500
 
-@app.route('/documents')
+@bp.route('/documents')
 def list_documents():
     user_email = session.get('user_email')
     if not user_email:
         flash('Please log in to view your documents', 'error')
-        return redirect(url_for('login'))
+        return redirect(url_for('main.login'))
         
     documents = Document.query.filter_by(user_email=user_email).order_by(Document.upload_date.desc()).all()
     return render_template('documents.html', documents=documents)
 
-@app.route('/download-document/<int:document_id>')
+@bp.route('/download-document/<int:document_id>')
 def download_document(document_id):
     user_email = session.get('user_email')
     if not user_email:
@@ -126,7 +129,7 @@ def download_document(document_id):
         logger.error(f"Error downloading file: {str(e)}")
         return jsonify({'error': 'File not found'}), 404
 
-@app.route('/submit-support-ticket', methods=['POST'])
+@bp.route('/submit-support-ticket', methods=['POST'])
 def submit_support_ticket():
     try:
         user_email = session.get('user_email')
@@ -162,21 +165,21 @@ def submit_support_ticket():
         logger.error(f"Error submitting support ticket: {str(e)}")
         return jsonify({'error': 'Internal server error'}), 500
 
-@app.route('/review-document/<int:document_id>')
+@bp.route('/review-document/<int:document_id>')
 def review_document(document_id):
     user_email = session.get('user_email')
     if not user_email:
         flash('Please log in to review documents', 'error')
-        return redirect(url_for('login'))
+        return redirect(url_for('main.login'))
         
     document = Document.query.get_or_404(document_id)
     
     if document.user_email != user_email:
         flash('Unauthorized access', 'error')
-        return redirect(url_for('list_documents'))
+        return redirect(url_for('main.list_documents'))
         
     if document.status != 'processed':
         flash('Document is not ready for review', 'error')
-        return redirect(url_for('list_documents'))
+        return redirect(url_for('main.list_documents'))
         
     return render_template('review_document.html', document=document)
