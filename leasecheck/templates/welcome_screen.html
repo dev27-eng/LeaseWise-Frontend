@@ -20,10 +20,16 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/welcome_screen.css') }}">
 </head>
 <body>
+    <!-- Welcome Screen: Main container for the initial landing page -->
     <div class="welcome-screen">
+        <!-- Welcome Container: Centers and organizes main content -->
         <div class="welcome-container">
+            <!-- Logo Text: Main branding element -->
             <h1 class="logo-text">LeaseCheck</h1>
+            
+            <!-- Logo Wrapper: Contains and positions the logo image -->
             <div class="logo-wrapper">
+                <!-- Logo Image: Visual branding element with performance attributes -->
                 <img src="{{ url_for('static', filename='images/logo.png') }}" 
                      alt="LeaseCheck Logo" 
                      class="logo-image"
@@ -32,8 +38,17 @@
                      width="350"
                      height="350">
             </div>
+            
+            <!-- Verify Text: Main value proposition -->
             <h2 class="verify-text">Verify legal compliance easily</h2>
-            <a href="{{ url_for('main.onboarding') }}" class="start-review-btn">Start Your Review</a>
+            
+            <!-- Start Review Button: Primary call-to-action -->
+            <a href="{{ url_for('main.onboarding') }}" 
+               class="start-review-btn"
+               role="button"
+               aria-label="Start your lease review process">
+                Start Your Review
+            </a>
         </div>
     </div>
 </body>
