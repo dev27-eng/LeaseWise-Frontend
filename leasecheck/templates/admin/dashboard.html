@@ -13,7 +13,7 @@
         <nav class="admin-nav">
             <a href="{{ url_for('admin_dashboard') }}" class="active">Dashboard</a>
             <a href="{{ url_for('admin_transactions') }}">Transactions</a>
-            <a href="{{ url_for('admin_create_user') }}">Create Admin User</a>
+            <a href="{{ url_for('admin_first_time_setup') }}">Create Admin User</a>
         </nav>
     </header>
 
@@ -104,4 +104,53 @@
         </section>
     </main>
 </div>
+
+<script>
+// All variables using let instead of const
+let chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+        y: {
+            beginAtZero: true
+        }
+    }
+};
+
+let revenueData = {
+    labels: {{ revenue_labels|tojson }},
+    datasets: [{
+        label: 'Revenue',
+        data: {{ revenue_data|tojson }},
+        borderColor: '#7ED321',
+        tension: 0.1
+    }]
+};
+
+let transactionData = {
+    labels: {{ transaction_labels|tojson }},
+    datasets: [{
+        label: 'Transactions',
+        data: {{ transaction_data|tojson }},
+        borderColor: '#4A90E2',
+        tension: 0.1
+    }]
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    let ctx = document.getElementById('revenueChart').getContext('2d');
+    let revenueChart = new Chart(ctx, {
+        type: 'line',
+        data: revenueData,
+        options: chartOptions
+    });
+
+    ctx = document.getElementById('transactionChart').getContext('2d');
+    let transactionChart = new Chart(ctx, {
+        type: 'line',
+        data: transactionData,
+        options: chartOptions
+    });
+});
+</script>
 {% endblock %}
