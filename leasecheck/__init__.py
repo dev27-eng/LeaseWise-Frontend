@@ -8,6 +8,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get("FLASK_SECRET_KEY", "dev-key-for-testing")
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SERVER_NAME'] = None
 
 csrf = CSRFProtect(app)
 db = SQLAlchemy(app)
@@ -49,10 +50,13 @@ csp = {
     ]
 }
 
-Talisman(app, 
-         content_security_policy=csp,
-         content_security_policy_nonce_in=['script-src'],
-         force_https=False)
+talisman = Talisman(
+    app,
+    content_security_policy=csp,
+    force_https=False,
+    strict_transport_security=False,
+    session_cookie_secure=False
+)
 
 # Create all database tables
 with app.app_context():

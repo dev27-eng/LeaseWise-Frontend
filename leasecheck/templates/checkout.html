@@ -126,59 +126,33 @@
     const stripe = Stripe('{{ stripe_public_key }}');
     const elements = stripe.elements();
 
-    // Card element styling
-    const cardElementOptions = {
-        style: {
-            base: {
-                fontSize: '16px',
-                color: '#32325d',
-                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-                fontSmoothing: 'antialiased',
-                '::placeholder': {
-                    color: '#aab7c4'
-                },
-                ':-webkit-autofill': {
-                    color: '#32325d'
-                }
-            },
-            invalid: {
-                color: '#fa755a',
-                iconColor: '#fa755a',
-                '::placeholder': {
-                    color: '#FFCCA5'
-                }
-            }
-        }
-    };
-
     // Create card element with proper error handling
     let cardElement = null;
     try {
+        const cardElementOptions = {
+            style: {
+                base: {
+                    fontSize: '16px',
+                    color: '#32325d',
+                    '::placeholder': {
+                        color: '#aab7c4'
+                    }
+                },
+                invalid: {
+                    color: '#fa755a',
+                    iconColor: '#fa755a'
+                }
+            }
+        };
+        
         cardElement = elements.create('card', cardElementOptions);
         cardElement.mount('#card-element');
-        
-        // Add mount success handler
-        cardElement.on('ready', () => {
-            console.log('Card element ready');
-        });
     } catch (error) {
-        console.error('Error initializing card element:', error);
+        console.error('Error creating card element:', error);
         document.getElementById('card-errors').textContent = 'Error initializing payment form. Please refresh the page.';
     }
 
-    // Handle card element errors
-    if (cardElement) {
-        cardElement.addEventListener('change', function(event) {
-            const displayError = document.getElementById('card-errors');
-            if (event.error) {
-                displayError.textContent = event.error.message;
-            } else {
-                displayError.textContent = '';
-            }
-        });
-    }
-
-    // Form submission handler
+    // Handle form submission
     document.getElementById('payment-form').addEventListener('submit', async function(event) {
         event.preventDefault();
         
@@ -210,20 +184,7 @@
 
             if (paymentMethodError) {
                 const errorElement = document.getElementById('card-errors');
-                switch(paymentMethodError.code) {
-                    case 'incomplete_cvc':
-                    case 'invalid_cvc':
-                        errorElement.textContent = 'Please enter a valid CVC/CVV number.';
-                        break;
-                    case 'card_declined':
-                        errorElement.textContent = 'Your card was declined. Please try a different card.';
-                        break;
-                    case 'expired_card':
-                        errorElement.textContent = 'Your card has expired. Please try a different card.';
-                        break;
-                    default:
-                        errorElement.textContent = paymentMethodError.message;
-                }
+                errorElement.textContent = paymentMethodError.message;
                 submitButton.disabled = false;
                 return;
             }
@@ -260,17 +221,7 @@
                 const { error: confirmError } = await stripe.confirmCardPayment(data.client_secret);
                 if (confirmError) {
                     const errorElement = document.getElementById('card-errors');
-                    switch(confirmError.code) {
-                        case 'incomplete_cvc':
-                        case 'invalid_cvc':
-                            errorElement.textContent = 'Please enter a valid CVC/CVV number.';
-                            break;
-                        case 'authentication_required':
-                            errorElement.textContent = 'Your card requires authentication. Please complete the verification process.';
-                            break;
-                        default:
-                            errorElement.textContent = confirmError.message;
-                    }
+                    errorElement.textContent = confirmError.message;
                     submitButton.disabled = false;
                 } else {
                     window.location.href = '/payment-status?status=success';
@@ -292,23 +243,23 @@
         }
     });
 
-    // Validation functions
-    const validateEmail = (email) => {
+    // Form validation functions
+    function validateEmail(email) {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
 
-    const validatePhone = (phone) => {
+    function validatePhone(phone) {
         return /^\+?[\d\s-()]{10,}$/.test(phone);
     }
 
-    const validateRequired = (value, fieldName) => {
+    function validateRequired(value, fieldName) {
         if (!value || value.trim() === '') {
             return `${fieldName} is required`;
         }
         return '';
     }
 
-    const validateForm = () => {
+    function validateForm() {
         let isValid = true;
         const fields = {
             'fullName': 'Full Name',
@@ -321,10 +272,10 @@
             'country': 'Country'
         };
 
-        for (const id in fields) {
+        for (const [id, label] of Object.entries(fields)) {
             const element = document.getElementById(id);
             const errorElement = document.getElementById(`${id}-error`);
-            const error = validateRequired(element.value, fields[id]);
+            const error = validateRequired(element.value, label);
             
             if (error) {
                 errorElement.textContent = error;
