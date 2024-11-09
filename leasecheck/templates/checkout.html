@@ -8,7 +8,6 @@
 
 {% block content %}
 <div class="checkout-screen">
-    <!-- Green header -->
     <header class="green-header">
         <h1>Checkout</h1>
     </header>
@@ -122,13 +121,12 @@
 
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-    // Initialize Stripe and elements
+    // Initialize Stripe
     const stripe = Stripe('{{ stripe_public_key }}');
     const elements = stripe.elements();
 
-    // Create card element
-    let cardElement = null;  // Use let since we need to reassign it
-
+    // Create card element with proper error handling
+    let cardElement = null;
     try {
         const cardElementOptions = {
             style: {
@@ -143,7 +141,8 @@
                     color: '#fa755a',
                     iconColor: '#fa755a'
                 }
-            }
+            },
+            hidePostalCode: true  // We'll use the billing address postal code
         };
         
         cardElement = elements.create('card', cardElementOptions);
@@ -151,6 +150,107 @@
     } catch (error) {
         console.error('Error creating card element:', error);
         document.getElementById('card-errors').textContent = 'Error initializing payment form. Please refresh the page.';
+    }
+
+    // Postal code validation patterns by country
+    const postalCodePatterns = {
+        'US': /^\d{5}(-\d{4})?$/,
+        'CA': /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/,
+        'GB': /^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$/i,
+        'AU': /^\d{4}$/,
+        'NZ': /^\d{4}$/
+    };
+
+    // Form validation functions
+    function validateEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function validatePhone(phone) {
+        return /^\+?[\d\s-()]{10,}$/.test(phone);
+    }
+
+    function validatePostalCode(postalCode, country) {
+        const pattern = postalCodePatterns[country];
+        return pattern ? pattern.test(postalCode) : true;
+    }
+
+    function validateRequired(value, fieldName) {
+        if (!value || value.trim() === '') {
+            return `${fieldName} is required`;
+        }
+        return '';
+    }
+
+    // Handle country change for postal code validation
+    document.getElementById('country').addEventListener('change', function() {
+        const zipCode = document.getElementById('zipCode').value;
+        const zipCodeError = document.getElementById('zipCode-error');
+        if (zipCode && !validatePostalCode(zipCode, this.value)) {
+            zipCodeError.textContent = `Please enter a valid postal code for ${this.options[this.selectedIndex].text}`;
+            zipCodeError.style.display = 'block';
+        } else {
+            zipCodeError.style.display = 'none';
+        }
+    });
+
+    function validateForm() {
+        let isValid = true;
+        const fields = {
+            'fullName': 'Full Name',
+            'email': 'Email Address',
+            'phone': 'Phone Number',
+            'street': 'Street Address',
+            'city': 'City',
+            'state': 'State/Province',
+            'zipCode': 'ZIP/Postal Code',
+            'country': 'Country'
+        };
+
+        for (const [id, label] of Object.entries(fields)) {
+            const element = document.getElementById(id);
+            const errorElement = document.getElementById(`${id}-error`);
+            const error = validateRequired(element.value, label);
+            
+            if (error) {
+                errorElement.textContent = error;
+                errorElement.style.display = 'block';
+                isValid = false;
+            } else {
+                errorElement.textContent = '';
+                errorElement.style.display = 'none';
+            }
+        }
+
+        // Email validation
+        const emailElement = document.getElementById('email');
+        const emailErrorElement = document.getElementById('email-error');
+        if (emailElement.value && !validateEmail(emailElement.value)) {
+            emailErrorElement.textContent = 'Please enter a valid email address';
+            emailErrorElement.style.display = 'block';
+            isValid = false;
+        }
+
+        // Phone validation
+        const phoneElement = document.getElementById('phone');
+        const phoneErrorElement = document.getElementById('phone-error');
+        if (phoneElement.value && !validatePhone(phoneElement.value)) {
+            phoneErrorElement.textContent = 'Please enter a valid phone number';
+            phoneErrorElement.style.display = 'block';
+            isValid = false;
+        }
+
+        // Postal code validation
+        const zipCodeElement = document.getElementById('zipCode');
+        const countryElement = document.getElementById('country');
+        const zipCodeErrorElement = document.getElementById('zipCode-error');
+        if (zipCodeElement.value && countryElement.value && !validatePostalCode(zipCodeElement.value, countryElement.value)) {
+            zipCodeErrorElement.textContent = `Please enter a valid postal code for ${countryElement.options[countryElement.selectedIndex].text}`;
+            zipCodeErrorElement.style.display = 'block';
+            isValid = false;
+        }
+
+        return isValid;
     }
 
     // Handle form submission
@@ -243,68 +343,5 @@
             submitButton.disabled = false;
         }
     });
-
-    // Form validation functions
-    function validateEmail(email) {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
-
-    function validatePhone(phone) {
-        return /^\+?[\d\s-()]{10,}$/.test(phone);
-    }
-
-    function validateRequired(value, fieldName) {
-        if (!value || value.trim() === '') {
-            return `${fieldName} is required`;
-        }
-        return '';
-    }
-
-    function validateForm() {
-        let isValid = true;
-        const fields = {
-            'fullName': 'Full Name',
-            'email': 'Email Address',
-            'phone': 'Phone Number',
-            'street': 'Street Address',
-            'city': 'City',
-            'state': 'State/Province',
-            'zipCode': 'ZIP/Postal Code',
-            'country': 'Country'
-        };
-
-        for (const [id, label] of Object.entries(fields)) {
-            const element = document.getElementById(id);
-            const errorElement = document.getElementById(`${id}-error`);
-            const error = validateRequired(element.value, label);
-            
-            if (error) {
-                errorElement.textContent = error;
-                errorElement.style.display = 'block';
-                isValid = false;
-            } else {
-                errorElement.textContent = '';
-                errorElement.style.display = 'none';
-            }
-        }
-
-        const emailElement = document.getElementById('email');
-        const emailErrorElement = document.getElementById('email-error');
-        if (!validateEmail(emailElement.value)) {
-            emailErrorElement.textContent = 'Please enter a valid email address';
-            emailErrorElement.style.display = 'block';
-            isValid = false;
-        }
-
-        const phoneElement = document.getElementById('phone');
-        const phoneErrorElement = document.getElementById('phone-error');
-        if (!validatePhone(phoneElement.value)) {
-            phoneErrorElement.textContent = 'Please enter a valid phone number';
-            phoneErrorElement.style.display = 'block';
-            isValid = false;
-        }
-
-        return isValid;
-    }
 </script>
 {% endblock %}
