@@ -95,7 +95,14 @@
                     </div>
                     <div class="form-group half">
                         <label for="country">Country</label>
-                        <input type="text" id="country" required>
+                        <select id="country" required>
+                            <option value="">Select a country</option>
+                            <option value="US">United States</option>
+                            <option value="CA">Canada</option>
+                            <option value="GB">United Kingdom</option>
+                            <option value="AU">Australia</option>
+                            <option value="NZ">New Zealand</option>
+                        </select>
                         <div id="country-error" class="error-message"></div>
                     </div>
                 </div>
@@ -145,7 +152,7 @@
     };
 
     // Create and mount the card element
-    let card = elements.create('card', cardElementOptions);
+    const card = elements.create('card', cardElementOptions);
     card.mount('#card-element');
 
     // Validation functions

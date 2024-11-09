@@ -14,7 +14,7 @@ db = SQLAlchemy(app)
 
 # Configure security headers with Talisman
 csp = {
-    'default-src': ["'self'"],
+    'default-src': ["'self'", "*.replit.dev"],
     'script-src': [
         "'self'",
         'https://js.stripe.com',
@@ -28,13 +28,15 @@ csp = {
     'frame-src': [
         "'self'",
         'https://js.stripe.com',
-        'https://hooks.stripe.com'
+        'https://hooks.stripe.com',
+        "*.replit.dev"
     ],
     'img-src': ["'self'", 'data:', 'https:'],
     'connect-src': [
         "'self'",
         'https://api.stripe.com',
-        'https://js.stripe.com'
+        'https://js.stripe.com',
+        "*.replit.dev"
     ],
     'font-src': ["'self'", 'data:']
 }
