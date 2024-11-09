@@ -38,13 +38,25 @@
             </div>
         </div>
 
+        <!-- Charts Section -->
+        <div class="charts-section">
+            <div class="chart-container">
+                <h2>Revenue Trend</h2>
+                <canvas id="revenueChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h2>Transaction Trend</h2>
+                <canvas id="transactionChart"></canvas>
+            </div>
+        </div>
+
         <!-- Revenue by Plan -->
         <section class="revenue-section">
             <h2>Revenue by Plan</h2>
             <div class="plan-revenue-grid">
                 {% for plan in stats.revenue_by_plan %}
                 <div class="plan-card">
-                    <h4>{{ plan.name }}</h4>
+                    <h4>{{ plan.plan_name }}</h4>
                     <div class="plan-stats">
                         <div>Revenue: ${{ "%.2f"|format(plan.revenue/100) }}</div>
                         <div>Transactions: {{ plan.transactions }}</div>
@@ -71,7 +83,7 @@
                         <tbody>
                             {% for day in stats.daily_trends %}
                             <tr>
-                                <td>{{ day.date }}</td>
+                                <td>{{ day.date.strftime('%Y-%m-%d') }}</td>
                                 <td>{{ day.count }}</td>
                                 <td>${{ "%.2f"|format(day.revenue/100) }}</td>
                             </tr>
@@ -92,7 +104,7 @@
                         <tbody>
                             {% for week in stats.weekly_trends %}
                             <tr>
-                                <td>{{ week.date }}</td>
+                                <td>{{ week.week.strftime('%Y-%m-%d') }}</td>
                                 <td>{{ week.count }}</td>
                                 <td>${{ "%.2f"|format(week.revenue/100) }}</td>
                             </tr>
@@ -105,52 +117,57 @@
     </main>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-// All variables using let instead of const
-let chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-        y: {
-            beginAtZero: true
-        }
-    }
-};
-
-let revenueData = {
-    labels: {{ revenue_labels|tojson }},
-    datasets: [{
-        label: 'Revenue',
-        data: {{ revenue_data|tojson }},
-        borderColor: '#7ED321',
-        tension: 0.1
-    }]
-};
-
-let transactionData = {
-    labels: {{ transaction_labels|tojson }},
-    datasets: [{
-        label: 'Transactions',
-        data: {{ transaction_data|tojson }},
-        borderColor: '#4A90E2',
-        tension: 0.1
-    }]
-};
-
+// Initialize variables after DOM loads
 document.addEventListener('DOMContentLoaded', function() {
-    let ctx = document.getElementById('revenueChart').getContext('2d');
-    let revenueChart = new Chart(ctx, {
-        type: 'line',
-        data: revenueData,
-        options: chartOptions
-    });
+    let chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    };
 
-    ctx = document.getElementById('transactionChart').getContext('2d');
-    let transactionChart = new Chart(ctx, {
-        type: 'line',
-        data: transactionData,
-        options: chartOptions
-    });
+    // Only initialize charts if canvas elements exist
+    let revenueCanvas = document.getElementById('revenueChart');
+    let transactionCanvas = document.getElementById('transactionChart');
+    
+    if (revenueCanvas) {
+        let ctx = revenueCanvas.getContext('2d');
+        let revenueChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ revenue_labels|tojson if revenue_labels else '[]'|safe }},
+                datasets: [{
+                    label: 'Revenue',
+                    data: {{ revenue_data|tojson if revenue_data else '[]'|safe }},
+                    borderColor: '#7ED321',
+                    tension: 0.1
+                }]
+            },
+            options: chartOptions
+        });
+    }
+
+    if (transactionCanvas) {
+        let ctx = transactionCanvas.getContext('2d');
+        let transactionChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ transaction_labels|tojson if transaction_labels else '[]'|safe }},
+                datasets: [{
+                    label: 'Transactions',
+                    data: {{ transaction_data|tojson if transaction_data else '[]'|safe }},
+                    borderColor: '#4A90E2',
+                    tension: 0.1
+                }]
+            },
+            options: chartOptions
+        });
+    }
 });
 </script>
 {% endblock %}

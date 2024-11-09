@@ -184,8 +184,20 @@ def admin_dashboard():
         'daily_trends': get_daily_trends(),
         'weekly_trends': get_weekly_trends()
     }
+
+    # Prepare chart data
+    daily_data = get_daily_trends()
+    revenue_labels = [day.date.strftime('%Y-%m-%d') for day in daily_data]
+    revenue_data = [float(day.revenue or 0)/100 for day in daily_data]
+    transaction_labels = revenue_labels
+    transaction_data = [day.count for day in daily_data]
     
-    return render_template('admin/dashboard.html', stats=stats)
+    return render_template('admin/dashboard.html', 
+                         stats=stats,
+                         revenue_labels=revenue_labels,
+                         revenue_data=revenue_data,
+                         transaction_labels=transaction_labels,
+                         transaction_data=transaction_data)
 
 @app.route('/admin/transactions')
 @admin_required
