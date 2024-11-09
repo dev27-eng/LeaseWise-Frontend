@@ -4,6 +4,15 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/checkout.css') }}">
+<style>
+#card-element {
+    background-color: white;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -13,17 +22,6 @@
     </header>
 
     <main class="checkout-content">
-        <!-- Test mode notice -->
-        <div class="test-mode-notice">
-            <h4>🔔 Test Mode</h4>
-            <ul>
-                <li><strong>Card Number:</strong> 4242 4242 4242 4242</li>
-                <li><strong>Expiry:</strong> Any future date</li>
-                <li><strong>CVC:</strong> Any 3 digits</li>
-                <li><strong>ZIP:</strong> Any 5 digits</li>
-            </ul>
-        </div>
-
         <!-- Order summary -->
         <div class="order-summary">
             <h2>Order Summary</h2>
@@ -125,14 +123,12 @@
 
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-    // Global variable declarations
     let stripe = null;
     let elements = null;
     let cardElement = null;
     let submitButton = null;
     let form = null;
     
-    // Postal code validation patterns
     let postalCodePatterns = {
         'US': /^\d{5}(-\d{4})?$/,
         'CA': /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/,
@@ -141,18 +137,18 @@
         'NZ': /^\d{4}$/
     };
 
-    // Initialize all elements after DOM is loaded
     document.addEventListener('DOMContentLoaded', function() {
         try {
             stripe = Stripe('{{ stripe_public_key }}');
             elements = stripe.elements();
             
-            // Create card element
             let cardElementOptions = {
                 style: {
                     base: {
                         fontSize: '16px',
                         color: '#32325d',
+                        fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                        fontSmoothing: 'antialiased',
                         '::placeholder': {
                             color: '#aab7c4'
                         }
@@ -168,11 +164,9 @@
             cardElement = elements.create('card', cardElementOptions);
             cardElement.mount('#card-element');
             
-            // Store frequently used elements
             submitButton = document.getElementById('submit-button');
             form = document.getElementById('payment-form');
             
-            // Add event listeners
             cardElement.on('change', handleCardChange);
             form.addEventListener('submit', handleSubmit);
             document.getElementById('country').addEventListener('change', handleCountryChange);
@@ -182,7 +176,6 @@
         }
     });
 
-    // Validation functions
     function validateEmail(email) {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
@@ -200,7 +193,6 @@
         return value && value.trim() !== '' ? '' : `${fieldName} is required`;
     }
 
-    // Event handlers
     function handleCardChange(event) {
         let displayError = document.getElementById('card-errors');
         if (event.error) {
