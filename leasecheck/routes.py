@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, send_file, jsonify, session
-from .database import db
+from .database import db, safe_transaction, DatabaseError, retry_on_operational_error
 from .forms import TermsAcceptanceForm
 from .models import TermsAcceptance, Payment, AdminUser, Document, SupportTicket
 from datetime import datetime, timedelta
@@ -40,6 +40,10 @@ if not os.path.exists(UPLOAD_FOLDER):
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+@bp.route('/')
+def index():
+    return render_template('index.html')
+
 @bp.route('/lease-upload')
 def lease_upload():
     return render_template('lease_upload.html')
@@ -52,7 +56,7 @@ def upload_lease():
 
         file = request.files['file']
         
-        if file.filename == '':
+        if not file or file.filename == '':
             return jsonify({'error': 'No file selected'}), 400
 
         if not allowed_file(file.filename):
@@ -66,7 +70,8 @@ def upload_lease():
         unique_filename = f"{uuid.uuid4()}{file_ext}"
         
         # Create user-specific directory
-        user_dir = os.path.join(UPLOAD_FOLDER, session.get('user_email', 'anonymous'))
+        user_email = session.get('user_email', 'anonymous')
+        user_dir = os.path.join(UPLOAD_FOLDER, user_email)
         if not os.path.exists(user_dir):
             os.makedirs(user_dir)
         
@@ -75,56 +80,71 @@ def upload_lease():
         # Save file
         file.save(file_path)
         
-        # Create document record
-        document = Document(
-            filename=unique_filename,
-            original_filename=secure_filename(file.filename),
-            mimetype=file.content_type or mimetypes.guess_type(file.filename)[0],
-            file_size=os.path.getsize(file_path),
-            user_email=session.get('user_email', 'anonymous'),
-            file_path=file_path
-        )
-        
-        db.session.add(document)
-        db.session.commit()
+        # Create document record using safe transaction
+        with safe_transaction() as db_session:
+            document = Document(
+                filename=unique_filename,
+                original_filename=secure_filename(file.filename),
+                mimetype=file.content_type or mimetypes.guess_type(file.filename)[0] or 'application/octet-stream',
+                file_size=os.path.getsize(file_path),
+                user_email=user_email,
+                file_path=file_path
+            )
+            db_session.add(document)
         
         return jsonify({
             'message': 'File uploaded successfully',
             'document_id': document.id
         }), 200
         
+    except DatabaseError as e:
+        logger.error(f"Database error while uploading file: {str(e)}")
+        if os.path.exists(file_path):
+            os.remove(file_path)
+        return jsonify({'error': 'Database error occurred'}), 500
     except Exception as e:
         logger.error(f"Error uploading file: {str(e)}")
+        if os.path.exists(file_path):
+            os.remove(file_path)
         return jsonify({'error': 'Internal server error'}), 500
 
 @bp.route('/documents')
+@retry_on_operational_error()
 def list_documents():
-    user_email = session.get('user_email')
-    if not user_email:
-        flash('Please log in to view your documents', 'error')
-        return redirect(url_for('main.login'))
-        
-    documents = Document.query.filter_by(user_email=user_email).order_by(Document.upload_date.desc()).all()
-    return render_template('documents.html', documents=documents)
+    try:
+        user_email = session.get('user_email')
+        if not user_email:
+            flash('Please log in to view your documents', 'error')
+            return redirect(url_for('main.login'))
+            
+        documents = Document.query.filter_by(user_email=user_email).order_by(Document.upload_date.desc()).all()
+        return render_template('documents.html', documents=documents)
+    except DatabaseError as e:
+        logger.error(f"Database error while listing documents: {str(e)}")
+        flash('Error retrieving documents. Please try again later.', 'error')
+        return redirect(url_for('main.index'))
 
 @bp.route('/download-document/<int:document_id>')
 def download_document(document_id):
-    user_email = session.get('user_email')
-    if not user_email:
-        return jsonify({'error': 'Unauthorized'}), 401
-        
-    document = Document.query.get_or_404(document_id)
-    
-    if document.user_email != user_email:
-        return jsonify({'error': 'Unauthorized'}), 403
-        
     try:
+        user_email = session.get('user_email')
+        if not user_email:
+            return jsonify({'error': 'Unauthorized'}), 401
+            
+        document = Document.query.get_or_404(document_id)
+        
+        if document.user_email != user_email:
+            return jsonify({'error': 'Unauthorized'}), 403
+            
         return send_file(
             document.file_path,
             mimetype=document.mimetype,
             as_attachment=True,
             download_name=document.original_filename
         )
+    except DatabaseError as e:
+        logger.error(f"Database error while downloading document: {str(e)}")
+        return jsonify({'error': 'Database error occurred'}), 500
     except Exception as e:
         logger.error(f"Error downloading file: {str(e)}")
         return jsonify({'error': 'File not found'}), 404
@@ -137,6 +157,9 @@ def submit_support_ticket():
             return jsonify({'error': 'Unauthorized'}), 401
             
         data = request.get_json()
+        if not data:
+            return jsonify({'error': 'No data provided'}), 400
+            
         document_id = data.get('document_id')
         issue_type = data.get('issue_type')
         description = data.get('description')
@@ -149,37 +172,44 @@ def submit_support_ticket():
         if document.user_email != user_email:
             return jsonify({'error': 'Unauthorized'}), 403
             
-        support_ticket = SupportTicket(
-            document_id=document_id,
-            user_email=user_email,
-            issue_type=issue_type,
-            description=description
-        )
-        
-        db.session.add(support_ticket)
-        db.session.commit()
+        with safe_transaction() as db_session:
+            support_ticket = SupportTicket(
+                document_id=document_id,
+                user_email=user_email,
+                issue_type=issue_type,
+                description=description
+            )
+            db_session.add(support_ticket)
         
         return jsonify({'message': 'Support ticket submitted successfully'}), 200
         
+    except DatabaseError as e:
+        logger.error(f"Database error while submitting support ticket: {str(e)}")
+        return jsonify({'error': 'Database error occurred'}), 500
     except Exception as e:
         logger.error(f"Error submitting support ticket: {str(e)}")
         return jsonify({'error': 'Internal server error'}), 500
 
 @bp.route('/review-document/<int:document_id>')
 def review_document(document_id):
-    user_email = session.get('user_email')
-    if not user_email:
-        flash('Please log in to review documents', 'error')
-        return redirect(url_for('main.login'))
+    try:
+        user_email = session.get('user_email')
+        if not user_email:
+            flash('Please log in to review documents', 'error')
+            return redirect(url_for('main.login'))
+            
+        document = Document.query.get_or_404(document_id)
         
-    document = Document.query.get_or_404(document_id)
-    
-    if document.user_email != user_email:
-        flash('Unauthorized access', 'error')
+        if document.user_email != user_email:
+            flash('Unauthorized access', 'error')
+            return redirect(url_for('main.list_documents'))
+            
+        if document.status != 'processed':
+            flash('Document is not ready for review', 'error')
+            return redirect(url_for('main.list_documents'))
+            
+        return render_template('review_document.html', document=document)
+    except DatabaseError as e:
+        logger.error(f"Database error while reviewing document: {str(e)}")
+        flash('Error retrieving document. Please try again later.', 'error')
         return redirect(url_for('main.list_documents'))
-        
-    if document.status != 'processed':
-        flash('Document is not ready for review', 'error')
-        return redirect(url_for('main.list_documents'))
-        
-    return render_template('review_document.html', document=document)

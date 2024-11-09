@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Welcome to LeaseWise</h1>
+    <p>Upload and manage your lease documents securely.</p>
+    
+    <div class="actions">
+        <a href="{{ url_for('main.lease_upload') }}" class="btn btn-primary">Upload Lease</a>
+        <a href="{{ url_for('main.list_documents') }}" class="btn btn-secondary">View Documents</a>
+    </div>
+</div>
+{% endblock %}
