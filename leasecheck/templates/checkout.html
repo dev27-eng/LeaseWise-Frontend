@@ -124,7 +124,7 @@
 
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-    // Initialize Stripe
+    // Initialize variables
     let stripe = null;
     let elements = null;
     let cardElement = null;
@@ -137,8 +137,8 @@
             stripe = Stripe('{{ stripe_public_key }}');
             elements = stripe.elements();
             
-            // Create card element
-            const cardElementOptions = {
+            // Create card element with proper error handling
+            let cardElementOptions = {
                 style: {
                     base: {
                         fontSize: '16px',
@@ -353,24 +353,4 @@
         }
     }
 </script>
-
-<style>
-.spinner {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 3px solid rgba(255, 255, 255, .3);
-    border-radius: 50%;
-    border-top-color: #fff;
-    animation: spin 1s ease-in-out infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-.hidden {
-    display: none;
-}
-</style>
 {% endblock %}
