@@ -47,3 +47,14 @@ def index():
 @bp.route('/onboarding')
 def onboarding():
     return render_template('onboarding_screen.html')
+
+@bp.route('/select-plan')
+def select_plan():
+    return render_template('select_plan.html')
+
+@bp.route('/checkout')
+def checkout():
+    plan = request.args.get('plan')
+    if not plan or plan not in ['basic', 'standard', 'premium']:
+        return redirect(url_for('main.select_plan'))
+    return render_template('checkout.html', plan=plan)
