@@ -18,13 +18,29 @@ def create_app():
     
     # Configure app
     app.config['SECRET_KEY'] = os.environ.get("FLASK_SECRET_KEY", "dev-key-for-testing")
+    
+    # Database Configuration
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+        'pool_size': 5,
+        'pool_timeout': 30,
+        'pool_recycle': 1800,
+        'max_overflow': 10,
+        'echo': True if app.debug else False,
+        'echo_pool': True if app.debug else False
+    }
     app.config['SERVER_NAME'] = None
 
     # Initialize extensions with app
     csrf.init_app(app)
-    init_db(app)
+    
+    try:
+        init_db(app)
+        logger.info("Database initialization completed successfully")
+    except Exception as e:
+        logger.error(f"Failed to initialize database: {str(e)}")
+        raise
 
     # Configure security headers with Talisman
     csp = {
