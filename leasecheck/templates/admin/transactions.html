@@ -110,12 +110,16 @@
 
 <script>
 // Modal handling using let instead of const
-let modalElement = null;
-let closeBtnElement = null;
+let modalElement = document.getElementById('transaction-modal');
+let closeBtnElement = document.getElementsByClassName('close-modal')[0];
+let filtersForm = document.getElementById('filters-form');
+let detailsContainer = null;
 
 document.addEventListener('DOMContentLoaded', function() {
     modalElement = document.getElementById('transaction-modal');
     closeBtnElement = document.getElementsByClassName('close-modal')[0];
+    filtersForm = document.getElementById('filters-form');
+    detailsContainer = document.getElementById('transaction-details');
     
     if (closeBtnElement) {
         closeBtnElement.onclick = function() {
@@ -134,11 +138,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function showTransactionDetails(transactionId) {
     try {
-        const response = await fetch(`/admin/transaction/${transactionId}`);
+        let response = await fetch(`/admin/transaction/${transactionId}`);
         if (!response.ok) throw new Error('Failed to fetch transaction details');
         
-        const details = await response.json();
-        const detailsContainer = document.getElementById('transaction-details');
+        let details = await response.json();
+        detailsContainer = document.getElementById('transaction-details');
         
         if (!detailsContainer) return;
         
@@ -158,6 +162,7 @@ async function showTransactionDetails(transactionId) {
                     <p><strong>Status:</strong> ${details.status}</p>
                     <p><strong>Plan:</strong> ${details.plan_name}</p>
                     <p><strong>Payment Method:</strong> ${details.payment_method || 'N/A'}</p>
+                    <p><strong>Created:</strong> ${details.created_at}</p>
                 </div>
                 ${details.error_log ? `
                 <div class="detail-section error-log">
@@ -178,12 +183,11 @@ async function showTransactionDetails(transactionId) {
 }
 
 // Form handling
-const filtersForm = document.getElementById('filters-form');
 if (filtersForm) {
     filtersForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        const formData = new FormData(e.target);
-        const params = new URLSearchParams();
+        let formData = new FormData(e.target);
+        let params = new URLSearchParams();
         
         for (let [key, value] of formData.entries()) {
             if (value) params.append(key, value);

@@ -3,6 +3,11 @@ import os
 from flask_wtf.csrf import CSRFProtect
 from flask_sqlalchemy import SQLAlchemy
 from flask_talisman import Talisman
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get("FLASK_SECRET_KEY", "dev-key-for-testing")
@@ -31,8 +36,14 @@ talisman = Talisman(
 )
 
 # Create all database tables
-with app.app_context():
-    db.create_all()
+try:
+    with app.app_context():
+        logger.info("Creating database tables...")
+        db.create_all()
+        logger.info("Database tables created successfully")
+except Exception as e:
+    logger.error(f"Error creating database tables: {e}")
+    raise
 
 # Import routes after app is created to avoid circular imports
 from . import routes

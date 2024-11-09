@@ -27,6 +27,7 @@ def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not session.get('admin_id'):
+            logger.warning("Admin authentication failed: No admin_id in session")
             return redirect(url_for('admin_login'))
         return f(*args, **kwargs)
     return decorated_function
@@ -65,89 +66,35 @@ def select_plan():
 
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
-    # Check if any admin users exist
-    if AdminUser.query.first() is None:
-        return redirect(url_for('admin_first_time_setup'))
-        
-    if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
-        
-        admin = AdminUser.query.filter_by(email=email).first()
-        
-        if admin and check_password_hash(admin.password_hash, password):
-            session['admin_id'] = admin.id
-            return redirect(url_for('admin_dashboard'))
-        
-        flash('Invalid email or password', 'error')
-    return render_template('admin/login.html')
+    try:
+        logger.info("Checking for existing admin users...")
+        admin_exists = AdminUser.query.first() is not None
+        logger.info(f"Admin users exist: {admin_exists}")
 
-@app.route('/admin/first-time-setup', methods=['GET', 'POST'])
-def admin_first_time_setup():
-    # Redirect if admin users already exist
-    if AdminUser.query.first() is not None:
-        return redirect(url_for('admin_login'))
+        if not admin_exists:
+            logger.info("No admin users found, redirecting to first-time setup")
+            return redirect(url_for('admin_first_time_setup'))
         
-    if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
-        confirm_password = request.form.get('confirm_password')
-        
-        # Validate email format
-        if not email or '@' not in email:
-            flash('Please enter a valid email address', 'error')
-            return render_template('admin/first_time_setup.html')
+        if request.method == 'POST':
+            email = request.form.get('email')
+            password = request.form.get('password')
             
-        # Validate password
-        if not password or len(password) < 8:
-            flash('Password must be at least 8 characters long', 'error')
-            return render_template('admin/first_time_setup.html')
+            logger.info(f"Login attempt for email: {email}")
+            admin = AdminUser.query.filter_by(email=email).first()
             
-        # Check password requirements
-        if not any(c.isupper() for c in password):
-            flash('Password must contain at least one uppercase letter', 'error')
-            return render_template('admin/first_time_setup.html')
+            if admin and check_password_hash(admin.password_hash, password):
+                session['admin_id'] = admin.id
+                logger.info(f"Login successful for admin: {email}")
+                return redirect(url_for('admin_dashboard'))
             
-        if not any(c.islower() for c in password):
-            flash('Password must contain at least one lowercase letter', 'error')
-            return render_template('admin/first_time_setup.html')
+            logger.warning(f"Login failed for email: {email}")
+            flash('Invalid email or password', 'error')
             
-        if not any(c.isdigit() for c in password):
-            flash('Password must contain at least one number', 'error')
-            return render_template('admin/first_time_setup.html')
-            
-        if not any(c in '!@#$%^&*(),.?":{}|<>' for c in password):
-            flash('Password must contain at least one special character', 'error')
-            return render_template('admin/first_time_setup.html')
-            
-        # Check password confirmation
-        if password != confirm_password:
-            flash('Passwords do not match', 'error')
-            return render_template('admin/first_time_setup.html')
-            
-        # Create admin user
-        admin = AdminUser(
-            email=email,
-            password_hash=generate_password_hash(password)
-        )
-        db.session.add(admin)
-        
-        try:
-            db.session.commit()
-            flash('Admin account created successfully', 'success')
-            session['admin_id'] = admin.id
-            return redirect(url_for('admin_dashboard'))
-        except Exception as e:
-            db.session.rollback()
-            logger.error(f"Error creating admin user: {str(e)}")
-            flash('An error occurred while creating the admin account', 'error')
-            
-    return render_template('admin/first_time_setup.html')
-
-@app.route('/admin/logout')
-def admin_logout():
-    session.pop('admin_id', None)
-    return redirect(url_for('admin_login'))
+        return render_template('admin/login.html')
+    except Exception as e:
+        logger.error(f"Database error checking admin users: {e}")
+        flash('Database error occurred', 'error')
+        return render_template('admin/login.html')
 
 @app.route('/admin/dashboard')
 @admin_required
@@ -209,4 +156,91 @@ def admin_dashboard():
     
     return render_template('admin/dashboard.html', stats=stats)
 
-# ... rest of the original routes remain the same (create_payment, payment_status, etc.)
+@app.route('/admin/transactions')
+@admin_required
+def admin_transactions():
+    page = request.args.get('page', 1, type=int)
+    per_page = 20
+    
+    # Get filter parameters
+    filters = {
+        'search': request.args.get('search', ''),
+        'status': request.args.get('status', ''),
+        'plan': request.args.get('plan', ''),
+        'date_from': request.args.get('date_from', ''),
+        'date_to': request.args.get('date_to', '')
+    }
+    
+    # Build query
+    query = Payment.query
+    
+    if filters['search']:
+        query = query.filter(
+            (Payment.user_email.ilike(f"%{filters['search']}%")) |
+            (Payment.stripe_payment_id.ilike(f"%{filters['search']}%"))
+        )
+    
+    if filters['status']:
+        query = query.filter(Payment.status == filters['status'])
+    
+    if filters['plan']:
+        query = query.filter(Payment.plan_name == filters['plan'])
+    
+    if filters['date_from']:
+        date_from = datetime.strptime(filters['date_from'], '%Y-%m-%d')
+        query = query.filter(Payment.created_at >= date_from)
+    
+    if filters['date_to']:
+        date_to = datetime.strptime(filters['date_to'], '%Y-%m-%d')
+        query = query.filter(Payment.created_at <= date_to + timedelta(days=1))
+    
+    # Execute query with pagination
+    pagination = query.order_by(Payment.created_at.desc()).paginate(page=page, per_page=per_page)
+    
+    # Get available statuses and plans for filters
+    available_statuses = db.session.query(Payment.status).distinct().all()
+    available_plans = db.session.query(Payment.plan_name).distinct().all()
+    
+    return render_template('admin/transactions.html',
+                         transactions=pagination.items,
+                         pagination=pagination,
+                         filters=filters,
+                         available_statuses=[status[0] for status in available_statuses],
+                         available_plans=[plan[0] for plan in available_plans])
+
+@app.route('/admin/transaction/<transaction_id>')
+@admin_required
+def admin_transaction_details(transaction_id):
+    transaction = Payment.query.filter_by(stripe_payment_id=transaction_id).first_or_404()
+    
+    try:
+        # Fetch additional details from Stripe
+        stripe_payment = stripe.PaymentIntent.retrieve(transaction_id)
+        payment_method = None
+        if stripe_payment.payment_method:
+            payment_method = stripe.PaymentMethod.retrieve(stripe_payment.payment_method)
+        
+        details = {
+            'user_email': transaction.user_email,
+            'amount': transaction.amount,
+            'status': transaction.status,
+            'plan_name': transaction.plan_name,
+            'created_at': transaction.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            'customer_name': stripe_payment.metadata.get('full_name'),
+            'customer_phone': stripe_payment.metadata.get('phone'),
+            'payment_method': f"{payment_method.card.brand.title()} ending in {payment_method.card.last4}" if payment_method else None,
+            'error_log': stripe_payment.last_payment_error.message if stripe_payment.last_payment_error else None
+        }
+        
+        return jsonify(details)
+    
+    except stripe.error.StripeError as e:
+        logger.error(f"Stripe error while fetching transaction details: {str(e)}")
+        return jsonify({
+            'user_email': transaction.user_email,
+            'amount': transaction.amount,
+            'status': transaction.status,
+            'plan_name': transaction.plan_name,
+            'created_at': transaction.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            'error_log': 'Failed to fetch additional details from Stripe'
+        })

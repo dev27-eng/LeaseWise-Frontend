@@ -37,6 +37,16 @@
     background-color: rgba(0, 0, 0, 0.2);
 }
 
+.back-button {
+    background-color: #6c757d;
+    color: white !important;
+    margin-left: auto;
+}
+
+.back-button:hover {
+    background-color: #5a6268;
+}
+
 .dashboard-content {
     max-width: 1200px;
     margin: 0 auto;
