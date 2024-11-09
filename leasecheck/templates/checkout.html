@@ -122,12 +122,13 @@
 
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-    // Initialize Stripe
+    // Initialize Stripe and elements
     const stripe = Stripe('{{ stripe_public_key }}');
     const elements = stripe.elements();
 
-    // Create card element with proper error handling
-    let cardElement = null;
+    // Create card element
+    let cardElement = null;  // Use let since we need to reassign it
+
     try {
         const cardElementOptions = {
             style: {
