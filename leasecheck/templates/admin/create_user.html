@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Create Admin User - LeaseCheck{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <header class="admin-header">
+        <h1>Create Admin User</h1>
+        <nav class="admin-nav">
+            <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('admin_transactions') }}">Transactions</a>
+            <a href="{{ url_for('admin_dashboard') }}" class="back-button">Back to Dashboard</a>
+        </nav>
+    </header>
+
+    <main class="dashboard-content">
+        <div class="login-container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <form method="POST" class="login-form" id="create-user-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                    <div class="error-message" id="email-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                    <div class="error-message" id="password-error"></div>
+                </div>
+                <button type="submit" class="submit-button">Create User</button>
+            </form>
+        </div>
+    </main>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let form = document.getElementById('create-user-form');
+    
+    function validateEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+    
+    function showError(fieldId, message) {
+        let errorElement = document.getElementById(`${fieldId}-error`);
+        if (errorElement) {
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+    }
+    
+    function clearError(fieldId) {
+        let errorElement = document.getElementById(`${fieldId}-error`);
+        if (errorElement) {
+            errorElement.textContent = '';
+            errorElement.style.display = 'none';
+        }
+    }
+    
+    form.addEventListener('submit', function(e) {
+        let valid = true;
+        let email = document.getElementById('email').value;
+        let password = document.getElementById('password').value;
+        
+        // Clear previous errors
+        clearError('email');
+        clearError('password');
+        
+        // Validate email
+        if (!email) {
+            showError('email', 'Email is required');
+            valid = false;
+        } else if (!validateEmail(email)) {
+            showError('email', 'Please enter a valid email address');
+            valid = false;
+        }
+        
+        // Validate password
+        if (!password) {
+            showError('password', 'Password is required');
+            valid = false;
+        } else if (password.length < 8) {
+            showError('password', 'Password must be at least 8 characters long');
+            valid = false;
+        }
+        
+        if (!valid) {
+            e.preventDefault();
+        }
+    });
+});
+</script>
+{% endblock %}

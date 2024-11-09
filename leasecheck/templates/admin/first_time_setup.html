@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block title %}First Time Admin Setup - LeaseCheck{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+<style>
+.setup-container {
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.setup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.password-requirements {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.password-requirements ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.password-requirements li {
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.password-requirements li.valid {
+    color: #198754;
+}
+
+.password-requirements li.valid::before {
+    content: '✓';
+    margin-right: 5px;
+    color: #198754;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <header class="admin-header">
+        <h1>First Time Admin Setup</h1>
+    </header>
+
+    <main class="dashboard-content">
+        <div class="setup-container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <form method="POST" class="setup-form" id="admin-setup-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                    <div class="error-message" id="email-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                    <div class="error-message" id="password-error"></div>
+                    <div class="password-requirements">
+                        <h4>Password Requirements:</h4>
+                        <ul id="password-requirements-list">
+                            <li id="length-requirement">At least 8 characters long</li>
+                            <li id="uppercase-requirement">Contains uppercase letter</li>
+                            <li id="lowercase-requirement">Contains lowercase letter</li>
+                            <li id="number-requirement">Contains number</li>
+                            <li id="special-requirement">Contains special character</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" name="confirm_password" required>
+                    <div class="error-message" id="confirm-password-error"></div>
+                </div>
+                <button type="submit" class="submit-button">Create Admin Account</button>
+            </form>
+        </div>
+    </main>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let form = document.getElementById('admin-setup-form');
+    let passwordInput = document.getElementById('password');
+    let confirmPasswordInput = document.getElementById('confirm-password');
+    
+    function validateEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+    
+    function validatePassword(password) {
+        let requirements = {
+            length: password.length >= 8,
+            uppercase: /[A-Z]/.test(password),
+            lowercase: /[a-z]/.test(password),
+            number: /[0-9]/.test(password),
+            special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+        };
+
+        // Update requirement list UI
+        document.getElementById('length-requirement').classList.toggle('valid', requirements.length);
+        document.getElementById('uppercase-requirement').classList.toggle('valid', requirements.uppercase);
+        document.getElementById('lowercase-requirement').classList.toggle('valid', requirements.lowercase);
+        document.getElementById('number-requirement').classList.toggle('valid', requirements.number);
+        document.getElementById('special-requirement').classList.toggle('valid', requirements.special);
+
+        return Object.values(requirements).every(req => req);
+    }
+    
+    function showError(fieldId, message) {
+        let errorElement = document.getElementById(`${fieldId}-error`);
+        if (errorElement) {
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+    }
+    
+    function clearError(fieldId) {
+        let errorElement = document.getElementById(`${fieldId}-error`);
+        if (errorElement) {
+            errorElement.textContent = '';
+            errorElement.style.display = 'none';
+        }
+    }
+    
+    passwordInput.addEventListener('input', function() {
+        validatePassword(this.value);
+    });
+    
+    form.addEventListener('submit', function(e) {
+        let valid = true;
+        let email = document.getElementById('email').value;
+        let password = passwordInput.value;
+        let confirmPassword = confirmPasswordInput.value;
+        
+        // Clear previous errors
+        clearError('email');
+        clearError('password');
+        clearError('confirm-password');
+        
+        // Validate email
+        if (!email) {
+            showError('email', 'Email is required');
+            valid = false;
+        } else if (!validateEmail(email)) {
+            showError('email', 'Please enter a valid email address');
+            valid = false;
+        }
+        
+        // Validate password
+        if (!password) {
+            showError('password', 'Password is required');
+            valid = false;
+        } else if (!validatePassword(password)) {
+            showError('password', 'Password does not meet requirements');
+            valid = false;
+        }
+        
+        // Validate password confirmation
+        if (!confirmPassword) {
+            showError('confirm-password', 'Please confirm your password');
+            valid = false;
+        } else if (password !== confirmPassword) {
+            showError('confirm-password', 'Passwords do not match');
+            valid = false;
+        }
+        
+        if (!valid) {
+            e.preventDefault();
+        }
+    });
+});
+</script>
+{% endblock %}
