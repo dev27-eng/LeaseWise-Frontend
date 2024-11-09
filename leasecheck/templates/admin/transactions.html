@@ -13,6 +13,7 @@
         <nav class="admin-nav">
             <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
             <a href="{{ url_for('admin_transactions') }}" class="active">Transactions</a>
+            <a href="{{ url_for('admin_dashboard') }}" class="back-button">Back to Dashboard</a>
         </nav>
     </header>
 
@@ -108,7 +109,7 @@
 </div>
 
 <script>
-// Modal handling
+// Modal handling using let instead of const
 let modalElement = null;
 let closeBtnElement = null;
 
@@ -177,16 +178,19 @@ async function showTransactionDetails(transactionId) {
 }
 
 // Form handling
-document.getElementById('filters-form')?.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const params = new URLSearchParams();
-    
-    for (let [key, value] of formData.entries()) {
-        if (value) params.append(key, value);
-    }
-    
-    window.location.href = `${window.location.pathname}?${params.toString()}`;
-});
+const filtersForm = document.getElementById('filters-form');
+if (filtersForm) {
+    filtersForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const params = new URLSearchParams();
+        
+        for (let [key, value] of formData.entries()) {
+            if (value) params.append(key, value);
+        }
+        
+        window.location.href = `${window.location.pathname}?${params.toString()}`;
+    });
+}
 </script>
 {% endblock %}

@@ -1,7 +1,7 @@
-from flask import render_template, redirect, url_for, flash, request, send_file, jsonify
+from flask import render_template, redirect, url_for, flash, request, send_file, jsonify, session
 from . import app, db
 from .forms import TermsAcceptanceForm
-from .models import TermsAcceptance, Payment
+from .models import TermsAcceptance, Payment, AdminUser
 from datetime import datetime, timedelta
 import weasyprint
 import io
@@ -11,6 +11,7 @@ import logging
 from werkzeug.exceptions import BadRequest
 from functools import wraps
 from sqlalchemy import func, desc
+from werkzeug.security import generate_password_hash, check_password_hash
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -25,8 +26,7 @@ if not stripe.api_key:
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        admin_token = request.cookies.get('admin_token')
-        if not admin_token or admin_token != os.environ.get('ADMIN_SECRET_TOKEN'):
+        if not session.get('admin_id'):
             return redirect(url_for('admin_login'))
         return f(*args, **kwargs)
     return decorated_function
@@ -204,13 +204,22 @@ def payment_status():
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
     if request.method == 'POST':
-        token = request.form.get('token')
-        if token == os.environ.get('ADMIN_SECRET_TOKEN'):
-            response = redirect(url_for('admin_dashboard'))
-            response.set_cookie('admin_token', token, httponly=True, secure=True)
-            return response
-        flash('Invalid admin token', 'error')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        
+        admin = AdminUser.query.filter_by(email=email).first()
+        
+        if admin and check_password_hash(admin.password_hash, password):
+            session['admin_id'] = admin.id
+            return redirect(url_for('admin_dashboard'))
+        
+        flash('Invalid email or password', 'error')
     return render_template('admin/login.html')
+
+@app.route('/admin/logout')
+def admin_logout():
+    session.pop('admin_id', None)
+    return redirect(url_for('admin_login'))
 
 @app.route('/admin/dashboard')
 @admin_required

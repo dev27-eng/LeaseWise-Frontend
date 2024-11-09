@@ -38,6 +38,12 @@
     font-size: 16px;
 }
 
+.form-group .error-message {
+    color: #dc3545;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
 .submit-button {
     background-color: #7ED321;
     color: black;
@@ -50,6 +56,18 @@
 
 .submit-button:hover {
     background-color: #6db91d;
+}
+
+.alert {
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
 }
 </style>
 {% endblock %}
@@ -70,15 +88,77 @@
                 {% endif %}
             {% endwith %}
             
-            <form method="POST" class="login-form">
+            <form method="POST" class="login-form" id="admin-login-form">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="form-group">
-                    <label for="token">Admin Token</label>
-                    <input type="password" id="token" name="token" required>
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                    <div class="error-message" id="email-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                    <div class="error-message" id="password-error"></div>
                 </div>
                 <button type="submit" class="submit-button">Login</button>
             </form>
         </div>
     </main>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let form = document.getElementById('admin-login-form');
+    
+    function validateEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+    
+    function showError(fieldId, message) {
+        let errorElement = document.getElementById(`${fieldId}-error`);
+        if (errorElement) {
+            errorElement.textContent = message;
+        }
+    }
+    
+    function clearError(fieldId) {
+        let errorElement = document.getElementById(`${fieldId}-error`);
+        if (errorElement) {
+            errorElement.textContent = '';
+        }
+    }
+    
+    form.addEventListener('submit', function(e) {
+        let valid = true;
+        let email = document.getElementById('email').value;
+        let password = document.getElementById('password').value;
+        
+        // Clear previous errors
+        clearError('email');
+        clearError('password');
+        
+        // Validate email
+        if (!email) {
+            showError('email', 'Email is required');
+            valid = false;
+        } else if (!validateEmail(email)) {
+            showError('email', 'Please enter a valid email address');
+            valid = false;
+        }
+        
+        // Validate password
+        if (!password) {
+            showError('password', 'Password is required');
+            valid = false;
+        } else if (password.length < 8) {
+            showError('password', 'Password must be at least 8 characters long');
+            valid = false;
+        }
+        
+        if (!valid) {
+            e.preventDefault();
+        }
+    });
+});
+</script>
 {% endblock %}
