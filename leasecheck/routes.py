@@ -15,12 +15,40 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 import uuid
 import mimetypes
+from flask_talisman import Talisman
 
-# Plan pricing configuration
-PLAN_PRICES = {
-    'basic': 9.95,
-    'standard': 19.95,
-    'premium': 29.95
+# Plan configuration
+PLANS = {
+    'basic': {
+        'name': 'Basic Plan',
+        'price': 9.95,
+        'features': [
+            '1 Lease Analysis',
+            'Ideal for single lease review',
+            'Risk Analysis Report',
+            'PDF Export'
+        ]
+    },
+    'standard': {
+        'name': 'Standard Plan',
+        'price': 19.95,
+        'features': [
+            '3 Lease Analyses',
+            'Valid for 30 days',
+            'Compare Multiple Options',
+            'Priority Support'
+        ]
+    },
+    'premium': {
+        'name': 'Premium Plan',
+        'price': 29.95,
+        'features': [
+            '6 Lease Analyses',
+            'Valid for 30 days',
+            'Best value for multiple reviews',
+            'Priority Support + Consultation'
+        ]
+    }
 }
 
 # Configure logging
@@ -35,17 +63,34 @@ if not stripe.api_key:
 # Create blueprint
 bp = Blueprint('main', __name__)
 
-# File upload configuration
-UPLOAD_FOLDER = 'uploads'
-MAX_CONTENT_LENGTH = 10 * 1024 * 1024  # 10MB
-ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx'}
+# Update CSP settings
+csp = {
+    'default-src': ["'self'"],
+    'script-src': [
+        "'self'",
+        'https://js.stripe.com',
+        "'unsafe-inline'",
+    ],
+    'style-src': [
+        "'self'",
+        "'unsafe-inline'",
+    ],
+    'frame-src': [
+        'https://js.stripe.com',
+        'https://hooks.stripe.com',
+    ],
+    'img-src': ["'self'"],
+    'connect-src': [
+        "'self'",
+        'https://api.stripe.com',
+    ],
+}
 
-# Ensure upload directory exists
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+# Initialize Talisman with updated CSP
+talisman = Talisman(
+    content_security_policy=csp,
+    content_security_policy_nonce_in=['script-src']
+)
 
 @bp.route('/')
 def index():
@@ -61,7 +106,11 @@ def select_plan():
 
 @bp.route('/checkout')
 def checkout():
-    plan = request.args.get('plan')
-    if not plan or plan not in PLAN_PRICES:
+    plan_id = request.args.get('plan')
+    if not plan_id or plan_id not in PLANS:
         return redirect(url_for('main.select_plan'))
-    return render_template('checkout.html', plan=plan, plan_price=PLAN_PRICES[plan])
+    plan = PLANS[plan_id]
+    return render_template('checkout.html', 
+                         plan_id=plan_id,
+                         plan=plan,
+                         stripe_public_key=os.environ.get('STRIPE_PUBLIC_KEY'))
