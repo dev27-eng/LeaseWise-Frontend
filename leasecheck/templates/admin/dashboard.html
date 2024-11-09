@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - LeaseCheck{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <header class="admin-header">
+        <h1>Admin Dashboard</h1>
+        <nav class="admin-nav">
+            <a href="{{ url_for('admin_dashboard') }}" class="active">Dashboard</a>
+            <a href="{{ url_for('admin_transactions') }}">Transactions</a>
+        </nav>
+    </header>
+
+    <main class="dashboard-content">
+        <div class="stats-grid">
+            <!-- Summary Statistics -->
+            <div class="stat-card">
+                <h3>Total Transactions</h3>
+                <div class="stat-value">{{ stats.total_transactions }}</div>
+            </div>
+            <div class="stat-card">
+                <h3>Success Rate</h3>
+                <div class="stat-value">{{ "%.1f"|format(stats.success_rate) }}%</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Revenue</h3>
+                <div class="stat-value">${{ "%.2f"|format(stats.total_revenue/100) }}</div>
+            </div>
+            <div class="stat-card">
+                <h3>Today's Transactions</h3>
+                <div class="stat-value">{{ stats.today_transactions }}</div>
+            </div>
+        </div>
+
+        <!-- Revenue by Plan -->
+        <section class="revenue-section">
+            <h2>Revenue by Plan</h2>
+            <div class="plan-revenue-grid">
+                {% for plan in stats.revenue_by_plan %}
+                <div class="plan-card">
+                    <h4>{{ plan.name }}</h4>
+                    <div class="plan-stats">
+                        <div>Revenue: ${{ "%.2f"|format(plan.revenue/100) }}</div>
+                        <div>Transactions: {{ plan.transactions }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Transaction Trends -->
+        <section class="trends-section">
+            <h2>Transaction Trends</h2>
+            <div class="trend-cards">
+                <div class="trend-card">
+                    <h4>Daily Transactions</h4>
+                    <table class="trend-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Count</th>
+                                <th>Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for day in stats.daily_trends %}
+                            <tr>
+                                <td>{{ day.date }}</td>
+                                <td>{{ day.count }}</td>
+                                <td>${{ "%.2f"|format(day.revenue/100) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="trend-card">
+                    <h4>Weekly Summary</h4>
+                    <table class="trend-table">
+                        <thead>
+                            <tr>
+                                <th>Week</th>
+                                <th>Count</th>
+                                <th>Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for week in stats.weekly_trends %}
+                            <tr>
+                                <td>{{ week.date }}</td>
+                                <td>{{ week.count }}</td>
+                                <td>${{ "%.2f"|format(week.revenue/100) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+{% endblock %}

@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block title %}Transactions - Admin Dashboard - LeaseCheck{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <header class="admin-header">
+        <h1>Transactions</h1>
+        <nav class="admin-nav">
+            <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('admin_transactions') }}" class="active">Transactions</a>
+        </nav>
+    </header>
+
+    <main class="dashboard-content">
+        <!-- Filters -->
+        <section class="filters-section">
+            <form id="filters-form" class="filters-form">
+                <div class="filter-group">
+                    <input type="text" name="search" placeholder="Search by email or transaction ID" value="{{ filters.search }}">
+                </div>
+                <div class="filter-group">
+                    <select name="status">
+                        <option value="">All Statuses</option>
+                        {% for status in available_statuses %}
+                        <option value="{{ status }}" {% if status == filters.status %}selected{% endif %}>{{ status|title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <select name="plan">
+                        <option value="">All Plans</option>
+                        {% for plan in available_plans %}
+                        <option value="{{ plan }}" {% if plan == filters.plan %}selected{% endif %}>{{ plan }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-group date-range">
+                    <input type="date" name="date_from" value="{{ filters.date_from }}">
+                    <span>to</span>
+                    <input type="date" name="date_to" value="{{ filters.date_to }}">
+                </div>
+                <button type="submit" class="filter-submit">Apply Filters</button>
+            </form>
+        </section>
+
+        <!-- Transactions Table -->
+        <section class="transactions-section">
+            <table class="transactions-table">
+                <thead>
+                    <tr>
+                        <th>Date/Time</th>
+                        <th>Transaction ID</th>
+                        <th>Customer Email</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Plan</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                    <tr>
+                        <td>{{ transaction.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                        <td>{{ transaction.stripe_payment_id }}</td>
+                        <td>{{ transaction.user_email }}</td>
+                        <td>${{ "%.2f"|format(transaction.amount/100) }}</td>
+                        <td><span class="status-badge status-{{ transaction.status }}">{{ transaction.status }}</span></td>
+                        <td>{{ transaction.plan_name }}</td>
+                        <td>
+                            <button onclick="showTransactionDetails('{{ transaction.stripe_payment_id }}')" class="action-button">
+                                View Details
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                {% if pagination.has_prev %}
+                <a href="{{ url_for('admin_transactions', page=pagination.prev_num, **filters) }}" class="page-link">&laquo; Previous</a>
+                {% endif %}
+                
+                <span class="current-page">Page {{ pagination.page }} of {{ pagination.pages }}</span>
+                
+                {% if pagination.has_next %}
+                <a href="{{ url_for('admin_transactions', page=pagination.next_num, **filters) }}" class="page-link">Next &raquo;</a>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- Transaction Details Modal -->
+        <div id="transaction-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <div id="transaction-details">
+                    <!-- Content will be loaded dynamically -->
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+// Modal handling
+let modalElement = null;
+let closeBtnElement = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    modalElement = document.getElementById('transaction-modal');
+    closeBtnElement = document.getElementsByClassName('close-modal')[0];
+    
+    if (closeBtnElement) {
+        closeBtnElement.onclick = function() {
+            if (modalElement) {
+                modalElement.style.display = "none";
+            }
+        }
+    }
+    
+    window.onclick = function(event) {
+        if (event.target === modalElement) {
+            modalElement.style.display = "none";
+        }
+    }
+});
+
+async function showTransactionDetails(transactionId) {
+    try {
+        const response = await fetch(`/admin/transaction/${transactionId}`);
+        if (!response.ok) throw new Error('Failed to fetch transaction details');
+        
+        const details = await response.json();
+        const detailsContainer = document.getElementById('transaction-details');
+        
+        if (!detailsContainer) return;
+        
+        // Format and display transaction details
+        detailsContainer.innerHTML = `
+            <h2>Transaction Details</h2>
+            <div class="detail-grid">
+                <div class="detail-section">
+                    <h3>Customer Information</h3>
+                    <p><strong>Email:</strong> ${details.user_email}</p>
+                    <p><strong>Name:</strong> ${details.customer_name || 'N/A'}</p>
+                    <p><strong>Phone:</strong> ${details.customer_phone || 'N/A'}</p>
+                </div>
+                <div class="detail-section">
+                    <h3>Payment Information</h3>
+                    <p><strong>Amount:</strong> $${(details.amount/100).toFixed(2)}</p>
+                    <p><strong>Status:</strong> ${details.status}</p>
+                    <p><strong>Plan:</strong> ${details.plan_name}</p>
+                    <p><strong>Payment Method:</strong> ${details.payment_method || 'N/A'}</p>
+                </div>
+                ${details.error_log ? `
+                <div class="detail-section error-log">
+                    <h3>Error Log</h3>
+                    <pre>${details.error_log}</pre>
+                </div>
+                ` : ''}
+            </div>
+        `;
+        
+        if (modalElement) {
+            modalElement.style.display = "block";
+        }
+    } catch (error) {
+        console.error('Error fetching transaction details:', error);
+        alert('Failed to load transaction details. Please try again.');
+    }
+}
+
+// Form handling
+document.getElementById('filters-form')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const params = new URLSearchParams();
+    
+    for (let [key, value] of formData.entries()) {
+        if (value) params.append(key, value);
+    }
+    
+    window.location.href = `${window.location.pathname}?${params.toString()}`;
+});
+</script>
+{% endblock %}
