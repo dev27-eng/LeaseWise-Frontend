@@ -151,9 +151,15 @@
         }
     };
 
-    // Create and mount the card element
-    const card = elements.create('card', cardElementOptions);
-    card.mount('#card-element');
+    // Create and mount the card element with error handling
+    let cardElement = null;
+    try {
+        cardElement = elements.create('card', cardElementOptions);
+        cardElement.mount('#card-element');
+    } catch (error) {
+        console.error('Error creating card element:', error);
+        document.getElementById('card-errors').textContent = 'Error initializing payment form. Please refresh the page.';
+    }
 
     // Validation functions
     const validateEmail = (email) => {
@@ -219,33 +225,22 @@
     }
 
     // Handle card element errors
-    card.addEventListener('change', function(event) {
-        const displayError = document.getElementById('card-errors');
-        if (event.error) {
-            switch(event.error.code) {
-                case 'incomplete_cvc':
-                case 'invalid_cvc':
-                    displayError.textContent = 'Please enter a valid CVC/CVV number.';
-                    break;
-                case 'incomplete_number':
-                    displayError.textContent = 'Please enter a valid card number.';
-                    break;
-                case 'incomplete_expiry':
-                    displayError.textContent = 'Please enter a valid expiration date.';
-                    break;
-                default:
-                    displayError.textContent = event.error.message;
+    if (cardElement) {
+        cardElement.addEventListener('change', function(event) {
+            const displayError = document.getElementById('card-errors');
+            if (event.error) {
+                displayError.textContent = event.error.message;
+            } else {
+                displayError.textContent = '';
             }
-        } else {
-            displayError.textContent = '';
-        }
-    });
+        });
+    }
 
     // Form submission handler
     document.getElementById('payment-form').addEventListener('submit', async function(event) {
         event.preventDefault();
         
-        if (!validateForm()) {
+        if (!validateForm() || !cardElement) {
             return;
         }
 
@@ -255,7 +250,7 @@
         try {
             const { paymentMethod, error: paymentMethodError } = await stripe.createPaymentMethod({
                 type: 'card',
-                card: card,
+                card: cardElement,
                 billing_details: {
                     name: document.getElementById('fullName').value,
                     email: document.getElementById('email').value,
