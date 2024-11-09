@@ -1,16 +1,15 @@
 from flask import Flask
 import os
 from flask_wtf.csrf import CSRFProtect
-from flask_sqlalchemy import SQLAlchemy
 from flask_talisman import Talisman
 import logging
+from .database import init_db, db
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Initialize extensions
-db = SQLAlchemy()
 csrf = CSRFProtect()
 
 def create_app():
@@ -24,8 +23,8 @@ def create_app():
     app.config['SERVER_NAME'] = None
 
     # Initialize extensions with app
-    db.init_app(app)
     csrf.init_app(app)
+    init_db(app)
 
     # Configure security headers with Talisman
     csp = {
@@ -44,20 +43,10 @@ def create_app():
         force_https=True
     )
 
-    with app.app_context():
-        # Create all database tables
-        try:
-            logger.info("Creating database tables...")
-            db.create_all()
-            logger.info("Database tables created successfully")
-        except Exception as e:
-            logger.error(f"Error creating database tables: {e}")
-            raise
-
-        # Import and register blueprints
-        from .routes import bp
-        app.register_blueprint(bp)
-        
-        return app
+    # Import and register blueprints
+    from .routes import bp
+    app.register_blueprint(bp)
+    
+    return app
 
 __all__ = ['create_app', 'db']

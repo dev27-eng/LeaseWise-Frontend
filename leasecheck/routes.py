@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, send_file, jsonify, session
-from .app import db
+from .database import db
 from .forms import TermsAcceptanceForm
 from .models import TermsAcceptance, Payment, AdminUser, Document, SupportTicket
 from datetime import datetime, timedelta

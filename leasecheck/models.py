@@ -1,5 +1,5 @@
 from datetime import datetime
-from .app import db
+from .database import db
 
 class TermsAcceptance(db.Model):
     __tablename__ = 'terms_acceptance'
