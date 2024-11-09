@@ -122,7 +122,7 @@
 
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-    // Initialize Stripe and elements (keep as const)
+    // Initialize Stripe
     const stripe = Stripe('{{ stripe_public_key }}');
     const elements = stripe.elements();
 
@@ -151,14 +151,27 @@
         }
     };
 
-    // Create card element (use let since it needs to be reassigned)
+    // Create card element
     let cardElement = null;
-    try {
-        cardElement = elements.create('card', cardElementOptions);
-        cardElement.mount('#card-element');
-    } catch (error) {
-        console.error('Error creating card element:', error);
-        document.getElementById('card-errors').textContent = 'Error initializing payment form. Please refresh the page.';
+
+    // Initialize card element only once
+    if (!cardElement) {
+        try {
+            cardElement = elements.create('card', cardElementOptions);
+            cardElement.mount('#card-element');
+            
+            // Add error handling for mount
+            cardElement.on('mount', () => {
+                console.log('Card element mounted successfully');
+            });
+            
+            cardElement.on('error', (event) => {
+                console.error('Card element error:', event);
+            });
+        } catch (error) {
+            console.error('Error creating card element:', error);
+            document.getElementById('card-errors').textContent = 'Error initializing payment form. Please refresh the page.';
+        }
     }
 
     // Validation functions
