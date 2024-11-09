@@ -4,6 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome - LeaseCheck</title>
+    <!-- Preload critical resources -->
+    <link rel="preload" href="{{ url_for('static', filename='css/welcome_screen.css') }}" as="style">
+    <link rel="preload" href="{{ url_for('static', filename='images/logo.png') }}" as="image">
+    <!-- Preconnect to origin -->
+    <link rel="preconnect" href="{{ request.host_url }}">
+    <!-- Font display swap for better performance -->
+    <style>
+        @font-face {
+            font-family: 'System Font';
+            font-display: swap;
+            src: local(-apple-system), local(BlinkMacSystemFont), local("Segoe UI"), local(Roboto), local(sans-serif);
+        }
+    </style>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/welcome_screen.css') }}">
 </head>
 <body>
@@ -11,7 +24,13 @@
         <div class="welcome-container">
             <h1 class="logo-text">LeaseCheck</h1>
             <div class="logo-wrapper">
-                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="LeaseCheck Logo" class="logo-image">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" 
+                     alt="LeaseCheck Logo" 
+                     class="logo-image"
+                     loading="eager"
+                     decoding="async"
+                     width="350"
+                     height="350">
             </div>
             <h2 class="verify-text">Verify legal compliance easily</h2>
             <a href="{{ url_for('main.onboarding') }}" class="start-review-btn">Start Your Review</a>
