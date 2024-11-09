@@ -152,7 +152,7 @@
     };
 
     // Create and mount the card element with error handling
-    let cardElement = null;
+    let cardElement = null;  // Use let instead of const
     try {
         cardElement = elements.create('card', cardElementOptions);
         cardElement.mount('#card-element');
