@@ -1,0 +1,304 @@
+{% extends "base.html" %}
+
+{% block title %}My Documents - LeaseCheck{% endblock %}
+
+{% block extra_css %}
+<style>
+    .documents-container {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 20px;
+    }
+
+    .green-header {
+        background-color: #7ED321;
+        padding: 20px;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .green-header h1 {
+        color: black;
+        font-size: 48px;
+        margin: 0;
+        font-weight: bold;
+    }
+
+    .documents-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .document-card {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .document-icon {
+        font-size: 32px;
+        margin-bottom: 10px;
+        color: #7ED321;
+    }
+
+    .document-name {
+        font-weight: 500;
+        margin-bottom: 10px;
+        word-break: break-word;
+    }
+
+    .document-info {
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 15px;
+    }
+
+    .document-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .action-button {
+        padding: 8px 16px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 14px;
+        cursor: pointer;
+        border: none;
+    }
+
+    .download-btn {
+        background-color: #7ED321;
+        color: black;
+    }
+
+    .review-btn {
+        background-color: #4A90E2;
+        color: white;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        margin-bottom: 10px;
+    }
+
+    .status-pending {
+        background-color: #ffd700;
+        color: #856404;
+    }
+
+    .status-processed {
+        background-color: #7ED321;
+        color: white;
+    }
+
+    .status-error {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px;
+        background: #f8f9fa;
+        border-radius: 10px;
+    }
+
+    .upload-btn {
+        display: inline-block;
+        background-color: #7ED321;
+        color: black;
+        padding: 12px 24px;
+        border-radius: 5px;
+        text-decoration: none;
+        margin-top: 20px;
+    }
+
+    /* Support Modal Styles */
+    .support-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+    }
+
+    .modal-content {
+        background-color: white;
+        margin: 50px auto;
+        padding: 20px;
+        border-radius: 10px;
+        width: 90%;
+        max-width: 500px;
+        position: relative;
+    }
+
+    .close-modal {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        font-size: 24px;
+        cursor: pointer;
+        color: #666;
+    }
+
+    .support-form {
+        margin-top: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .submit-btn {
+        background-color: #7ED321;
+        color: black;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="documents-container">
+    <header class="green-header">
+        <h1>My Documents</h1>
+    </header>
+
+    {% if documents %}
+    <div class="documents-grid">
+        {% for document in documents %}
+        <div class="document-card">
+            <div class="document-icon">📄</div>
+            <div class="status-badge status-{{ document.status }}">
+                {{ document.status|title }}
+            </div>
+            <div class="document-name">{{ document.original_filename }}</div>
+            <div class="document-info">
+                <div>Size: {{ (document.file_size / 1024)|round(1) }} KB</div>
+                <div>Uploaded: {{ document.upload_date.strftime('%Y-%m-%d %H:%M') }}</div>
+            </div>
+            <div class="document-actions">
+                <a href="{{ url_for('download_document', document_id=document.id) }}" class="action-button download-btn">
+                    Download
+                </a>
+                {% if document.status == 'processed' %}
+                <a href="{{ url_for('review_document', document_id=document.id) }}" class="action-button review-btn">
+                    Review
+                </a>
+                {% elif document.status == 'error' %}
+                <button onclick="openSupportModal('{{ document.id }}')" class="action-button review-btn">
+                    Report Issue
+                </button>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <h2>No Documents Yet</h2>
+        <p>Upload your first lease document to get started with the analysis.</p>
+        <a href="{{ url_for('lease_upload') }}" class="upload-btn">Upload Document</a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Support Modal -->
+<div id="supportModal" class="support-modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeSupportModal()">&times;</span>
+        <h2>Report an Issue</h2>
+        <form id="supportForm" class="support-form" onsubmit="submitSupportRequest(event)">
+            <input type="hidden" id="documentId" name="document_id">
+            <div class="form-group">
+                <label for="issueType">Issue Type</label>
+                <select id="issueType" name="issue_type" required>
+                    <option value="">Select an issue type</option>
+                    <option value="upload_error">Upload Error</option>
+                    <option value="processing_error">Processing Error</option>
+                    <option value="download_error">Download Error</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="4" required></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Submit</button>
+        </form>
+    </div>
+</div>
+
+<script>
+let supportModal = document.getElementById('supportModal');
+
+function openSupportModal(documentId) {
+    document.getElementById('documentId').value = documentId;
+    supportModal.style.display = 'block';
+}
+
+function closeSupportModal() {
+    supportModal.style.display = 'none';
+    document.getElementById('supportForm').reset();
+}
+
+async function submitSupportRequest(event) {
+    event.preventDefault();
+    
+    try {
+        const formData = new FormData(event.target);
+        const response = await fetch('/submit-support-ticket', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify(Object.fromEntries(formData))
+        });
+        
+        if (response.ok) {
+            alert('Support ticket submitted successfully. We will review your issue shortly.');
+            closeSupportModal();
+        } else {
+            throw new Error('Failed to submit support ticket');
+        }
+    } catch (error) {
+        console.error('Error submitting support ticket:', error);
+        alert('Failed to submit support ticket. Please try again.');
+    }
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    if (event.target === supportModal) {
+        closeSupportModal();
+    }
+}
+</script>
+{% endblock %}
