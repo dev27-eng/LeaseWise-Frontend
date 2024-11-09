@@ -8,6 +8,7 @@ import io
 import stripe
 import os
 import logging
+from werkzeug.exceptions import BadRequest
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -74,7 +75,13 @@ def checkout(plan_id):
 @app.route('/create-payment', methods=['POST'])
 def create_payment():
     try:
-        data = request.json
+        if not request.is_json:
+            raise BadRequest('Content-Type must be application/json')
+
+        data = request.get_json()
+        if not data:
+            raise BadRequest('No JSON data received')
+
         plan_id = data.get('plan_id')
         payment_method_id = data.get('payment_method_id')
         user_info = data.get('user_info', {})
@@ -168,6 +175,9 @@ def create_payment():
             logger.error(f"Stripe error: {str(e)}")
             return jsonify({'error': 'Payment processing error. Please try again.'}), 400
 
+    except BadRequest as e:
+        logger.error(f"Bad request error: {str(e)}")
+        return jsonify({'error': str(e)}), 400
     except Exception as e:
         logger.error(f"Unexpected error in payment processing: {str(e)}")
         return jsonify({'error': 'An unexpected error occurred. Please try again later.'}), 500

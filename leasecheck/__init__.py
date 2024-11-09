@@ -15,21 +15,19 @@ db = SQLAlchemy(app)
 
 # Configure security headers with Talisman
 csp = {
-    'default-src': ["'self'", "*"],
-    'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://js.stripe.com", "*"],
-    'style-src': ["'self'", "'unsafe-inline'", "*"],
-    'img-src': ["'self'", "data:", "https:", "*"],
-    'connect-src': ["'self'", "https://api.stripe.com", "*"],
-    'frame-src': ["'self'", "https://js.stripe.com", "https://hooks.stripe.com", "*"],
-    'font-src': ["'self'", "data:", "*"]
+    'default-src': ["'self'", "https://*"],
+    'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://js.stripe.com", "https://*"],
+    'style-src': ["'self'", "'unsafe-inline'", "https://*"],
+    'img-src': ["'self'", "data:", "https:", "https://*"],
+    'connect-src': ["'self'", "https://api.stripe.com", "https://*", "wss://*"],
+    'frame-src': ["'self'", "https://js.stripe.com", "https://hooks.stripe.com", "https://*"],
+    'font-src': ["'self'", "data:", "https://*"]
 }
 
 talisman = Talisman(
     app,
     content_security_policy=csp,
-    force_https=False,
-    strict_transport_security=False,
-    session_cookie_secure=False
+    force_https=True
 )
 
 # Create all database tables
