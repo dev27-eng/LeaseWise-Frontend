@@ -123,10 +123,14 @@
 document.addEventListener('DOMContentLoaded', function() {
     let chartOptions = {
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: true,
+        aspectRatio: 2,  // This controls the height relative to width
         scales: {
             y: {
-                beginAtZero: true
+                beginAtZero: true,
+                ticks: {
+                    maxTicksLimit: 8  // Limit the number of y-axis ticks
+                }
             }
         }
     };
