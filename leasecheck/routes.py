@@ -16,6 +16,13 @@ from werkzeug.utils import secure_filename
 import uuid
 import mimetypes
 
+# Plan pricing configuration
+PLAN_PRICES = {
+    'basic': 9.95,
+    'standard': 19.95,
+    'premium': 29.95
+}
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -55,6 +62,6 @@ def select_plan():
 @bp.route('/checkout')
 def checkout():
     plan = request.args.get('plan')
-    if not plan or plan not in ['basic', 'standard', 'premium']:
+    if not plan or plan not in PLAN_PRICES:
         return redirect(url_for('main.select_plan'))
-    return render_template('checkout.html', plan=plan)
+    return render_template('checkout.html', plan=plan, plan_price=PLAN_PRICES[plan])
