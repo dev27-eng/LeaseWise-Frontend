@@ -109,6 +109,8 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     let form = document.getElementById('admin-login-form');
+    let emailInput = document.getElementById('email');
+    let passwordInput = document.getElementById('password');
     
     function validateEmail(email) {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -130,8 +132,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     form.addEventListener('submit', function(e) {
         let valid = true;
-        let email = document.getElementById('email').value;
-        let password = document.getElementById('password').value;
+        let email = emailInput.value;
+        let password = passwordInput.value;
         
         // Clear previous errors
         clearError('email');

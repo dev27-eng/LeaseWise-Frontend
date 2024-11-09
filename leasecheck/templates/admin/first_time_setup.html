@@ -102,6 +102,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     let form = document.getElementById('admin-setup-form');
+    let emailInput = document.getElementById('email');
     let passwordInput = document.getElementById('password');
     let confirmPasswordInput = document.getElementById('confirm-password');
     
@@ -150,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     form.addEventListener('submit', function(e) {
         let valid = true;
-        let email = document.getElementById('email').value;
+        let email = emailInput.value;
         let password = passwordInput.value;
         let confirmPassword = confirmPasswordInput.value;
         
