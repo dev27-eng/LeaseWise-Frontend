@@ -3,73 +3,90 @@
 {% block title %}Select Plan - LeaseCheck{% endblock %}
 
 {% block extra_css %}
+<link rel="preload" href="{{ url_for('static', filename='css/select_plan.css') }}" as="style">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/select_plan.css') }}">
 {% endblock %}
 
 {% block content %}
-<div class="select-plan-screen">
+<main class="select-plan-screen" role="main">
     <!-- Green header bar -->
-    <div class="green-header">
+    <header class="green-header" role="banner">
         <h1>Select Plan</h1>
-    </div>
+    </header>
 
     <div class="plan-content">
-        <div class="plan-header">
+        <section class="plan-header">
             <h2>Choose Your Plan</h2>
             <p>Select the plan that best fits your needs</p>
-        </div>
+        </section>
 
         <!-- Plan cards grid -->
-        <div class="plans-grid">
+        <section class="plans-grid" aria-label="Available plans">
             <!-- Basic Plan -->
-            <div class="plan-card">
+            <div class="plan-card" role="article">
                 <h3 class="plan-name">Basic Plan</h3>
-                <div class="plan-price">$9.95</div>
-                <ul class="plan-features">
+                <div class="plan-price" aria-label="Price: $9.95">$9.95</div>
+                <ul class="plan-features" role="list">
                     <li>1 Lease Analysis</li>
                     <li>Ideal for single lease review</li>
                     <li>Risk Analysis Report</li>
                     <li>PDF Export</li>
                 </ul>
-                <a href="{{ url_for('main.checkout', plan='basic') }}" class="select-plan-btn">Select Basic</a>
+                <a href="{{ url_for('main.checkout', plan='basic') }}" 
+                   class="select-plan-btn"
+                   role="button"
+                   aria-label="Select Basic Plan">
+                    Select Basic
+                </a>
             </div>
 
             <!-- Standard Plan -->
-            <div class="plan-card">
+            <div class="plan-card featured" role="article">
+                <div class="popular-tag">Most Popular</div>
                 <h3 class="plan-name">Standard Plan</h3>
-                <div class="plan-price">$19.95</div>
-                <ul class="plan-features">
+                <div class="plan-price" aria-label="Price: $19.95">$19.95</div>
+                <ul class="plan-features" role="list">
                     <li>3 Lease Analyses</li>
                     <li>Valid for 30 days</li>
                     <li>Compare Multiple Options</li>
                     <li>Priority Support</li>
                 </ul>
-                <a href="{{ url_for('main.checkout', plan='standard') }}" class="select-plan-btn">Select Standard</a>
+                <a href="{{ url_for('main.checkout', plan='standard') }}" 
+                   class="select-plan-btn"
+                   role="button"
+                   aria-label="Select Standard Plan">
+                    Select Standard
+                </a>
             </div>
 
             <!-- Premium Plan -->
-            <div class="plan-card">
+            <div class="plan-card" role="article">
                 <h3 class="plan-name">Premium Plan</h3>
-                <div class="plan-price">$29.95</div>
-                <ul class="plan-features">
+                <div class="plan-price" aria-label="Price: $29.95">$29.95</div>
+                <ul class="plan-features" role="list">
                     <li>6 Lease Analyses</li>
                     <li>Valid for 30 days</li>
                     <li>Best value for multiple reviews</li>
                     <li>Priority Support + Consultation</li>
                 </ul>
-                <a href="{{ url_for('main.checkout', plan='premium') }}" class="select-plan-btn">Select Premium</a>
+                <a href="{{ url_for('main.checkout', plan='premium') }}" 
+                   class="select-plan-btn"
+                   role="button"
+                   aria-label="Select Premium Plan">
+                    Select Premium
+                </a>
             </div>
-        </div>
+        </section>
 
         <!-- Common features section -->
-        <div class="common-features">
+        <section class="common-features" aria-label="Features included in all plans">
             <h3>All Plans Include:</h3>
-            <ul>
+            <ul role="list">
                 <li>Risk Analysis: Spot potential issues and red flags in your lease</li>
                 <li>Easy Navigation: User-friendly interface with shareable PDF report</li>
                 <li>Connect with Local Attorneys: Get referrals to legal experts if needed</li>
             </ul>
-        </div>
+        </section>
     </div>
-</div>
+</main>
 {% endblock %}
