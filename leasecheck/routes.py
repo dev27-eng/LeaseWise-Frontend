@@ -35,7 +35,7 @@ bp = Blueprint('main', __name__)
 
 @bp.route('/')
 def index():
-    """Root endpoint"""
+    """Root endpoint redirects to select plan"""
     return redirect(url_for('main.select_plan'))
 
 @bp.route('/select-plan')
@@ -62,7 +62,7 @@ def select_plan():
 
 @bp.route('/checkout')
 def checkout():
-    """Checkout page"""
+    """Checkout page for selected plan"""
     plan_id = request.args.get('plan')
     if not plan_id:
         flash('Please select a plan first', 'error')
@@ -86,32 +86,32 @@ def checkout():
         }
     }
     
-    selected_plan = plans.get(plan_id)
-    if not selected_plan:
+    plan = plans.get(plan_id)
+    if not plan:
         flash('Invalid plan selected', 'error')
         return redirect(url_for('main.select_plan'))
     
-    try:
-        return render_template('checkout.html', 
-                             plan=selected_plan,
-                             stripe_public_key=os.environ.get('STRIPE_PUBLIC_KEY'))
-    except Exception as e:
-        logger.error(f"Error rendering checkout page: {str(e)}")
-        flash('Error loading checkout page', 'error')
-        return redirect(url_for('main.select_plan'))
+    stripe_public_key = os.environ.get('STRIPE_PUBLISHABLE_KEY', '')
+    return render_template('checkout.html', plan=plan, stripe_public_key=stripe_public_key)
 
 def generate_invoice_number():
     """Generate a unique invoice number"""
     try:
-        timestamp = datetime.utcnow().strftime('%Y%m%d')
-        random_suffix = str(uuid.uuid4())[:8]
-        invoice_number = f"INV-{timestamp}-{random_suffix}"
+        prefix = datetime.utcnow().strftime('%Y%m')
+        # Get the latest invoice number for the current month
+        latest_invoice = Invoice.query.filter(
+            Invoice.invoice_number.like(f'INV-{prefix}-%')
+        ).order_by(desc(Invoice.invoice_number)).first()
         
-        # Verify uniqueness
-        while Invoice.query.filter_by(invoice_number=invoice_number).first() is not None:
-            random_suffix = str(uuid.uuid4())[:8]
-            invoice_number = f"INV-{timestamp}-{random_suffix}"
+        if latest_invoice:
+            # Extract the sequence number and increment it
+            current_seq = int(latest_invoice.invoice_number.split('-')[-1])
+            next_seq = current_seq + 1
+        else:
+            next_seq = 1
         
+        # Format with leading zeros
+        invoice_number = f"INV-{prefix}-{next_seq:04d}"
         return invoice_number
     except Exception as e:
         logger.error(f"Error generating invoice number: {str(e)}")
@@ -119,27 +119,13 @@ def generate_invoice_number():
 
 @retry_on_operational_error
 def create_invoice(payment):
-    """Create an invoice for a successful payment with improved error handling"""
+    """Create an invoice for a successful payment"""
     try:
         # Validate payment data
-        required_fields = {
-            'user_email': payment.user_email,
-            'amount': payment.amount,
-            'plan_name': payment.plan_name,
-            'customer_name': payment.customer_name,
-            'billing_address': payment.billing_address
-        }
-        
-        missing_fields = [field for field, value in required_fields.items() 
-                         if not value]
-        
-        if missing_fields:
-            logger.error(f"Missing required payment data for invoice creation: {missing_fields}")
+        if not all([payment.user_email, payment.amount, payment.plan_name,
+                   payment.customer_name, payment.billing_address]):
+            logger.error(f"Missing required payment data for invoice creation")
             return None
-
-        # Ensure invoices directory exists
-        invoice_dir = os.path.join(os.getcwd(), 'leasecheck', 'static', 'invoices')
-        os.makedirs(invoice_dir, exist_ok=True)
 
         with safe_transaction() as session:
             # Check for existing invoice
@@ -150,63 +136,48 @@ def create_invoice(payment):
 
             # Create invoice items
             items = [{
-                'description': f"{payment.plan_name} Plan - Lease Analysis Service",
+                'description': f"{payment.plan_name} - Lease Analysis Service",
                 'quantity': 1,
                 'unit_price': payment.amount,
                 'amount': payment.amount
             }]
             
-            try:
-                # Create invoice record
-                invoice = Invoice()
-                invoice.invoice_number = generate_invoice_number()
-                invoice.payment_id = payment.id
-                invoice.due_date = datetime.utcnow() + timedelta(days=30)
-                invoice.total_amount = payment.amount
-                invoice.currency = payment.currency or 'USD'
-                invoice.user_email = payment.user_email
-                invoice.billing_address = payment.billing_address
-                invoice.customer_name = payment.customer_name
-                invoice.items = items
-                invoice.status = 'pending'
-                
-                session.add(invoice)
-                session.flush()  # Get the ID without committing
-                
-                # Generate PDF
-                pdf_path = generate_invoice_pdf(invoice)
-                if pdf_path:
-                    invoice.pdf_path = pdf_path
-                    invoice.status = 'paid'  # Update status after PDF generation
-                    session.commit()
-                    logger.info(f"Invoice created successfully: {invoice.invoice_number}")
-                    return invoice
-                else:
-                    session.rollback()
-                    logger.error(f"Failed to generate PDF for invoice: {invoice.invoice_number}")
-                    return None
-            except Exception as e:
+            # Create invoice record
+            invoice = Invoice()
+            invoice.invoice_number = generate_invoice_number()
+            invoice.payment_id = payment.id
+            invoice.due_date = datetime.utcnow() + timedelta(days=30)
+            invoice.total_amount = payment.amount
+            invoice.currency = payment.currency or 'USD'
+            invoice.status = 'pending'
+            invoice.user_email = payment.user_email
+            invoice.billing_address = payment.billing_address
+            invoice.customer_name = payment.customer_name
+            invoice.items = items
+            
+            session.add(invoice)
+            session.flush()
+
+            # Generate PDF
+            pdf_path = generate_invoice_pdf(invoice)
+            if pdf_path:
+                invoice.pdf_path = pdf_path
+                invoice.status = 'paid'
+                session.commit()
+                logger.info(f"Invoice created successfully: {invoice.invoice_number}")
+                return invoice
+            else:
                 session.rollback()
-                logger.error(f"Error creating invoice record: {str(e)}")
+                logger.error(f"Failed to generate PDF for invoice: {invoice.invoice_number}")
                 return None
-                    
+
     except Exception as e:
         logger.error(f"Error creating invoice: {str(e)}")
-        raise
+        return None
 
 def generate_invoice_pdf(invoice):
-    """Generate PDF invoice using ReportLab with improved error handling"""
+    """Generate PDF invoice using ReportLab"""
     try:
-        # Validate required data
-        required_fields = ['invoice_number', 'customer_name', 'user_email', 
-                         'billing_address', 'total_amount', 'items']
-        missing_fields = [field for field in required_fields 
-                         if not getattr(invoice, field, None)]
-        
-        if missing_fields:
-            logger.error(f"Missing required invoice data: {', '.join(missing_fields)}")
-            return None
-
         # Create buffer for PDF
         buffer = io.BytesIO()
         
@@ -290,41 +261,30 @@ def generate_invoice_pdf(invoice):
             ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
             ('FONTSIZE', (0, 1), (-1, -1), 12),
             ('ALIGN', (-2, -1), (-1, -1), 'RIGHT'),
-            ('GRID', (0, 0), (-1, -2), 1, colors.black),
-            ('LINEBELOW', (0, -1), (-1, -1), 1, colors.black),
-            ('LINEABOVE', (0, -1), (-1, -1), 1, colors.black),
+            ('GRID', (0, 0), (-1, -2), 1, colors.black)
         ]))
         elements.append(table)
         
         # Add footer
         elements.append(Spacer(1, 30))
         elements.append(Paragraph("Thank you for your business!", styles["Normal"]))
-        elements.append(Paragraph(
-            "For any questions about this invoice, please contact support@coloradoleasecheck.com", 
-            styles["Normal"]))
+        elements.append(Paragraph("For questions about this invoice, please contact support@coloradoleasecheck.com", styles["Normal"]))
         
         # Build PDF
         doc.build(elements)
         
-        # Get buffer value
-        pdf = buffer.getvalue()
-        buffer.close()
-        
-        # Create invoices directory if it doesn't exist
+        # Create directory if it doesn't exist
         invoice_dir = os.path.join(os.getcwd(), 'leasecheck', 'static', 'invoices')
         os.makedirs(invoice_dir, exist_ok=True)
         
-        # Save PDF with unique name
-        pdf_filename = f"invoice_{invoice.invoice_number}_{int(datetime.utcnow().timestamp())}.pdf"
+        # Save PDF file
+        pdf_filename = f"invoice_{invoice.invoice_number}.pdf"
         pdf_path = os.path.join(invoice_dir, pdf_filename)
         
-        if pdf:
-            with open(pdf_path, 'wb') as f:
-                f.write(pdf)
-            return os.path.join('invoices', pdf_filename)
+        with open(pdf_path, 'wb') as f:
+            f.write(buffer.getvalue())
         
-        logger.error("PDF generation failed - no content generated")
-        return None
+        return os.path.join('invoices', pdf_filename)
             
     except Exception as e:
         logger.error(f"Error generating PDF invoice: {str(e)}")
@@ -334,13 +294,13 @@ def generate_invoice_pdf(invoice):
 def view_invoice(invoice_number):
     """View invoice details"""
     try:
-        invoice = Invoice.query.filter_by(invoice_number=invoice_number).first_or_404()
-        if not invoice.pdf_path and invoice.status == 'paid':
-            # Generate PDF if not already generated
-            pdf_path = generate_invoice_pdf(invoice)
-            if pdf_path:
-                invoice.pdf_path = pdf_path
-                db.session.commit()
+        invoice = Invoice.query.filter_by(invoice_number=invoice_number).first()
+        
+        if not invoice:
+            logger.warning(f"Invoice {invoice_number} not found")
+            flash('Invoice not found', 'error')
+            return redirect(url_for('main.select_plan'))
+        
         return render_template('invoice.html', invoice=invoice)
     except Exception as e:
         logger.error(f"Error viewing invoice {invoice_number}: {str(e)}")
@@ -354,27 +314,24 @@ def download_invoice(invoice_number):
         invoice = Invoice.query.filter_by(invoice_number=invoice_number).first_or_404()
         
         if not invoice.pdf_path:
-            # Generate PDF if not already generated
             pdf_path = generate_invoice_pdf(invoice)
             if pdf_path:
                 invoice.pdf_path = pdf_path
                 db.session.commit()
-        
-        if invoice.pdf_path:
-            full_path = os.path.join(os.getcwd(), 'leasecheck', 'static', invoice.pdf_path)
-            if os.path.exists(full_path):
-                return send_file(
-                    full_path,
-                    mimetype='application/pdf',
-                    as_attachment=True,
-                    download_name=f"invoice_{invoice.invoice_number}.pdf"
-                )
             else:
-                logger.error(f"Invoice PDF file not found: {full_path}")
-                flash('Invoice PDF file not found', 'error')
-        else:
-            flash('Error generating invoice PDF', 'error')
+                flash('Error generating invoice PDF', 'error')
+                return redirect(url_for('main.view_invoice', invoice_number=invoice_number))
         
+        full_path = os.path.join(os.getcwd(), 'leasecheck', 'static', invoice.pdf_path)
+        if os.path.exists(full_path):
+            return send_file(
+                full_path,
+                mimetype='application/pdf',
+                as_attachment=True,
+                download_name=f"invoice_{invoice.invoice_number}.pdf"
+            )
+        
+        flash('Invoice PDF file not found', 'error')
         return redirect(url_for('main.view_invoice', invoice_number=invoice_number))
     except Exception as e:
         logger.error(f"Error downloading invoice {invoice_number}: {str(e)}")
@@ -385,13 +342,14 @@ def update_payment_status(payment_intent_id, new_status, additional_data=None):
     """Update payment status and generate invoice if payment is successful"""
     try:
         with safe_transaction() as session:
-            # Find the payment
             payment = session.query(Payment).filter_by(
                 stripe_payment_id=payment_intent_id).first()
             
             if not payment:
                 logger.warning(f"Payment not found: {payment_intent_id}")
                 return False
+            
+            logger.info(f"Updating payment status for {payment_intent_id} to {new_status}")
             
             # Update payment status and additional data
             payment.status = new_status
@@ -400,23 +358,21 @@ def update_payment_status(payment_intent_id, new_status, additional_data=None):
                     if hasattr(payment, key):
                         setattr(payment, key, value)
             
-            session.flush()  # Get the ID without committing
+            # Commit the payment status update first
+            session.commit()
             
             # Generate invoice for successful payments
             if new_status == 'succeeded':
-                try:
-                    invoice = create_invoice(payment)
-                    if invoice:
-                        logger.info(f"Invoice generated successfully for payment {payment_intent_id}")
-                    else:
-                        logger.error(f"Failed to generate invoice for payment {payment_intent_id}")
-                except Exception as e:
-                    logger.error(f"Failed to create invoice for payment {payment_intent_id}: {str(e)}")
+                invoice = create_invoice(payment)
+                if invoice:
+                    logger.info(f"Invoice {invoice.invoice_number} generated successfully for payment {payment_intent_id}")
+                    return True
+                else:
+                    logger.error(f"Failed to generate invoice for payment {payment_intent_id}")
+                    return False
             
-            session.commit()
-            logger.info(f"Payment status updated: {payment_intent_id} -> {new_status}")
             return True
             
     except Exception as e:
         logger.error(f"Error updating payment status: {str(e)}")
-        raise
+        return False
