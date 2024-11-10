@@ -1,139 +1,162 @@
-/* Onboarding screen specific styles */
+/* Base styles and CSS reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'System Font', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Accessibility helper */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* Main container */
 .screen {
     min-height: 100vh;
     background-color: #ffffff;
+    contain: content;
 }
 
-/* Green header bar */
-.welcome-header {
-    background-color: #80C904;
-    width: 100%;
-    padding: 40px 20px;
-    text-align: center;
-    margin-bottom: 80px;
-}
-
-.welcome-header h1 {
-    color: black;
-    font-size: 56px;
-    font-weight: 600;
-    margin: 0;
-    letter-spacing: -0.02em;
-}
-
-/* Main content container */
+/* Content container */
 .onboarding-content {
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
 }
 
-/* Welcome text and LeaseCheck title */
+/* Header styles */
+.welcome-header {
+    background-color: #7ED321;
+    padding: 40px 20px;
+    text-align: center;
+    margin-bottom: 60px;
+    contain: content;
+}
+
+.welcome-header h1 {
+    color: #000000;
+    font-size: 48px;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+/* Welcome text section */
 .welcome-text {
     text-align: center;
-    margin-bottom: 100px;
+    margin-bottom: 80px;
 }
 
 .main-title {
-    font-size: 52px;
+    font-size: 56px;
     font-weight: 700;
-    margin-bottom: 50px;
-    color: black;
+    margin-bottom: 40px;
+    color: #000000;
     line-height: 1.3;
 }
 
-/* Lead text about legal compliance */
 .lead {
     font-size: 32px;
     line-height: 1.5;
-    color: #333;
-    margin-bottom: 50px;
-    max-width: 700px;
+    color: #333333;
+    margin-bottom: 40px;
+    max-width: 800px;
     margin-left: auto;
     margin-right: auto;
-    font-weight: 400;
 }
 
-/* Sign your lease with confidence tagline */
 .tagline {
     font-size: 42px;
     font-weight: 700;
-    color: black;
-    margin-bottom: 50px;
+    color: #000000;
+    margin-bottom: 40px;
 }
 
 .description {
     font-size: 26px;
-    color: #444;
-    margin-bottom: 80px;
-    max-width: 600px;
+    color: #444444;
+    margin-bottom: 60px;
+    max-width: 700px;
     margin-left: auto;
     margin-right: auto;
     line-height: 1.5;
-    font-weight: 400;
 }
 
-/* Key Features section */
+/* Features section */
 .key-features {
-    margin-bottom: 100px;
+    margin-bottom: 80px;
     padding: 0 20px;
 }
 
 .features-title {
-    font-size: 46px;
+    font-size: 42px;
     font-weight: 700;
-    color: black;
-    margin-bottom: 50px;
+    color: #000000;
+    margin-bottom: 40px;
     text-align: center;
 }
 
-.feature-item {
-    margin-bottom: 35px;
-    font-size: 24px;
-    line-height: 1.6;
-    color: #333;
-    padding-left: 35px;
-    position: relative;
+.features-list {
+    list-style: none;
+    max-width: 900px;
+    margin: 0 auto;
 }
 
-.feature-label {
-    font-weight: 700;
-    color: black;
-    margin-right: 12px;
+.feature-item {
+    margin-bottom: 30px;
+    font-size: 24px;
+    line-height: 1.6;
+    color: #333333;
+    padding-left: 35px;
+    position: relative;
 }
 
 .feature-item::before {
     content: "•";
     position: absolute;
     left: 0;
-    color: #80C904;
+    color: #7ED321;
     font-size: 28px;
     line-height: 1;
+}
+
+.feature-label {
+    font-weight: 700;
+    color: #000000;
+    margin-right: 12px;
 }
 
 /* CTA section */
 .cta-section {
     text-align: center;
-    margin-top: 80px;
+    margin-top: 60px;
     padding-bottom: 80px;
 }
 
 .ready-message {
-    margin-bottom: 50px;
+    margin-bottom: 40px;
 }
 
 .ready-message p {
     font-size: 28px;
     line-height: 1.5;
-    color: #333;
-    margin-bottom: 25px;
-    font-weight: 400;
+    color: #333333;
+    margin-bottom: 20px;
 }
 
 .choose-plan-btn {
-    background-color: #80C904;
-    color: black;
-    padding: 30px 60px;
+    background-color: #7ED321;
+    color: #000000;
+    padding: 25px 50px;
     border-radius: 999px;
     font-size: 32px;
     text-decoration: none;
@@ -142,89 +165,57 @@
     display: inline-block;
     transition: all 0.3s ease;
     font-weight: 600;
-    min-width: 320px;
+    min-width: 300px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transform: translateZ(0);
+    will-change: transform, background-color;
 }
 
 .choose-plan-btn:hover {
-    background-color: #73b504;
+    background-color: #6db91d;
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Focus styles for accessibility */
+:focus {
+    outline: 3px solid #7ED321;
+    outline-offset: 2px;
+}
+
+.choose-plan-btn:focus {
+    outline-offset: 4px;
 }
 
 /* Responsive design */
 @media (max-width: 768px) {
     .welcome-header h1 {
-        font-size: 46px;
-        padding: 30px 20px;
+        font-size: 42px;
     }
 
     .main-title {
-        font-size: 42px;
-        margin-bottom: 40px;
+        font-size: 48px;
+        margin-bottom: 30px;
     }
 
     .lead {
-        font-size: 26px;
-        margin-bottom: 40px;
+        font-size: 28px;
+        margin-bottom: 30px;
     }
 
     .tagline {
         font-size: 36px;
-        margin-bottom: 40px;
+        margin-bottom: 30px;
     }
 
     .description {
         font-size: 22px;
-        margin-bottom: 60px;
+        margin-bottom: 50px;
     }
 
     .features-title {
-        font-size: 38px;
-        margin-bottom: 40px;
-    }
-
-    .feature-item {
-        font-size: 22px;
-        margin-bottom: 30px;
-    }
-
-    .ready-message p {
-        font-size: 24px;
-        margin-bottom: 20px;
-    }
-
-    .choose-plan-btn {
-        padding: 25px 50px;
-        font-size: 28px;
-        min-width: 280px;
-    }
-}
-
-@media (max-width: 480px) {
-    .welcome-header h1 {
-        font-size: 38px;
-        padding: 25px 15px;
-    }
-
-    .main-title {
         font-size: 36px;
         margin-bottom: 30px;
-    }
-
-    .lead {
-        font-size: 22px;
-        margin-bottom: 30px;
-    }
-
-    .tagline {
-        font-size: 30px;
-        margin-bottom: 30px;
-    }
-
-    .description {
-        font-size: 20px;
-        margin-bottom: 50px;
     }
 
     .feature-item {
@@ -233,12 +224,60 @@
     }
 
     .ready-message p {
-        font-size: 22px;
+        font-size: 24px;
     }
 
     .choose-plan-btn {
         padding: 20px 40px;
+        font-size: 28px;
+        min-width: 280px;
+    }
+}
+
+@media (max-width: 480px) {
+    .welcome-header h1 {
+        font-size: 36px;
+    }
+
+    .main-title {
+        font-size: 42px;
+    }
+
+    .lead {
         font-size: 24px;
-        min-width: 240px;
+    }
+
+    .tagline {
+        font-size: 32px;
+    }
+
+    .description {
+        font-size: 20px;
+    }
+
+    .feature-item {
+        font-size: 18px;
+    }
+
+    .choose-plan-btn {
+        padding: 18px 36px;
+        font-size: 24px;
+        min-width: 260px;
+    }
+}
+
+/* Print styles */
+@media print {
+    .choose-plan-btn {
+        display: none;
+    }
+
+    .screen {
+        min-height: auto;
+    }
+
+    .welcome-header {
+        background-color: transparent;
+        color: #000000;
     }
 }

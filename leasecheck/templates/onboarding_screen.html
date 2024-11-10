@@ -1,87 +1,99 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Welcome to LeaseCheck - Get started with your lease verification journey">
+    <title>Welcome to LeaseCheck - Get Started</title>
+    
+    <!-- Performance optimizations -->
+    <link rel="preload" href="{{ url_for('static', filename='css/onboarding.css') }}" as="style">
+    <link rel="preconnect" href="{{ request.host_url }}">
+    
+    <!-- Primary CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/onboarding.css') }}">
+    
+    <!-- Font optimization -->
+    <style>
+        @font-face {
+            font-family: 'System Font';
+            font-display: swap;
+            src: local(-apple-system), local(BlinkMacSystemFont), local("Segoe UI"), local(Roboto), local(sans-serif);
+        }
+    </style>
+</head>
+<body>
+    <!-- Main container with semantic structure -->
+    <main class="screen" role="main">
+        <div class="onboarding-content">
+            <!-- Header Section -->
+            <header class="welcome-header" role="banner">
+                <h1>Welcome</h1>
+            </header>
 
-{% block title %}Onboarding - LeaseCheck{% endblock %}
+            <!-- Introduction Section -->
+            <section class="welcome-text" aria-labelledby="main-title">
+                <h2 id="main-title" class="main-title">Welcome to<br>LeaseCheck</h2>
+                
+                <p class="lead">
+                    Ensure your lease agreement is legally compliant with local, state, and federal laws.
+                </p>
+                
+                <p class="tagline">Sign your lease with confidence!</p>
+                
+                <p class="description">
+                    LeaseCheck empowers you to understand your lease agreement before you commit.
+                </p>
+            </section>
 
-{% block extra_css %}
-<!-- Preload critical CSS -->
-<link rel="preload" href="{{ url_for('static', filename='css/onboarding.css') }}" as="style">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/onboarding.css') }}">
-{% endblock %}
+            <!-- Features Section -->
+            <section class="key-features" aria-labelledby="features-title">
+                <h3 id="features-title" class="features-title">Key Features</h3>
+                
+                <ul class="features-list" role="list">
+                    <li class="feature-item">
+                        <span class="feature-label">Legal Compliance:</span>
+                        <span class="feature-description">Ensure your lease aligns with applicable laws.</span>
+                    </li>
+                    
+                    <li class="feature-item">
+                        <span class="feature-label">Risk Identification:</span>
+                        <span class="feature-description">Uncover potential risks in your lease.</span>
+                    </li>
+                    
+                    <li class="feature-item">
+                        <span class="feature-label">User-Friendly Interface:</span>
+                        <span class="feature-description">Easy to navigate with a PDF report you can share.</span>
+                    </li>
+                    
+                    <li class="feature-item">
+                        <span class="feature-label">Empowerment:</span>
+                        <span class="feature-description">Make informed decisions to protect your rights as a tenant.</span>
+                    </li>
+                    
+                    <li class="feature-item">
+                        <span class="feature-label">Peace of Mind:</span>
+                        <span class="feature-description">Gain confidence knowing you've thoroughly reviewed your lease.</span>
+                    </li>
+                </ul>
+            </section>
 
-{% block content %}
-<!-- Onboarding Screen: Main container for user onboarding process -->
-<div class="screen">
-    <div class="onboarding-content">
-        <!-- Green Header Bar: Visual hierarchy and branding -->
-        <div class="welcome-header" role="banner">
-            <h1>Welcome</h1>
+            <!-- Call to Action Section -->
+            <section class="cta-section" aria-labelledby="cta-title">
+                <div class="ready-message">
+                    <h4 id="cta-title" class="visually-hidden">Get Started</h4>
+                    <p>Ready to take control of your leasing experience?</p>
+                    <p>Choose the plan that best suits your needs and begin your new home search today!</p>
+                </div>
+                
+                <a href="{{ url_for('main.select_plan') }}" 
+                   class="choose-plan-btn"
+                   role="button"
+                   aria-label="Choose a plan to start your lease review">
+                    Choose A Plan
+                </a>
+            </section>
         </div>
-
-        <!-- Main Welcome Content: Introduction and value proposition -->
-        <div class="welcome-text text-center">
-            <!-- Main Title: Primary branding element -->
-            <h2 class="main-title">Welcome to<br>LeaseCheck</h2>
-            
-            <!-- Lead Text: Primary value proposition -->
-            <p class="lead mb-4">
-                Ensure your lease agreement is legally compliant with local, state, and federal laws.
-            </p>
-            
-            <!-- Tagline: Confidence building message -->
-            <p class="tagline mb-5">Sign your lease with confidence!</p>
-            
-            <!-- Description: Detailed value proposition -->
-            <p class="description mb-5">
-                Lease Check empowers you to understand your lease agreement before you commit.
-            </p>
-        </div>
-
-        <!-- Key Features Section: Highlight main platform capabilities -->
-        <div class="key-features" role="region" aria-labelledby="features-title">
-            <h3 id="features-title" class="features-title mb-4">Key Features</h3>
-            
-            <!-- Feature Items: List of platform benefits -->
-            <div class="feature-item">
-                <span class="feature-label">Legal Compliance:</span>
-                Ensure your lease aligns with applicable laws.
-            </div>
-            
-            <div class="feature-item">
-                <span class="feature-label">Risk Identification:</span>
-                Uncover potential risks in your lease.
-            </div>
-            
-            <div class="feature-item">
-                <span class="feature-label">User-Friendly Interface:</span>
-                Easy to navigate with a PDF report you can share.
-            </div>
-            
-            <div class="feature-item">
-                <span class="feature-label">Empowerment:</span>
-                Make informed decisions to protect your rights as a tenant.
-            </div>
-            
-            <div class="feature-item">
-                <span class="feature-label">Peace of Mind:</span>
-                Gain confidence knowing you've thoroughly reviewed your lease.
-            </div>
-        </div>
-
-        <!-- Call to Action Section: Drive user engagement -->
-        <div class="cta-section text-center">
-            <div class="ready-message">
-                <p>Ready to take control of your leasing experience?</p>
-                <p>Choose the plan that best suits your needs and begin your new home search today!</p>
-            </div>
-            
-            <!-- CTA Button: Primary conversion element -->
-            <a href="/select-plan" 
-               class="choose-plan-btn"
-               role="button"
-               aria-label="Choose a plan to start your lease review">
-                Choose A Plan
-            </a>
-        </div>
-    </div>
-</div>
-{% endblock %}
+    </main>
+</body>
+</html>
