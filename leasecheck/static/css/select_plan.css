@@ -1,23 +1,23 @@
-/* Select Plan specific styles */
+/* Select Plan Screen */
 .select-plan-screen {
     min-height: 100vh;
-    background-color: #fff;
+    background-color: #ffffff;
     contain: content;
 }
 
 /* Green header */
 .green-header {
     background-color: #7ED321;
-    padding: 25px 20px;
+    padding: 20px;
     text-align: center;
     contain: content;
 }
 
 .green-header h1 {
-    color: #000;
-    font-size: 48px;
+    color: #000000;
+    font-size: 64px;
     margin: 0;
-    font-weight: bold;
+    font-weight: normal;
     line-height: 1.2;
 }
 
@@ -35,16 +35,17 @@
 }
 
 .plan-header h2 {
-    font-size: 42px;
-    color: #000;
+    font-size: 64px;
+    color: #000000;
     margin-bottom: 30px;
-    font-weight: bold;
+    font-weight: normal;
 }
 
 .plan-header h3 {
-    font-size: 36px;
-    color: #000;
-    margin-bottom: 30px;
+    font-size: 48px;
+    color: #000000;
+    margin-bottom: 40px;
+    font-weight: normal;
 }
 
 /* Features list */
@@ -54,10 +55,10 @@
 }
 
 .feature-row {
-    margin-bottom: 20px;
-    font-size: 20px;
+    margin-bottom: 30px;
+    font-size: 24px;
     line-height: 1.5;
-    color: #000;
+    color: #000000;
 }
 
 .feature-row strong {
@@ -74,12 +75,15 @@
 
 /* Plan card styling */
 .pricing-card {
-    background-color: #E3F5FF;
     border-radius: 25px;
     padding: 30px;
     position: relative;
     will-change: transform;
     contain: content;
+}
+
+.pricing-card.basic {
+    background-color: #E3F5FF;
 }
 
 .pricing-card.standard {
@@ -96,7 +100,7 @@
     top: -12px;
     right: 30px;
     background-color: #7ED321;
-    color: #000;
+    color: #000000;
     padding: 4px 12px;
     border-radius: 12px;
     font-size: 14px;
@@ -104,48 +108,52 @@
     z-index: 1;
 }
 
+/* Radio button styling */
 .form-check {
     display: flex;
     align-items: flex-start;
     gap: 15px;
     text-align: left;
+    padding: 5px;
 }
 
 .form-check-input {
     margin-top: 8px;
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     cursor: pointer;
 }
 
 .form-check-label {
     font-size: 24px;
-    color: #000;
+    color: #000000;
     cursor: pointer;
+    font-weight: normal;
 }
 
 .plan-features {
-    margin-top: 10px;
-    margin-left: 35px;
-    font-size: 18px;
-    color: #000;
-    line-height: 1.4;
+    margin-top: 15px;
+    font-size: 20px;
+    color: #000000;
+    line-height: 1.6;
 }
 
 /* Select button styling */
 .select-plan-btn {
     background-color: #7ED321;
-    color: #000;
-    padding: 20px;
+    color: #000000;
+    padding: 20px 40px;
     border-radius: 999px;
     border: none;
-    font-size: 24px;
+    font-size: 36px;
     cursor: pointer;
     width: 100%;
+    max-width: 400px;
+    margin: 40px auto 0;
     display: block;
     text-align: center;
     text-decoration: none;
-    margin-top: 40px;
+    font-weight: normal;
     transition: background-color 0.3s ease;
     will-change: background-color;
 }
@@ -172,14 +180,45 @@
     }
 }
 
-/* Responsive design */
+/* Responsive styles */
 @media (max-width: 768px) {
+    .green-header h1 {
+        font-size: 48px;
+    }
+
+    .plan-header h2 {
+        font-size: 48px;
+    }
+
+    .plan-header h3 {
+        font-size: 36px;
+    }
+
+    .feature-row {
+        font-size: 20px;
+    }
+
+    .form-check-label {
+        font-size: 20px;
+    }
+
+    .plan-features {
+        font-size: 18px;
+    }
+
+    .select-plan-btn {
+        font-size: 28px;
+        padding: 15px 30px;
+    }
+}
+
+@media (max-width: 480px) {
     .green-header h1 {
         font-size: 36px;
     }
 
     .plan-header h2 {
-        font-size: 32px;
+        font-size: 36px;
     }
 
     .plan-header h3 {
@@ -191,7 +230,7 @@
     }
 
     .form-check-label {
-        font-size: 20px;
+        font-size: 18px;
     }
 
     .plan-features {
@@ -199,45 +238,8 @@
     }
 
     .select-plan-btn {
-        font-size: 20px;
-        padding: 15px;
-    }
-
-    .most-popular-tag {
-        font-size: 12px;
-        padding: 3px 10px;
-    }
-}
-
-@media (max-width: 480px) {
-    .green-header h1 {
-        font-size: 32px;
-    }
-
-    .plan-header h2 {
-        font-size: 28px;
-    }
-
-    .plan-header h3 {
         font-size: 24px;
-    }
-
-    .feature-row {
-        font-size: 16px;
-    }
-
-    .form-check-label {
-        font-size: 18px;
-    }
-
-    .plan-features {
-        font-size: 14px;
-    }
-
-    .most-popular-tag {
-        right: 20px;
-        font-size: 11px;
-        padding: 2px 8px;
+        padding: 12px 24px;
     }
 }
 
