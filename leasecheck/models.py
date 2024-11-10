@@ -1,5 +1,9 @@
 from datetime import datetime
 from .database import db
+from sqlalchemy import event
+import logging
+
+logger = logging.getLogger(__name__)
 
 class TermsAcceptance(db.Model):
     __tablename__ = 'terms_acceptance'
@@ -9,6 +13,29 @@ class TermsAcceptance(db.Model):
     accepted_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     ip_address = db.Column(db.String(45), nullable=True)
     terms_version = db.Column(db.String(50), nullable=False)
+
+class Invoice(db.Model):
+    __tablename__ = 'invoices'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    invoice_number = db.Column(db.String(50), unique=True, nullable=False)
+    payment_id = db.Column(db.Integer, db.ForeignKey('payments.id'), nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    due_date = db.Column(db.DateTime, nullable=False)
+    total_amount = db.Column(db.Integer, nullable=False)  # Amount in cents
+    currency = db.Column(db.String(3), nullable=False, default='USD')
+    status = db.Column(db.String(20), nullable=False, default='generated')
+    user_email = db.Column(db.String(255), nullable=False)
+    billing_address = db.Column(db.JSON, nullable=False)
+    customer_name = db.Column(db.String(255), nullable=False)
+    items = db.Column(db.JSON, nullable=False)  # Store line items
+    notes = db.Column(db.Text)
+    pdf_path = db.Column(db.String(500))  # Path to stored PDF invoice
+    
+    payment = db.relationship('Payment', backref=db.backref('invoice', uselist=False))
+
+    def __repr__(self):
+        return f'<Invoice {self.invoice_number}>'
 
 class Payment(db.Model):
     __tablename__ = 'payments'
@@ -45,6 +72,30 @@ class Payment(db.Model):
 
     def __repr__(self):
         return f'<Payment {self.stripe_payment_id}>'
+
+    def generate_invoice(self):
+        """Generate invoice for successful payment"""
+        try:
+            if self.status == 'succeeded':
+                from .routes import create_invoice
+                logger.info(f"Attempting to generate invoice for payment {self.stripe_payment_id}")
+                invoice = create_invoice(self)
+                if invoice:
+                    logger.info(f"Successfully generated invoice {invoice.invoice_number} for payment {self.stripe_payment_id}")
+                    return invoice
+                else:
+                    logger.error(f"Failed to generate invoice for payment {self.stripe_payment_id}")
+            return None
+        except Exception as e:
+            logger.error(f"Error generating invoice for payment {self.stripe_payment_id}: {str(e)}")
+            return None
+
+@event.listens_for(Payment, 'after_update')
+def payment_status_changed(mapper, connection, target):
+    """Listen for payment status changes and generate invoice when payment succeeds"""
+    if target.status == 'succeeded':
+        logger.info(f"Payment status changed to succeeded for {target.stripe_payment_id}")
+        target.generate_invoice()
 
 class AdminUser(db.Model):
     __tablename__ = 'admin_users'

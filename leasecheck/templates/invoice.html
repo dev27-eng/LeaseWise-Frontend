@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Invoice #{{ invoice.invoice_number }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .invoice-header {
+            margin-bottom: 30px;
+        }
+        .company-details {
+            float: left;
+        }
+        .invoice-details {
+            float: right;
+            text-align: right;
+        }
+        .clear {
+            clear: both;
+        }
+        .customer-details {
+            margin: 20px 0;
+            padding: 20px 0;
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f8f8f8;
+        }
+        .total-amount {
+            text-align: right;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-header">
+        <div class="company-details">
+            <h1>LeaseCheck</h1>
+            <p>Professional Lease Analysis Services</p>
+        </div>
+        <div class="invoice-details">
+            <h2>INVOICE</h2>
+            <p>Invoice #: {{ invoice.invoice_number }}</p>
+            <p>Date: {{ invoice.created_at.strftime('%B %d, %Y') }}</p>
+            <p>Due Date: {{ invoice.due_date.strftime('%B %d, %Y') }}</p>
+        </div>
+        <div class="clear"></div>
+    </div>
+
+    <div class="customer-details">
+        <h3>Bill To:</h3>
+        <p>{{ invoice.customer_name }}</p>
+        <p>{{ invoice.user_email }}</p>
+        {% if invoice.billing_address %}
+            <p>{{ invoice.billing_address.street }}</p>
+            {% if invoice.billing_address.street2 %}
+                <p>{{ invoice.billing_address.street2 }}</p>
+            {% endif %}
+            <p>{{ invoice.billing_address.city }}, {{ invoice.billing_address.state }} {{ invoice.billing_address.zipCode }}</p>
+            <p>{{ invoice.billing_address.country }}</p>
+        {% endif %}
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in invoice.items %}
+            <tr>
+                <td>{{ item.description }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ "%.2f"|format(item.unit_price/100) }}</td>
+                <td>${{ "%.2f"|format(item.amount/100) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="total-amount">
+        Total Amount: ${{ "%.2f"|format(invoice.total_amount/100) }} {{ invoice.currency }}
+    </div>
+
+    <div class="footer">
+        <p>Thank you for your business!</p>
+        <p>For any questions about this invoice, please contact support@coloradoleasecheck.com</p>
+    </div>
+</body>
+</html>
