@@ -21,6 +21,30 @@ class Payment(db.Model):
     status = db.Column(db.String(20), nullable=False)
     plan_name = db.Column(db.String(50), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    
+    # Payment method information
+    payment_method_type = db.Column(db.String(50))  # card, sepa_debit, etc.
+    payment_method_details = db.Column(db.JSON)  # Store detailed payment method info
+    
+    # Error tracking
+    error_message = db.Column(db.Text)  # Store error messages if payment fails
+    error_code = db.Column(db.String(100))  # Store error codes
+    last_payment_error = db.Column(db.JSON)  # Store complete error information
+    
+    # Additional payment information
+    payment_info = db.Column(db.JSON)  # Store additional payment data
+    customer_name = db.Column(db.String(255))  # Customer's full name
+    billing_address = db.Column(db.JSON)  # Store complete billing address
+    
+    # Refund and dispute information
+    refund_status = db.Column(db.String(20))  # Status of any refunds
+    refund_amount = db.Column(db.Integer)  # Amount refunded in cents
+    refund_reason = db.Column(db.String(255))  # Reason for refund
+    dispute_status = db.Column(db.String(20))  # Status of any disputes
+    dispute_reason = db.Column(db.String(255))  # Reason for dispute
+
+    def __repr__(self):
+        return f'<Payment {self.stripe_payment_id}>'
 
 class AdminUser(db.Model):
     __tablename__ = 'admin_users'

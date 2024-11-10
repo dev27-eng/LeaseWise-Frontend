@@ -1,5 +1,6 @@
 {pkgs}: {
   deps = [
+    pkgs.stripe-cli
     pkgs.pango
     pkgs.harfbuzz
     pkgs.glib

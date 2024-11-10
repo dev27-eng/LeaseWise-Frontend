@@ -19,29 +19,32 @@ class DatabaseError(Exception):
     """Custom exception for database errors"""
     pass
 
-def retry_on_operational_error(max_retries=3, delay=1):
+def retry_on_operational_error(f):
     """Decorator to retry database operations on operational errors"""
-    def decorator(f):
-        @wraps(f)
-        def wrapper(*args, **kwargs):
-            last_error = None
-            for attempt in range(max_retries):
-                try:
-                    return f(*args, **kwargs)
-                except (OperationalError, DBAPIError) as e:
-                    last_error = e
-                    if attempt < max_retries - 1:
-                        logger.warning(f"Database operation failed (attempt {attempt + 1}/{max_retries}): {str(e)}")
-                        time.sleep(delay * (attempt + 1))  # Exponential backoff
-                        verify_db_connection()  # Verify connection before retry
-                    continue
-                except Exception as e:
-                    logger.error(f"Unexpected error in database operation: {str(e)}")
-                    raise
-            logger.error(f"Database operation failed after {max_retries} attempts: {str(last_error)}")
-            raise DatabaseError(f"Operation failed after {max_retries} retries: {str(last_error)}")
-        return wrapper
-    return decorator
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        max_retries = 3
+        delay = 1
+        last_error = None
+        
+        for attempt in range(max_retries):
+            try:
+                return f(*args, **kwargs)
+            except (OperationalError, DBAPIError) as e:
+                last_error = e
+                if attempt < max_retries - 1:
+                    logger.warning(f"Database operation failed (attempt {attempt + 1}/{max_retries}): {str(e)}")
+                    time.sleep(delay * (attempt + 1))  # Exponential backoff
+                    verify_db_connection()  # Verify connection before retry
+                continue
+            except Exception as e:
+                logger.error(f"Unexpected error in database operation: {str(e)}")
+                raise
+        
+        logger.error(f"Database operation failed after {max_retries} attempts: {str(last_error)}")
+        raise DatabaseError(f"Operation failed after {max_retries} retries: {str(last_error)}")
+    
+    return wrapper
 
 @contextmanager
 def safe_transaction():
@@ -98,7 +101,7 @@ def init_db(app):
         logger.error(f"Unexpected error during database initialization: {str(e)}")
         raise
 
-@retry_on_operational_error(max_retries=5, delay=2)
+@retry_on_operational_error
 def verify_db_connection():
     """Verify database connection with retry logic"""
     try:
