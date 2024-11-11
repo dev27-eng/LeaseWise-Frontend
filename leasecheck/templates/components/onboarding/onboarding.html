@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome to LeaseCheck - Get Started{% endblock %}
+
+{% block extra_css %}
+<link rel="preload" href="{{ url_for('static', filename='components/onboarding/onboarding.css') }}" as="style">
+<link rel="stylesheet" href="{{ url_for('static', filename='components/onboarding/onboarding.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="onboarding-screen" role="main">
+    <div class="onboarding-content">
+        <!-- Header Section -->
+        <header class="onboarding-header" role="banner">
+            <h1>Welcome</h1>
+        </header>
+
+        <!-- Introduction Section -->
+        <section class="onboarding-welcome-text" aria-labelledby="main-title">
+            <h2 id="main-title" class="onboarding-main-title">Welcome to<br>LeaseCheck</h2>
+            
+            <p class="onboarding-lead">
+                Ensure your lease agreement is legally compliant with local, state, and federal laws.
+            </p>
+            
+            <p class="onboarding-tagline">Sign your lease with confidence!</p>
+            
+            <p class="onboarding-description">
+                LeaseCheck empowers you to understand your lease agreement before you commit.
+            </p>
+        </section>
+
+        <!-- Features Section -->
+        <section class="onboarding-features" aria-labelledby="features-title">
+            <h3 id="features-title" class="onboarding-features-title">Key Features</h3>
+            
+            <ul class="onboarding-features-list" role="list">
+                <li class="onboarding-feature-item">
+                    <span class="onboarding-feature-label">Legal Compliance:</span>
+                    <span class="onboarding-feature-description">Ensure your lease aligns with applicable laws.</span>
+                </li>
+                
+                <li class="onboarding-feature-item">
+                    <span class="onboarding-feature-label">Risk Identification:</span>
+                    <span class="onboarding-feature-description">Uncover potential risks in your lease.</span>
+                </li>
+                
+                <li class="onboarding-feature-item">
+                    <span class="onboarding-feature-label">User-Friendly Interface:</span>
+                    <span class="onboarding-feature-description">Easy to navigate with a PDF report you can share.</span>
+                </li>
+                
+                <li class="onboarding-feature-item">
+                    <span class="onboarding-feature-label">Empowerment:</span>
+                    <span class="onboarding-feature-description">Make informed decisions to protect your rights as a tenant.</span>
+                </li>
+                
+                <li class="onboarding-feature-item">
+                    <span class="onboarding-feature-label">Peace of Mind:</span>
+                    <span class="onboarding-feature-description">Gain confidence knowing you've thoroughly reviewed your lease.</span>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Call to Action Section -->
+        <section class="onboarding-cta" aria-labelledby="cta-title">
+            <div class="onboarding-ready-message">
+                <h4 id="cta-title" class="visually-hidden">Get Started</h4>
+                <p>Ready to take control of your leasing experience?</p>
+                <p>Choose the plan that best suits your needs and begin your new home search today!</p>
+            </div>
+            
+            <a href="{{ url_for('main.select_plan') }}" 
+               class="onboarding-choose-plan-btn"
+               role="button"
+               aria-label="Choose a plan to start your lease review">
+                Choose A Plan
+            </a>
+        </section>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='components/onboarding/onboarding.js') }}" defer></script>
+{% endblock %}

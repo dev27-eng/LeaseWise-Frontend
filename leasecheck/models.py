@@ -34,17 +34,13 @@ class Document(db.Model):
     __tablename__ = 'documents'
     
     id = db.Column(db.Integer, primary_key=True)
-    filename = db.Column(db.String(255), nullable=False)
     original_filename = db.Column(db.String(255), nullable=False)
-    mimetype = db.Column(db.String(100), nullable=False)
+    stored_filename = db.Column(db.String(255), nullable=False, unique=True)
+    file_path = db.Column(db.String(500), nullable=False)
     file_size = db.Column(db.Integer, nullable=False)  # Size in bytes
-    user_email = db.Column(db.String(255), nullable=False)
     upload_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     status = db.Column(db.String(50), nullable=False, default='pending')  # pending, processing, processed, error
-    file_path = db.Column(db.String(500), nullable=False)
     error_message = db.Column(db.Text)
-    processing_started = db.Column(db.DateTime)
-    processing_completed = db.Column(db.DateTime)
     
     # Review-related fields
     review_status = db.Column(db.String(50), default='not_started')  # not_started, in_progress, completed

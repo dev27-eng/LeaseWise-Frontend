@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome - LeaseCheck{% endblock %}
+
+{% block extra_css %}
+<link rel="preload" href="{{ url_for('static', filename='components/welcome/welcome.css') }}" as="style">
+<link rel="stylesheet" href="{{ url_for('static', filename='components/welcome/welcome.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="welcome-screen" role="main">
+    <div class="welcome-container">
+        <!-- Logo and Branding Section -->
+        <section class="welcome-branding" aria-label="LeaseCheck branding">
+            <h1 class="welcome-logo-text">LeaseCheck</h1>
+            
+            <div class="welcome-logo-container">
+                <img src="{{ url_for('static', filename='images/Logov2.svg') }}"
+                     alt="LeaseCheck Logo"
+                     class="welcome-logo-image"
+                     width="350"
+                     height="350"
+                     loading="eager"
+                     decoding="async">
+            </div>
+        </section>
+
+        <!-- Value Proposition Section -->
+        <section class="welcome-value-prop" aria-label="Value proposition">
+            <h2 class="welcome-verify-text">Verify legal compliance easily</h2>
+        </section>
+
+        <!-- Call to Action Section -->
+        <section class="welcome-cta" aria-label="Get started">
+            <a href="{{ url_for('main.onboarding') }}"
+               class="welcome-start-btn"
+               role="button"
+               aria-label="Start your lease review process">
+                Start Your Review
+            </a>
+        </section>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='components/welcome/welcome.js') }}" defer></script>
+{% endblock %}

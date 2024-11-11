@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 import os
 from flask_wtf.csrf import CSRFProtect
 from flask_talisman import Talisman
@@ -31,14 +31,19 @@ def create_app():
         'echo': True if app.debug else False,
         'echo_pool': True if app.debug else False
     }
-    app.config['SERVER_NAME'] = None
 
+    # Static files configuration
+    app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 31536000  # 1 year cache
+    app.config['STATIC_FOLDER'] = 'static'
+    app.config['TEMPLATES_AUTO_RELOAD'] = True
+    app.config['TEMPLATE_FOLDER'] = 'templates'  # Fixed template folder name
+    
     # Initialize extensions with app
     csrf.init_app(app)
     
     try:
         init_db(app)
-        init_cache(app)  # Initialize cache
+        init_cache(app)
         logger.info("Database and cache initialization completed successfully")
     except Exception as e:
         logger.error(f"Failed to initialize application components: {str(e)}")
@@ -47,19 +52,46 @@ def create_app():
     # Configure security headers with Talisman
     csp = {
         'default-src': ["'self'", "https://*"],
-        'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://js.stripe.com", "https://*"],
+        'script-src': [
+            "'self'",
+            "'unsafe-inline'",
+            "'unsafe-eval'",
+            "https://js.stripe.com",
+            "https://*"
+        ],
         'style-src': ["'self'", "'unsafe-inline'", "https://*"],
         'img-src': ["'self'", "data:", "https:", "https://*"],
-        'connect-src': ["'self'", "https://api.stripe.com", "https://*", "wss://*"],
-        'frame-src': ["'self'", "https://js.stripe.com", "https://hooks.stripe.com", "https://*"],
+        'connect-src': [
+            "'self'",
+            "https://api.stripe.com",
+            "https://*",
+            "wss://*"
+        ],
+        'frame-src': [
+            "'self'",
+            "https://js.stripe.com",
+            "https://hooks.stripe.com",
+            "https://*"
+        ],
         'font-src': ["'self'", "data:", "https://*"]
     }
 
     Talisman(
         app,
         content_security_policy=csp,
-        force_https=False  # Set to False for development
+        force_https=False,  # Set to False for development
+        strict_transport_security=False,  # Disabled for development
+        session_cookie_secure=False  # Disabled for development
     )
+
+    # Register error handlers
+    @app.errorhandler(404)
+    def not_found_error(error):
+        return render_template('errors/404.html'), 404
+
+    @app.errorhandler(500)
+    def internal_error(error):
+        return render_template('errors/500.html'), 500
 
     # Import and register blueprints
     from .routes import bp

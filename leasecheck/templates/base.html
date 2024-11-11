@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="description" content="LeaseCheck - Lease Document Analysis and Management">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{% block title %}LeaseCheck{% endblock %}</title>
     
     <!-- Common CSS -->
@@ -25,9 +26,14 @@
         <div class="nav-links">
             <a href="{{ url_for('main.index') }}">Home</a>
             {% if session.get('is_admin') %}
-                <a href="{{ url_for('main.admin_cache_dashboard') }}">Cache Management</a>
+                <a href="{{ url_for('main.admin_cache_dashboard') }}">Admin Dashboard</a>
             {% endif %}
         </div>
+        <button class="nav-toggle" aria-label="Toggle navigation menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
     </nav>
 
     <!-- Flash Messages -->
@@ -90,6 +96,35 @@
 
         .nav-links a:hover {
             color: #333;
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 2rem;
+            height: 2rem;
+            cursor: pointer;
+        }
+
+        .nav-toggle span {
+            width: 2rem;
+            height: 0.25rem;
+            background-color: #333;
+            border-radius: 10px;
+            transition: all 0.3s linear;
+        }
+
+        @media (max-width: 768px) {
+            .nav-toggle {
+                display: flex;
+            }
+
+            .nav-links {
+                display: none;
+            }
         }
 
         /* Flash Messages */

@@ -8,38 +8,137 @@
 
 {% block content %}
 <div class="account-setup-screen">
-    <!-- Green header -->
     <header class="green-header">
         <h1>Account Setup</h1>
     </header>
 
     <main class="setup-content">
-        <!-- Email verification section -->
+        <!-- Email Info Section -->
+        <section class="info-section">
+            <h2>Why We Need Your Email</h2>
+            <p>We need your email address to securely set up your account and protect your lease information. Your email will only be used to:</p>
+            <ul class="info-list">
+                <li>Verify your identity</li>
+                <li>Send your lease analysis results</li>
+                <li>Provide important updates about your review</li>
+                <li>Keep your information secure</li>
+            </ul>
+        </section>
+
+        <!-- Email Input Section -->
         <section class="email-section">
             <h2>Verify Your Email</h2>
-            <p>Please enter your email address to continue</p>
-            <div class="input-group">
-                <input type="email" id="email" name="email" placeholder="Enter your email" required>
-                <button class="orange-button">Send Verification Code</button>
-            </div>
+            <form id="email-form" class="setup-form">
+                <div class="input-group">
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                    <div class="error-message" id="email-error"></div>
+                </div>
+                <button type="submit" class="orange-button">Send Verification Code</button>
+            </form>
         </section>
 
-        <!-- Verification code section -->
-        <section class="verification-section">
+        <!-- Verification Code Section -->
+        <section class="verification-section" style="display: none;">
             <h2>Enter Verification Code</h2>
-            <p>Enter the 6-digit code sent to your email</p>
-            <div class="input-group">
-                <input type="text" id="verification-code" name="verification-code" placeholder="Enter verification code" maxlength="6">
-                <button class="orange-button">Verify Code</button>
-            </div>
+            <form id="verification-form" class="setup-form">
+                <div class="input-group">
+                    <div class="code-inputs">
+                        <input type="text" maxlength="1" pattern="[0-9]" class="code-input" required>
+                        <input type="text" maxlength="1" pattern="[0-9]" class="code-input" required>
+                        <input type="text" maxlength="1" pattern="[0-9]" class="code-input" required>
+                        <input type="text" maxlength="1" pattern="[0-9]" class="code-input" required>
+                        <input type="text" maxlength="1" pattern="[0-9]" class="code-input" required>
+                        <input type="text" maxlength="1" pattern="[0-9]" class="code-input" required>
+                    </div>
+                    <div class="error-message" id="verification-error"></div>
+                </div>
+                <button type="submit" class="orange-button">Verify Code</button>
+                <p class="resend-text">Didn't receive the code? <a href="#" id="resend-code">Resend Code</a></p>
+            </form>
         </section>
 
-        <!-- Final section -->
-        <section class="final-section">
+        <!-- Final Section -->
+        <section class="final-section" style="display: none;">
             <h2>Almost there!</h2>
-            <p>Just one more step to complete your account setup</p>
-            <a href="/legal-stuff" class="green-button">Legal Stuff</a>
+            <p>Your email has been verified successfully.</p>
+            <a href="{{ url_for('main.legal_stuff') }}" class="green-button">Continue to Legal Stuff</a>
         </section>
     </main>
 </div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const emailForm = document.getElementById('email-form');
+    const verificationForm = document.getElementById('verification-form');
+    const emailSection = document.querySelector('.email-section');
+    const verificationSection = document.querySelector('.verification-section');
+    const finalSection = document.querySelector('.final-section');
+    const codeInputs = document.querySelectorAll('.code-input');
+    const resendCodeBtn = document.getElementById('resend-code');
+
+    // Handle email form submission
+    emailForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        if (validateEmail(email)) {
+            // TODO: Send verification code to email
+            emailSection.style.display = 'none';
+            verificationSection.style.display = 'block';
+        } else {
+            showError('email-error', 'Please enter a valid email address');
+        }
+    });
+
+    // Handle verification code inputs
+    codeInputs.forEach((input, index) => {
+        input.addEventListener('input', function(e) {
+            if (e.target.value.length === 1) {
+                if (index < codeInputs.length - 1) {
+                    codeInputs[index + 1].focus();
+                }
+            }
+        });
+
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Backspace' && !e.target.value) {
+                if (index > 0) {
+                    codeInputs[index - 1].focus();
+                }
+            }
+        });
+    });
+
+    // Handle verification form submission
+    verificationForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const code = Array.from(codeInputs).map(input => input.value).join('');
+        if (code.length === 6) {
+            // TODO: Verify the code
+            verificationSection.style.display = 'none';
+            finalSection.style.display = 'block';
+        } else {
+            showError('verification-error', 'Please enter a valid verification code');
+        }
+    });
+
+    // Handle resend code
+    resendCodeBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        // TODO: Implement resend code functionality
+        alert('Verification code resent!');
+    });
+
+    function validateEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function showError(elementId, message) {
+        const errorElement = document.getElementById(elementId);
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+    }
+});
+</script>
+{% endblock %}
 {% endblock %}

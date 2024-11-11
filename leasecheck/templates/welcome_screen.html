@@ -1,55 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome - LeaseCheck</title>
-    <!-- Preload critical resources -->
-    <link rel="preload" href="{{ url_for('static', filename='css/welcome_screen.css') }}" as="style">
-    <link rel="preload" href="{{ url_for('static', filename='images/logo.png') }}" as="image">
-    <!-- Preconnect to origin -->
-    <link rel="preconnect" href="{{ request.host_url }}">
-    <!-- Font display swap for better performance -->
-    <style>
-        @font-face {
-            font-family: 'System Font';
-            font-display: swap;
-            src: local(-apple-system), local(BlinkMacSystemFont), local("Segoe UI"), local(Roboto), local(sans-serif);
-        }
-    </style>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/welcome_screen.css') }}">
-</head>
-<body>
-    <!-- Welcome Screen: Main container for the initial landing page -->
-    <div class="welcome-screen">
-        <!-- Welcome Container: Centers and organizes main content -->
-        <div class="welcome-container">
-            <!-- Logo Text: Main branding element -->
+{% extends "base.html" %}
+
+{% block title %}Welcome - LeaseCheck{% endblock %}
+
+{% block extra_css %}
+<link rel="preload" href="{{ url_for('static', filename='images/logo.svg') }}" as="image">
+<link rel="preload" href="{{ url_for('static', filename='css/welcome_screen.css') }}" as="style">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/welcome_screen.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="welcome-screen" role="main">
+    <div class="welcome-container">
+        <!-- Logo and Branding Section -->
+        <section class="branding-section" aria-label="LeaseCheck branding">
             <h1 class="logo-text">LeaseCheck</h1>
             
-            <!-- Logo Wrapper: Contains and positions the logo image -->
-            <div class="logo-wrapper">
-                <!-- Logo Image: Visual branding element with performance attributes -->
-                <img src="{{ url_for('static', filename='images/logo.png') }}" 
-                     alt="LeaseCheck Logo" 
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='images/logo.svg') }}"
+                     alt="LeaseCheck Logo"
                      class="logo-image"
-                     loading="eager"
-                     decoding="async"
                      width="350"
-                     height="350">
+                     height="350"
+                     loading="eager"
+                     decoding="async">
             </div>
-            
-            <!-- Verify Text: Main value proposition -->
+        </section>
+
+        <!-- Value Proposition Section -->
+        <section class="value-prop-section" aria-label="Value proposition">
             <h2 class="verify-text">Verify legal compliance easily</h2>
-            
-            <!-- Start Review Button: Primary call-to-action -->
-            <a href="{{ url_for('main.onboarding') }}" 
+        </section>
+
+        <!-- Call to Action Section -->
+        <section class="cta-section" aria-label="Get started">
+            <a href="{{ url_for('main.onboarding') }}"
                class="start-review-btn"
                role="button"
                aria-label="Start your lease review process">
                 Start Your Review
             </a>
-        </div>
+        </section>
     </div>
-</body>
-</html>
+</main>
+{% endblock %}

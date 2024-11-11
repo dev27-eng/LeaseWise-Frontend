@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}500 Server Error - LeaseCheck{% endblock %}
+
+{% block content %}
+<div class="error-container">
+    <h1>500 - Server Error</h1>
+    <p>Something went wrong on our end. Please try again later.</p>
+    <a href="{{ url_for('main.index') }}" class="home-link">Return to Home</a>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .error-container {
+        text-align: center;
+        padding: 4rem 2rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .error-container h1 {
+        font-size: 2.5rem;
+        color: #333;
+        margin-bottom: 1rem;
+    }
+
+    .error-container p {
+        font-size: 1.2rem;
+        color: #666;
+        margin-bottom: 2rem;
+    }
+
+    .home-link {
+        display: inline-block;
+        padding: 0.8rem 1.5rem;
+        background-color: #7ED321;
+        color: black;
+        text-decoration: none;
+        border-radius: 999px;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+
+    .home-link:hover {
+        background-color: #6db91d;
+    }
+</style>
+{% endblock %}

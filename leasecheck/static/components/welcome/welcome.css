@@ -1,22 +1,14 @@
-/* Welcome Screen Styles */
+/* Welcome Component Styles */
 :root {
-    --primary-green: #7ED321;
-    --primary-black: #000000;
-    --white: #ffffff;
-}
-
-/* Base styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --welcome-primary-green: #7ED321;
+    --welcome-primary-black: #000000;
+    --welcome-white: #ffffff;
 }
 
 /* Main container */
 .welcome-screen {
     min-height: 100vh;
-    background-color: var(--white);
+    background-color: var(--welcome-white);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -33,52 +25,52 @@
 }
 
 /* Branding section */
-.branding-section {
+.welcome-branding {
     text-align: center;
 }
 
-.logo-text {
+.welcome-logo-text {
     font-size: 120px;
     font-weight: 900;
-    color: var(--primary-black);
+    color: var(--welcome-primary-black);
     letter-spacing: -0.08em;
     line-height: 1;
     margin-bottom: 60px;
 }
 
-.logo-container {
+.welcome-logo-container {
     width: 350px;
     height: 350px;
     margin: 0 auto;
 }
 
-.logo-image {
+.welcome-logo-image {
     width: 100%;
     height: 100%;
     object-fit: contain;
 }
 
 /* Value proposition section */
-.value-prop-section {
+.welcome-value-prop {
     text-align: center;
 }
 
-.verify-text {
+.welcome-verify-text {
     font-size: 52px;
-    color: var(--primary-black);
+    color: var(--welcome-primary-black);
     font-weight: normal;
 }
 
 /* Call to action section */
-.cta-section {
+.welcome-cta {
     text-align: center;
     margin-top: 40px;
 }
 
-.start-review-btn {
+.welcome-start-btn {
     display: inline-block;
-    background-color: var(--primary-green);
-    color: var(--primary-black);
+    background-color: var(--welcome-primary-green);
+    color: var(--welcome-primary-black);
     font-size: 52px;
     padding: 30px 80px;
     border-radius: 999px;
@@ -89,33 +81,33 @@
     font-style: italic;
 }
 
-.start-review-btn:hover {
+.welcome-start-btn:hover {
     background-color: #6db91d;
     transform: translateY(-2px);
 }
 
-.start-review-btn:focus {
-    outline: 3px solid #7ED321;
+.welcome-start-btn:focus {
+    outline: 3px solid var(--welcome-primary-green);
     outline-offset: 2px;
 }
 
 /* Mobile responsiveness */
 @media (max-width: 768px) {
-    .logo-text {
+    .welcome-logo-text {
         font-size: 72px;
         margin-bottom: 40px;
     }
     
-    .logo-container {
+    .welcome-logo-container {
         width: 250px;
         height: 250px;
     }
     
-    .verify-text {
+    .welcome-verify-text {
         font-size: 36px;
     }
     
-    .start-review-btn {
+    .welcome-start-btn {
         font-size: 36px;
         padding: 20px 40px;
         min-width: 300px;
@@ -127,21 +119,21 @@
         gap: 40px;
     }
     
-    .logo-text {
+    .welcome-logo-text {
         font-size: 48px;
         margin-bottom: 30px;
     }
     
-    .logo-container {
+    .welcome-logo-container {
         width: 200px;
         height: 200px;
     }
     
-    .verify-text {
+    .welcome-verify-text {
         font-size: 28px;
     }
     
-    .start-review-btn {
+    .welcome-start-btn {
         font-size: 28px;
         padding: 15px 30px;
         min-width: 240px;
@@ -150,7 +142,7 @@
 
 /* Print styles */
 @media print {
-    .start-review-btn {
+    .welcome-start-btn {
         display: none;
     }
 }

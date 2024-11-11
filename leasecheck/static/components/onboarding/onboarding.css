@@ -1,0 +1,290 @@
+/* Onboarding Component Styles */
+:root {
+    --onboarding-primary-green: #7ED321;
+    --onboarding-primary-black: #000000;
+    --onboarding-white: #ffffff;
+}
+
+/* Base styles and CSS reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'System Font', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Accessibility helper */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* Main container */
+.onboarding-screen {
+    min-height: 100vh;
+    background-color: var(--onboarding-white);
+    contain: content;
+}
+
+/* Content container */
+.onboarding-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header styles */
+.onboarding-header {
+    background-color: var(--onboarding-primary-green);
+    padding: 40px 20px;
+    text-align: center;
+    margin-bottom: 60px;
+    contain: content;
+}
+
+.onboarding-header h1 {
+    color: var(--onboarding-primary-black);
+    font-size: 48px;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+/* Welcome text section */
+.onboarding-welcome-text {
+    text-align: center;
+    margin-bottom: 80px;
+}
+
+.onboarding-main-title {
+    font-size: 56px;
+    font-weight: 700;
+    margin-bottom: 40px;
+    color: var(--onboarding-primary-black);
+    line-height: 1.3;
+}
+
+.onboarding-lead {
+    font-size: 32px;
+    line-height: 1.5;
+    color: #333333;
+    margin-bottom: 40px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.onboarding-tagline {
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--onboarding-primary-black);
+    margin-bottom: 40px;
+}
+
+.onboarding-description {
+    font-size: 26px;
+    color: #444444;
+    margin-bottom: 60px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
+}
+
+/* Features section */
+.onboarding-features {
+    margin-bottom: 80px;
+    padding: 0 20px;
+}
+
+.onboarding-features-title {
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--onboarding-primary-black);
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.onboarding-features-list {
+    list-style: none;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.onboarding-feature-item {
+    margin-bottom: 30px;
+    font-size: 24px;
+    line-height: 1.6;
+    color: #333333;
+    padding-left: 35px;
+    position: relative;
+}
+
+.onboarding-feature-item::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--onboarding-primary-green);
+    font-size: 28px;
+    line-height: 1;
+}
+
+.onboarding-feature-label {
+    font-weight: 700;
+    color: var(--onboarding-primary-black);
+    margin-right: 12px;
+}
+
+/* CTA section */
+.onboarding-cta {
+    text-align: center;
+    margin-top: 60px;
+    padding-bottom: 80px;
+}
+
+.onboarding-ready-message {
+    margin-bottom: 40px;
+}
+
+.onboarding-ready-message p {
+    font-size: 28px;
+    line-height: 1.5;
+    color: #333333;
+    margin-bottom: 20px;
+}
+
+.onboarding-choose-plan-btn {
+    background-color: var(--onboarding-primary-green);
+    color: var(--onboarding-primary-black);
+    padding: 25px 50px;
+    border-radius: 999px;
+    font-size: 32px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    min-width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transform: translateZ(0);
+    will-change: transform, background-color;
+}
+
+.onboarding-choose-plan-btn:hover {
+    background-color: #6db91d;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Focus styles for accessibility */
+:focus {
+    outline: 3px solid var(--onboarding-primary-green);
+    outline-offset: 2px;
+}
+
+.onboarding-choose-plan-btn:focus {
+    outline-offset: 4px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .onboarding-header h1 {
+        font-size: 42px;
+    }
+
+    .onboarding-main-title {
+        font-size: 48px;
+        margin-bottom: 30px;
+    }
+
+    .onboarding-lead {
+        font-size: 28px;
+        margin-bottom: 30px;
+    }
+
+    .onboarding-tagline {
+        font-size: 36px;
+        margin-bottom: 30px;
+    }
+
+    .onboarding-description {
+        font-size: 22px;
+        margin-bottom: 50px;
+    }
+
+    .onboarding-features-title {
+        font-size: 36px;
+        margin-bottom: 30px;
+    }
+
+    .onboarding-feature-item {
+        font-size: 20px;
+        margin-bottom: 25px;
+    }
+
+    .onboarding-ready-message p {
+        font-size: 24px;
+    }
+
+    .onboarding-choose-plan-btn {
+        padding: 20px 40px;
+        font-size: 28px;
+        min-width: 280px;
+    }
+}
+
+@media (max-width: 480px) {
+    .onboarding-header h1 {
+        font-size: 36px;
+    }
+
+    .onboarding-main-title {
+        font-size: 42px;
+    }
+
+    .onboarding-lead {
+        font-size: 24px;
+    }
+
+    .onboarding-tagline {
+        font-size: 32px;
+    }
+
+    .onboarding-description {
+        font-size: 20px;
+    }
+
+    .onboarding-feature-item {
+        font-size: 18px;
+    }
+
+    .onboarding-choose-plan-btn {
+        padding: 18px 36px;
+        font-size: 24px;
+        min-width: 260px;
+    }
+}
+
+/* Print styles */
+@media print {
+    .onboarding-choose-plan-btn {
+        display: none;
+    }
+
+    .onboarding-screen {
+        min-height: auto;
+    }
+
+    .onboarding-header {
+        background-color: transparent;
+        color: var(--onboarding-primary-black);
+    }
+}

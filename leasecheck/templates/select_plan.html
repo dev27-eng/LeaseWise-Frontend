@@ -21,31 +21,36 @@
             
             <div class="features-list">
                 <div class="feature-row">
-                    <strong>- Risk Analysis:</strong>
+                    <strong>✓ Risk Analysis:</strong>
                     <span>Spot potential issues and red flags in your lease.</span>
                 </div>
                 <div class="feature-row">
-                    <strong>- Easy Navigation:</strong>
+                    <strong>✓ Easy Navigation:</strong>
                     <span>Enjoy a simple, user-friendly experience with a shareable PDF report.</span>
                 </div>
                 <div class="feature-row">
-                    <strong>- Connect with Local Attorneys:</strong>
+                    <strong>✓ Connect with Local Attorneys:</strong>
                     <span>Get referrals to local legal experts if you need more help.</span>
                 </div>
             </div>
         </section>
 
         <!-- Pricing Tiers -->
-        <form class="pricing-tiers" action="{{ url_for('main.checkout') }}" method="GET">
+        <form class="pricing-tiers" action="{{ url_for('main.checkout') }}" method="GET" id="planSelectionForm">
             <!-- Basic Plan -->
             <div class="pricing-card basic">
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="plan" id="basicPlan" value="basic">
+                    <input class="form-check-input" type="radio" name="plan" id="basicPlan" value="basic" required>
                     <label class="form-check-label" for="basicPlan">
-                        Basic Plan - $9.95
+                        <span class="plan-name">Basic Plan</span>
+                        <span class="plan-price">$9.95</span>
                         <div class="plan-features">
-                            - 1 Lease Analysis<br>
-                            - Ideal for single lease
+                            <ul>
+                                <li>1 Lease Analysis</li>
+                                <li>Ideal for single lease review</li>
+                                <li>Risk Analysis Report</li>
+                                <li>PDF Export</li>
+                            </ul>
                         </div>
                     </label>
                 </div>
@@ -55,12 +60,17 @@
             <div class="pricing-card standard">
                 <div class="most-popular-tag" role="status" aria-label="Most popular plan choice">Most Popular</div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="plan" id="standardPlan" value="standard" checked aria-describedby="standard-plan-popular">
+                    <input class="form-check-input" type="radio" name="plan" id="standardPlan" value="standard" checked>
                     <label class="form-check-label" for="standardPlan">
-                        Standard Plan - $19.95
+                        <span class="plan-name">Standard Plan</span>
+                        <span class="plan-price">$19.95</span>
                         <div class="plan-features">
-                            - 3 uses in 30 days<br>
-                            - Great for comparing options
+                            <ul>
+                                <li>3 Lease Analyses</li>
+                                <li>Valid for 30 days</li>
+                                <li>Compare Multiple Options</li>
+                                <li>Priority Support</li>
+                            </ul>
                         </div>
                     </label>
                 </div>
@@ -71,17 +81,38 @@
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="plan" id="premiumPlan" value="premium">
                     <label class="form-check-label" for="premiumPlan">
-                        Premium Plan - $29.95
+                        <span class="plan-name">Premium Plan</span>
+                        <span class="plan-price">$29.95</span>
                         <div class="plan-features">
-                            - 6 uses in 30 days<br>
-                            - Best value for multiple reviews
+                            <ul>
+                                <li>6 Lease Analyses</li>
+                                <li>Valid for 30 days</li>
+                                <li>Best value for multiple reviews</li>
+                                <li>Priority Support + Consultation</li>
+                            </ul>
                         </div>
                     </label>
                 </div>
             </div>
 
-            <button type="submit" class="select-plan-btn">Select Plan</button>
+            <button type="submit" class="select-plan-btn">Continue with Selected Plan</button>
         </form>
     </div>
 </main>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('planSelectionForm');
+    const plans = document.querySelectorAll('.pricing-card');
+    
+    plans.forEach(plan => {
+        plan.addEventListener('click', function() {
+            const radio = this.querySelector('input[type="radio"]');
+            radio.checked = true;
+        });
+    });
+});
+</script>
+{% endblock %}
 {% endblock %}
