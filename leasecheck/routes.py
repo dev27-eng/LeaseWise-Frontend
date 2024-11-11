@@ -71,27 +71,28 @@ def onboarding():
 @cached_with_key('plan_selection')
 def select_plan():
     """Select Plan Screen (3 Select Plan.png)"""
-    return render_template('select_plan.html', plans=PLANS)
+    return render_template('components/select_plan/select_plan.html', plans=PLANS)
 
 @bp.route('/account-setup')
 def account_setup():
     """Account Setup Screen (4 Account Setup.png)"""
-    return render_template('account_setup.html')
+    return render_template('components/account_setup/account_setup.html')
 
 @bp.route('/legal-stuff')
 def legal_stuff():
     """Legal Stuff Screen (5 Legal Stuff.png)"""
-    return render_template('legal_stuff.html')
+    return render_template('components/legal_stuff/legal_stuff.html')
 
 @bp.route('/terms-of-service')
 def terms_of_service():
     """Terms of Service Screen (5a Terms of Service.png)"""
-    return render_template('terms_of_service.html')
+    last_updated = datetime.now().strftime("%B %d, %Y")
+    return render_template('components/terms_of_service/terms_of_service.html', last_updated=last_updated)
 
 @bp.route('/refund-policy')
 def refund_policy():
     """Refund Policy Screen (5b Refund Policy.png)"""
-    return render_template('refund_policy.html')
+    return render_template('components/refund_policy/refund_policy.html')
 
 @bp.route('/disclaimer')
 def disclaimer():
@@ -145,7 +146,50 @@ def reviewing_lease():
 @bp.route('/risk-report')
 def risk_report():
     """Risk Report Screen (11 Risk Report.png)"""
-    return render_template('risk_report.html')
+    return render_template('components/risk_report/risk_report.html')
+
+@bp.route('/api/risk-report')
+def get_risk_report_data():
+    """API endpoint for risk report data"""
+    try:
+        risk_data = {
+            'riskLevel': 'Medium',
+            'findings': [
+                {
+                    'title': 'Rent Increase Terms',
+                    'description': 'Unusual rent increase clause detected',
+                    'severity': 'warning'
+                },
+                {
+                    'title': 'Security Deposit',
+                    'description': 'Terms for security deposit return are unclear',
+                    'severity': 'warning'
+                },
+                {
+                    'title': 'Maintenance Responsibilities',
+                    'description': 'Maintenance duties not clearly defined',
+                    'severity': 'warning'
+                }
+            ],
+            'recommendations': [
+                {
+                    'title': 'Clarify Rent Increase Terms',
+                    'description': 'Request specific details about annual rent increase calculations and caps.'
+                },
+                {
+                    'title': 'Security Deposit Return',
+                    'description': 'Ask for explicit timeline and conditions for security deposit return.'
+                },
+                {
+                    'title': 'Define Maintenance Duties',
+                    'description': 'Get written clarification on tenant vs landlord maintenance responsibilities.'
+                }
+            ]
+        }
+        return jsonify(risk_data)
+    except Exception as e:
+        logger.error(f"Error generating risk report data: {str(e)}")
+        return jsonify({'error': 'Internal server error'}), 500
 
 @bp.route('/save-report')
 def save_report():

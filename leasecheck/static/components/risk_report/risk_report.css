@@ -1,0 +1,208 @@
+/* Risk Report Component Styles */
+.risk-report-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: #ffffff;
+}
+
+.risk-report-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    background-color: #7ED321;
+    padding: 25px 20px;
+}
+
+.risk-report-header h1 {
+    color: #000000;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.risk-report-header .subtitle {
+    color: #333333;
+    font-size: 1.2rem;
+}
+
+.risk-level-indicator {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.risk-meter {
+    width: 300px;
+    height: 20px;
+    background: #EAEAEA;
+    border-radius: 10px;
+    margin: 0 auto 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.risk-level {
+    height: 100%;
+    transition: width 0.3s ease;
+    border-radius: 10px;
+}
+
+.risk-level[data-level="low"] {
+    background: #2ECC71;
+    width: 33%;
+}
+
+.risk-level[data-level="medium"] {
+    background: #F1C40F;
+    width: 66%;
+}
+
+.risk-level[data-level="high"] {
+    background: #E74C3C;
+    width: 100%;
+}
+
+.risk-text {
+    font-weight: 600;
+    color: #2C3E50;
+    margin-top: 1rem;
+}
+
+.risk-sections {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.risk-section {
+    background: #f5f5f5;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.risk-section h2 {
+    color: #2C3E50;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+}
+
+.findings-list {
+    list-style: none;
+    padding: 0;
+}
+
+.finding-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+    padding: 20px;
+    border-radius: 8px;
+    background: white;
+}
+
+.finding-item:last-child {
+    margin-bottom: 0;
+}
+
+.icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.icon.warning {
+    background: #F1C40F;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2L1 21h22L12 2zm1 14h-2v2h2v-2zm0-6h-2v4h2v-4z'/%3E%3C/svg%3E") no-repeat center;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2L1 21h22L12 2zm1 14h-2v2h2v-2zm0-6h-2v4h2v-4z'/%3E%3C/svg%3E") no-repeat center;
+}
+
+.finding-content h3 {
+    color: #2C3E50;
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.finding-content p {
+    color: #7F8C8D;
+    margin: 0;
+}
+
+.recommendations-list {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.recommendation {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+}
+
+.recommendation h3 {
+    color: #2C3E50;
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.recommendation p {
+    color: #7F8C8D;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn {
+    padding: 15px 30px;
+    border-radius: 999px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn.primary {
+    background: #7ED321;
+    color: #000000;
+}
+
+.btn.secondary {
+    background: #FF9500;
+    color: #000000;
+}
+
+.btn.primary:hover {
+    background: #6db91d;
+}
+
+.btn.secondary:hover {
+    background: #FF8500;
+}
+
+@media (min-width: 768px) {
+    .risk-sections {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .risk-report-header h1 {
+        font-size: 2rem;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+}

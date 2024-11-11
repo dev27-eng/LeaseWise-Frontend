@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Terms of Service - LeaseCheck{% endblock %}
+
+{% block extra_css %}
+<link rel="preload" href="{{ url_for('static', filename='components/terms_of_service/terms_of_service.css') }}" as="style">
+<link rel="stylesheet" href="{{ url_for('static', filename='components/terms_of_service/terms_of_service.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="terms-screen" role="main">
+    <header class="terms-header">
+        <h1>Terms of Service</h1>
+        <p class="header-subtitle">Last updated: {{ last_updated }}</p>
+    </header>
+
+    <div class="terms-container">
+        <div class="terms-content">
+            <section class="terms-section">
+                <h2>1. Acceptance of Terms</h2>
+                <p>By accessing and using LeaseCheck's services, you agree to be bound by these Terms of Service.</p>
+            </section>
+
+            <section class="terms-section">
+                <h2>2. Service Description</h2>
+                <p>LeaseCheck provides lease document analysis and verification services to help users understand their lease agreements.</p>
+            </section>
+
+            <section class="terms-section">
+                <h2>3. User Obligations</h2>
+                <ul class="terms-list">
+                    <li>Provide accurate information</li>
+                    <li>Maintain confidentiality of account</li>
+                    <li>Use services in compliance with applicable laws</li>
+                </ul>
+            </section>
+
+            <section class="terms-section">
+                <h2>4. Privacy and Data</h2>
+                <p>Your use of LeaseCheck is also governed by our Privacy Policy. Please review our Privacy Policy to understand our practices.</p>
+            </section>
+        </div>
+
+        <div class="terms-actions">
+            <a href="{{ url_for('main.legal_stuff') }}" class="btn primary">Back to Legal Information</a>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='components/terms_of_service/terms_of_service.js') }}" defer></script>
+{% endblock %}

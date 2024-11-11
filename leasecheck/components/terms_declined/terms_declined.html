@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Terms Declined - LeaseCheck{% endblock %}
+
+{% block extra_css %}
+<link rel="preload" href="{{ url_for('static', filename='components/terms_declined/terms_declined.css') }}" as="style">
+<link rel="stylesheet" href="{{ url_for('static', filename='components/terms_declined/terms_declined.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="terms-declined-screen" role="main">
+    <header class="terms-declined-header">
+        <h1>Terms Declined</h1>
+        <p class="header-subtitle">We're sorry to see you go</p>
+    </header>
+
+    <div class="terms-declined-container">
+        <div class="terms-declined-content">
+            <section class="terms-declined-section">
+                <h2>Unable to Proceed</h2>
+                <p>You have chosen not to accept our terms and conditions. Unfortunately, we cannot provide our services without your acceptance of these terms.</p>
+            </section>
+
+            <section class="terms-declined-section">
+                <h2>What This Means</h2>
+                <p>Without accepting our terms:</p>
+                <ul class="terms-declined-list">
+                    <li>You won't be able to use our lease analysis services</li>
+                    <li>Your account setup process will be cancelled</li>
+                    <li>No charges will be made to your account</li>
+                </ul>
+            </section>
+
+            <section class="terms-declined-section">
+                <h2>Changed Your Mind?</h2>
+                <p>If you'd like to reconsider, you can review our terms again and accept them to use our services.</p>
+            </section>
+        </div>
+
+        <div class="terms-declined-actions">
+            <a href="{{ url_for('main.legal_stuff') }}" class="btn primary">Review Terms Again</a>
+            <a href="{{ url_for('main.index') }}" class="btn secondary">Return to Home</a>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='components/terms_declined/terms_declined.js') }}" defer></script>
+{% endblock %}

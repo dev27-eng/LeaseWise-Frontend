@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Legal Information - LeaseCheck{% endblock %}
+
+{% block extra_css %}
+<link rel="preload" href="{{ url_for('static', filename='components/legal_stuff/legal_stuff.css') }}" as="style">
+<link rel="stylesheet" href="{{ url_for('static', filename='components/legal_stuff/legal_stuff.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="legal-screen" role="main">
+    <header class="legal-header">
+        <h1>Legal Information</h1>
+        <p class="header-subtitle">Please review and accept our terms</p>
+    </header>
+
+    <div class="legal-container">
+        <div class="legal-sections">
+            <section class="legal-section">
+                <h2>Terms of Service</h2>
+                <p>Review our complete terms of service</p>
+                <a href="{{ url_for('main.terms_of_service') }}" class="legal-link">View Terms</a>
+            </section>
+
+            <section class="legal-section">
+                <h2>Refund Policy</h2>
+                <p>Learn about our refund process</p>
+                <a href="{{ url_for('main.refund_policy') }}" class="legal-link">View Policy</a>
+            </section>
+
+            <section class="legal-section">
+                <h2>Disclaimer</h2>
+                <p>Important information about our service</p>
+                <a href="{{ url_for('main.disclaimer') }}" class="legal-link">View Disclaimer</a>
+            </section>
+        </div>
+
+        <form id="termsAcceptanceForm" class="acceptance-form">
+            <div class="checkbox-group">
+                <input type="checkbox" id="acceptTerms" required>
+                <label for="acceptTerms">I have read and accept all terms and conditions</label>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn primary">Continue</button>
+                <button type="button" class="btn secondary" id="declineBtn">Decline</button>
+            </div>
+        </form>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='components/legal_stuff/legal_stuff.js') }}" defer></script>
+{% endblock %}

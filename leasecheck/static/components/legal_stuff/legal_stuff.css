@@ -1,0 +1,188 @@
+/* Legal Stuff Component Styles */
+:root {
+    --legal-primary-green: #7ED321;
+    --legal-primary-black: #000000;
+    --legal-white: #ffffff;
+    --legal-gray-100: #f8f9fa;
+    --legal-gray-200: #e9ecef;
+    --legal-gray-300: #dee2e6;
+    --legal-gray-600: #6c757d;
+}
+
+.legal-screen {
+    min-height: 100vh;
+    background-color: var(--legal-white);
+}
+
+/* Header Styles */
+.legal-header {
+    background-color: var(--legal-primary-green);
+    padding: 40px 20px;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.legal-header h1 {
+    color: var(--legal-primary-black);
+    font-size: 48px;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.header-subtitle {
+    font-size: 24px;
+    color: var(--legal-primary-black);
+    margin-top: 16px;
+    opacity: 0.9;
+}
+
+/* Container Styles */
+.legal-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Legal Sections */
+.legal-sections {
+    display: grid;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.legal-section {
+    background: var(--legal-white);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.legal-section:hover {
+    transform: translateY(-5px);
+}
+
+.legal-section h2 {
+    font-size: 24px;
+    color: var(--legal-primary-black);
+    margin-bottom: 15px;
+}
+
+.legal-section p {
+    color: var(--legal-gray-600);
+    margin-bottom: 20px;
+}
+
+.legal-link {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--legal-gray-100);
+    color: var(--legal-gray-600);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.legal-link:hover {
+    background-color: var(--legal-gray-200);
+}
+
+/* Acceptance Form */
+.acceptance-form {
+    background: var(--legal-white);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-top: 4px;
+}
+
+.checkbox-group label {
+    color: var(--legal-gray-600);
+    font-size: 16px;
+}
+
+/* Button Styles */
+.form-actions {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.btn {
+    padding: 12px 30px;
+    border-radius: 999px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn.primary {
+    background-color: var(--legal-primary-green);
+    color: var(--legal-primary-black);
+}
+
+.btn.secondary {
+    background-color: var(--legal-gray-200);
+    color: var(--legal-gray-600);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn.primary:hover {
+    background-color: #6db91d;
+}
+
+.btn.secondary:hover {
+    background-color: var(--legal-gray-300);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .legal-header h1 {
+        font-size: 36px;
+    }
+
+    .header-subtitle {
+        font-size: 20px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .legal-header {
+        background: none;
+        color: var(--legal-primary-black);
+    }
+
+    .legal-section {
+        box-shadow: none;
+        border: 1px solid var(--legal-gray-300);
+    }
+
+    .btn {
+        display: none;
+    }
+}

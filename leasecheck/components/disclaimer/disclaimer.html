@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Disclaimer - LeaseCheck{% endblock %}
+
+{% block extra_css %}
+<link rel="preload" href="{{ url_for('static', filename='components/disclaimer/disclaimer.css') }}" as="style">
+<link rel="stylesheet" href="{{ url_for('static', filename='components/disclaimer/disclaimer.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="disclaimer-screen" role="main">
+    <header class="disclaimer-header">
+        <h1>Disclaimer</h1>
+        <p class="header-subtitle">Important Information About Our Service</p>
+    </header>
+
+    <div class="disclaimer-container">
+        <div class="disclaimer-content">
+            <section class="disclaimer-section">
+                <h2>Not Legal Advice</h2>
+                <p>LeaseCheck provides automated lease analysis and risk assessment. Our service does not constitute legal advice and should not be used as a substitute for professional legal counsel.</p>
+            </section>
+
+            <section class="disclaimer-section">
+                <h2>Accuracy of Analysis</h2>
+                <p>While we strive for accuracy in our automated analysis, the results should be considered as preliminary guidance only. We recommend consulting with a qualified legal professional for definitive legal advice.</p>
+            </section>
+
+            <section class="disclaimer-section">
+                <h2>No Attorney-Client Relationship</h2>
+                <p>Use of LeaseCheck does not create an attorney-client relationship. Our attorney referral service is provided as a convenience and does not constitute an endorsement of any legal professional.</p>
+            </section>
+
+            <section class="disclaimer-section">
+                <h2>Limitation of Liability</h2>
+                <p>LeaseCheck is not responsible for any actions taken based on our analysis. Users acknowledge that they use our service at their own risk.</p>
+            </section>
+        </div>
+
+        <div class="disclaimer-actions">
+            <a href="{{ url_for('main.legal_stuff') }}" class="btn primary">Back to Legal Information</a>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='components/disclaimer/disclaimer.js') }}" defer></script>
+{% endblock %}

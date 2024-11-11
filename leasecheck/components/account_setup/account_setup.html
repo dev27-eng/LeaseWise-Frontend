@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Account Setup - LeaseCheck{% endblock %}
+
+{% block extra_css %}
+<link rel="preload" href="{{ url_for('static', filename='components/account_setup/account_setup.css') }}" as="style">
+<link rel="stylesheet" href="{{ url_for('static', filename='components/account_setup/account_setup.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="account-setup-screen" role="main">
+    <header class="setup-header">
+        <h1>Account Setup</h1>
+        <p class="header-subtitle">Let's get your account ready</p>
+    </header>
+
+    <div class="setup-container">
+        <form id="accountSetupForm" class="setup-form">
+            <div class="form-section personal-info">
+                <h2>Personal Information</h2>
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" name="fullName" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+            </div>
+
+            <div class="form-section contact-info">
+                <h2>Contact Information</h2>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <textarea id="address" name="address" rows="3" required></textarea>
+                </div>
+            </div>
+
+            <div class="form-section verification">
+                <h2>Email Verification</h2>
+                <div class="verification-container">
+                    <div class="form-group">
+                        <input type="text" id="verificationCode" name="verificationCode" placeholder="Enter verification code">
+                        <button type="button" id="sendCodeBtn" class="btn secondary">Send Code</button>
+                    </div>
+                    <button type="button" id="verifyCodeBtn" class="btn secondary">Verify Code</button>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn primary">Continue</button>
+            </div>
+        </form>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='components/account_setup/account_setup.js') }}" defer></script>
+{% endblock %}

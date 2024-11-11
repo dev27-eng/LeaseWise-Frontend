@@ -1,0 +1,141 @@
+/* Disclaimer Component Styles */
+:root {
+    --disclaimer-primary-green: #7ED321;
+    --disclaimer-primary-black: #000000;
+    --disclaimer-white: #ffffff;
+    --disclaimer-gray-100: #f8f9fa;
+    --disclaimer-gray-200: #e9ecef;
+    --disclaimer-gray-300: #dee2e6;
+    --disclaimer-gray-600: #6c757d;
+}
+
+.disclaimer-screen {
+    min-height: 100vh;
+    background-color: var(--disclaimer-white);
+}
+
+/* Header Styles */
+.disclaimer-header {
+    background-color: var(--disclaimer-primary-green);
+    padding: 40px 20px;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.disclaimer-header h1 {
+    color: var(--disclaimer-primary-black);
+    font-size: 48px;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.header-subtitle {
+    font-size: 24px;
+    color: var(--disclaimer-primary-black);
+    margin-top: 16px;
+    opacity: 0.9;
+}
+
+/* Container Styles */
+.disclaimer-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px 40px;
+}
+
+.disclaimer-content {
+    background: var(--disclaimer-white);
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+/* Section Styles */
+.disclaimer-section {
+    margin-bottom: 30px;
+}
+
+.disclaimer-section:last-child {
+    margin-bottom: 0;
+}
+
+.disclaimer-section h2 {
+    font-size: 24px;
+    color: var(--disclaimer-primary-black);
+    margin-bottom: 20px;
+}
+
+.disclaimer-section p {
+    color: var(--disclaimer-gray-600);
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+/* Button Styles */
+.disclaimer-actions {
+    text-align: center;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 30px;
+    border-radius: 999px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn.primary {
+    background-color: var(--disclaimer-primary-green);
+    color: var(--disclaimer-primary-black);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn.primary:hover {
+    background-color: #6db91d;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .disclaimer-header h1 {
+        font-size: 36px;
+    }
+
+    .header-subtitle {
+        font-size: 20px;
+    }
+
+    .disclaimer-content {
+        padding: 20px;
+    }
+
+    .disclaimer-section h2 {
+        font-size: 20px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .disclaimer-header {
+        background: none;
+        color: var(--disclaimer-primary-black);
+    }
+
+    .disclaimer-content {
+        box-shadow: none;
+        padding: 0;
+    }
+
+    .disclaimer-actions {
+        display: none;
+    }
+}

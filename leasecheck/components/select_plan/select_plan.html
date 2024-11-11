@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Choose Your Plan - LeaseCheck{% endblock %}
+
+{% block extra_css %}
+<link rel="preload" href="{{ url_for('static', filename='components/select_plan/select_plan.css') }}" as="style">
+<link rel="stylesheet" href="{{ url_for('static', filename='components/select_plan/select_plan.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="select-plan-screen" role="main">
+    <!-- Header Section -->
+    <header class="plan-header" role="banner">
+        <h1>Choose Your Plan</h1>
+        <p class="header-subtitle">Select the best option for your needs</p>
+    </header>
+
+    <!-- Plans Grid Section -->
+    <section class="plans-container">
+        {% for plan_id, plan in plans.items() %}
+        <div class="plan-card" data-plan="{{ plan_id }}">
+            <h2 class="plan-name">{{ plan.name }}</h2>
+            <div class="plan-price">
+                <span class="currency">$</span>
+                <span class="amount">{{ "%.2f"|format(plan.price) }}</span>
+            </div>
+            <ul class="plan-features">
+                {% for feature in plan.features %}
+                <li class="feature-item">{{ feature }}</li>
+                {% endfor %}
+            </ul>
+            <a href="{{ url_for('main.checkout', plan=plan_id) }}" 
+               class="select-plan-btn"
+               role="button"
+               aria-label="Select {{ plan.name }}">
+                Select Plan
+            </a>
+        </div>
+        {% endfor %}
+    </section>
+
+    <!-- Trust Indicators -->
+    <section class="trust-section">
+        <div class="trust-indicators">
+            <div class="trust-item">
+                <div class="trust-icon secure"></div>
+                <p>Secure Payment</p>
+            </div>
+            <div class="trust-item">
+                <div class="trust-icon guarantee"></div>
+                <p>Money-back Guarantee</p>
+            </div>
+            <div class="trust-item">
+                <div class="trust-icon support"></div>
+                <p>24/7 Support</p>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='components/select_plan/select_plan.js') }}" defer></script>
+{% endblock %}

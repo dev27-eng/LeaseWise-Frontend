@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Refund Policy - LeaseCheck{% endblock %}
+
+{% block extra_css %}
+<link rel="preload" href="{{ url_for('static', filename='components/refund_policy/refund_policy.css') }}" as="style">
+<link rel="stylesheet" href="{{ url_for('static', filename='components/refund_policy/refund_policy.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="refund-screen" role="main">
+    <header class="refund-header">
+        <h1>Refund Policy</h1>
+        <p class="header-subtitle">Our commitment to customer satisfaction</p>
+    </header>
+
+    <div class="refund-container">
+        <div class="refund-content">
+            <section class="refund-section">
+                <h2>Eligibility for Refunds</h2>
+                <p>Learn about our refund eligibility criteria and process.</p>
+                <ul class="refund-list">
+                    <li>Request within 14 days of purchase</li>
+                    <li>Unused analysis credits</li>
+                    <li>Valid account in good standing</li>
+                </ul>
+            </section>
+
+            <section class="refund-section">
+                <h2>Refund Process</h2>
+                <p>Understanding how our refund process works:</p>
+                <ul class="refund-list">
+                    <li>Submit refund request through support</li>
+                    <li>Processing time: 5-7 business days</li>
+                    <li>Original payment method reimbursement</li>
+                </ul>
+            </section>
+
+            <section class="refund-section">
+                <h2>Non-Refundable Items</h2>
+                <p>The following items are not eligible for refund:</p>
+                <ul class="refund-list">
+                    <li>Used analysis credits</li>
+                    <li>Completed lease reviews</li>
+                    <li>Expert consultation fees</li>
+                </ul>
+            </section>
+        </div>
+
+        <div class="refund-actions">
+            <a href="{{ url_for('main.legal_stuff') }}" class="btn primary">Back to Legal Information</a>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='components/refund_policy/refund_policy.js') }}" defer></script>
+{% endblock %}

@@ -5,20 +5,21 @@ description = "Add your description here"
 requires-python = ">=3.11"
 dependencies = [
     "email-validator>=2.2.0",
-    "flask>=3.0.3",
-    "flask-sqlalchemy==3.1.1",
+    "flask>=2.0.0",
+    "flask-sqlalchemy>=3.0.0",
     "psycopg2-binary>=2.9.10",
     "requests>=2.32.3",
     "repl-nix-reactfrontendbuilder",
-    "flask-wtf==1.2.1",
+    "flask-wtf>=1.0.0",
     "wtforms>=3.2.1",
     "flask-mail>=0.10.0",
     "pdfkit>=1.0.0",
     "weasyprint>=63.0",
     "stripe==7.8.1",
-    "flask-talisman>=1.1.0",
+    "flask-talisman>=1.0.0",
     "sqlalchemy==2.0.23",
     "flask-caching>=2.3.0",
+    "werkzeug>=2.0.0",
 ]
 
 [tool.uv.sources]

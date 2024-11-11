@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Risk Report - LeaseCheck{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='components/risk_report/risk_report.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="risk-report-container">
+    <div class="risk-report-header">
+        <h1>Risk Report Analysis</h1>
+        <p class="subtitle">Review your lease analysis results below</p>
+    </div>
+    
+    <div class="risk-report-content">
+        <div class="risk-level-indicator">
+            <div class="risk-meter">
+                <div class="risk-level" data-level="medium"></div>
+            </div>
+            <p class="risk-text">Medium Risk Level</p>
+        </div>
+        
+        <div class="risk-sections">
+            <div class="risk-section">
+                <h2>Key Findings</h2>
+                <ul class="findings-list">
+                    <!-- Findings will be populated dynamically via JavaScript -->
+                </ul>
+            </div>
+            
+            <div class="risk-section">
+                <h2>Recommendations</h2>
+                <div class="recommendations-list">
+                    <!-- Recommendations will be populated dynamically via JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn primary" id="save-report">Save Report</button>
+            <button class="btn secondary" id="contact-attorney">Contact Attorney</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='components/risk_report/risk_report.js') }}"></script>
+{% endblock %}

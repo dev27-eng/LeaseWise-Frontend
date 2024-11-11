@@ -631,18 +631,19 @@ dependencies = [
     { name = "sqlalchemy" },
     { name = "stripe" },
     { name = "weasyprint" },
+    { name = "werkzeug" },
     { name = "wtforms" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "email-validator", specifier = ">=2.2.0" },
-    { name = "flask", specifier = ">=3.0.3" },
+    { name = "flask", specifier = ">=2.0.0" },
     { name = "flask-caching", specifier = ">=2.3.0" },
     { name = "flask-mail", specifier = ">=0.10.0" },
-    { name = "flask-sqlalchemy", specifier = "==3.1.1" },
-    { name = "flask-talisman", specifier = ">=1.1.0" },
-    { name = "flask-wtf", specifier = "==1.2.1" },
+    { name = "flask-sqlalchemy", specifier = ">=3.0.0" },
+    { name = "flask-talisman", specifier = ">=1.0.0" },
+    { name = "flask-wtf", specifier = ">=1.0.0" },
     { name = "pdfkit", specifier = ">=1.0.0" },
     { name = "psycopg2-binary", specifier = ">=2.9.10" },
     { name = "repl-nix-reactfrontendbuilder", virtual = "." },
@@ -650,6 +651,7 @@ requires-dist = [
     { name = "sqlalchemy", specifier = "==2.0.23" },
     { name = "stripe", specifier = "==7.8.1" },
     { name = "weasyprint", specifier = ">=63.0" },
+    { name = "werkzeug", specifier = ">=2.0.0" },
     { name = "wtforms", specifier = ">=3.2.1" },
 ]
 
