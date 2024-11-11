@@ -140,6 +140,11 @@ class Document(db.Model):
     processing_started = db.Column(db.DateTime)
     processing_completed = db.Column(db.DateTime)
     
+    # New fields for document type detection
+    detected_type = db.Column(db.String(50))  # pdf, doc, docx
+    content_valid = db.Column(db.Boolean)
+    detection_error = db.Column(db.Text)
+    
     # Review-related fields
     review_status = db.Column(db.String(50), default='not_started')  # not_started, in_progress, completed
     risk_level = db.Column(db.String(20))  # low, medium, high

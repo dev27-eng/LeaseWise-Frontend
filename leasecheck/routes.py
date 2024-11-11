@@ -22,6 +22,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from flask_talisman import Talisman
 from flask_wtf.csrf import CSRFProtect
+from .document_processor import DocumentProcessor
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -290,7 +291,7 @@ def download_invoice(invoice_number):
 
 @bp.route('/upload-lease', methods=['POST'])
 def upload_lease():
-    """Handle lease document upload"""
+    """Handle lease document upload with document type detection"""
     try:
         if 'file' not in request.files:
             return jsonify({'error': 'No file provided'}), 400
@@ -299,41 +300,43 @@ def upload_lease():
         if not file.filename:
             return jsonify({'error': 'No file selected'}), 400
             
-        # Validate file type
-        allowed_types = {'pdf', 'doc', 'docx'}
-        if not ('.' in file.filename and file.filename.rsplit('.', 1)[1].lower() in allowed_types):
-            return jsonify({'error': 'Invalid file type'}), 400
-            
         # Create upload directory if it doesn't exist
         upload_dir = os.path.join(current_app.static_folder, 'uploads')
         os.makedirs(upload_dir, exist_ok=True)
         
-        # Generate unique filename
+        # Generate unique filename and save file
         original_filename = secure_filename(file.filename)
         file_ext = original_filename.rsplit('.', 1)[1].lower()
         unique_filename = f"{uuid.uuid4().hex}.{file_ext}"
         file_path = os.path.join('uploads', unique_filename)
+        full_path = os.path.join(current_app.static_folder, file_path)
+        file.save(full_path)
         
-        # Save file
-        file.save(os.path.join(current_app.static_folder, file_path))
+        # Initialize document processor and detect type
+        processor = DocumentProcessor()
+        detection_result = processor.detect_document_type(full_path)
         
-        # Create document record
+        if not detection_result['is_valid']:
+            # Remove invalid file
+            os.remove(full_path)
+            error_message = detection_result['error'] or 'Invalid document content'
+            return jsonify({'error': error_message}), 400
+        
+        # Create document record with detection results
         document = Document(
             filename=unique_filename,
             original_filename=original_filename,
-            mimetype=file.mimetype,
-            file_size=os.path.getsize(os.path.join(current_app.static_folder, file_path)),
-            user_email=request.form.get('user_email', 'anonymous@example.com'),  # Replace with actual user email
+            mimetype=detection_result['mime_type'],
+            file_size=os.path.getsize(full_path),
+            user_email=request.form.get('user_email', 'anonymous@example.com'),
             file_path=file_path,
-            status='pending'
+            status='processing',
+            detected_type=detection_result['document_type'],
+            content_valid=detection_result['is_valid'],
+            detection_error=detection_result['error']
         )
         
         db.session.add(document)
-        db.session.commit()
-        
-        # Start processing in background (implement actual processing logic)
-        # For now, we'll just update status after a delay
-        document.status = 'processing'
         db.session.commit()
         
         return jsonify({
@@ -344,6 +347,9 @@ def upload_lease():
         
     except Exception as e:
         logger.error(f"Error uploading lease document: {str(e)}")
+        # Clean up file if it exists
+        if 'full_path' in locals() and os.path.exists(full_path):
+            os.remove(full_path)
         db.session.rollback()
         return jsonify({'error': 'Failed to upload document'}), 500
 

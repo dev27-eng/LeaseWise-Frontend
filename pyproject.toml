@@ -23,8 +23,10 @@ dependencies = [
     "sqlalchemy==2.0.23",
     "reportlab>=4.2.5",
     "pillow>=10.4.0",
-    "python-magic>=0.4.27",
+    "python-magic==0.4.27",
     "werkzeug>=3.0.4",
+    "python-docx==0.8.11",
+    "pdfminer-six==20221105",
 ]
 
 [tool.uv.sources]
