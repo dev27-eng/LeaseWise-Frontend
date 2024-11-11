@@ -1,0 +1,82 @@
+.progress-container {
+    margin: 20px 0;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background-color: #e9ecef;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: #7ED321;
+    transition: width 0.3s ease;
+    width: 0;
+}
+
+.processing-steps {
+    margin-top: 20px;
+}
+
+.step-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 5px;
+}
+
+.step-icon {
+    margin-right: 15px;
+    font-size: 20px;
+}
+
+.step-pending {
+    color: #6c757d;
+}
+
+.step-current {
+    color: #17a2b8;
+}
+
+.step-completed {
+    color: #7ED321;
+}
+
+.step-error {
+    color: #dc3545;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.status-pending {
+    background-color: #ffd700;
+    color: #856404;
+}
+
+.status-processing {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.status-completed {
+    background-color: #7ED321;
+    color: white;
+}
+
+.status-error {
+    background-color: #dc3545;
+    color: white;
+}

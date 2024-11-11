@@ -1,0 +1,27 @@
+{% macro progress_tracker() %}
+<div class="progress-container">
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+    </div>
+    <p id="progressText" class="progress-text">0% Complete</p>
+    
+    <div class="processing-steps">
+        <div class="step-item" id="uploadStep">
+            <span class="step-icon">📤</span>
+            <span>Document Upload</span>
+        </div>
+        <div class="step-item" id="validationStep">
+            <span class="step-icon">✓</span>
+            <span>Document Validation</span>
+        </div>
+        <div class="step-item" id="analysisStep">
+            <span class="step-icon">🔍</span>
+            <span>Content Analysis</span>
+        </div>
+        <div class="step-item" id="completionStep">
+            <span class="step-icon">🎉</span>
+            <span>Processing Complete</span>
+        </div>
+    </div>
+</div>
+{% endmacro %}
