@@ -32,7 +32,7 @@ stripe.api_key = os.environ.get('STRIPE_SECRET_KEY')
 webhook_secret = os.environ.get('STRIPE_WEBHOOK_SECRET')
 
 # Create blueprint
-bp = Blueprint('main', __name__, cli_group=None)
+bp = Blueprint('main', __name__)
 
 @bp.route('/lease-upload')
 def lease_upload():

@@ -60,12 +60,13 @@ def create_app():
     )
 
     # Import and register blueprints
-    from .routes import bp, register_cli_commands
-    app.register_blueprint(bp)
-    
-    # Register CLI commands
-    register_cli_commands(app)
+    from .routes import bp
+    app.register_blueprint(bp, url_prefix='')
     
     return app
 
-__all__ = ['create_app', 'db']
+# Create the app instance
+app = create_app()
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5000, debug=True)
