@@ -4,6 +4,7 @@ from flask_wtf.csrf import CSRFProtect
 from flask_talisman import Talisman
 import logging
 from .database import init_db, db
+from .cache import init_cache, cache
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -20,7 +21,7 @@ def create_app():
     app.config['SECRET_KEY'] = os.environ.get("FLASK_SECRET_KEY", "dev-key-for-testing")
     
     # Database Configuration
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "sqlite:///leasecheck.db")
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
         'pool_size': 5,
@@ -37,9 +38,10 @@ def create_app():
     
     try:
         init_db(app)
-        logger.info("Database initialization completed successfully")
+        init_cache(app)  # Initialize cache
+        logger.info("Database and cache initialization completed successfully")
     except Exception as e:
-        logger.error(f"Failed to initialize database: {str(e)}")
+        logger.error(f"Failed to initialize application components: {str(e)}")
         raise
 
     # Configure security headers with Talisman
@@ -56,7 +58,7 @@ def create_app():
     Talisman(
         app,
         content_security_policy=csp,
-        force_https=True
+        force_https=False  # Set to False for development
     )
 
     # Import and register blueprints
@@ -65,4 +67,4 @@ def create_app():
     
     return app
 
-__all__ = ['create_app', 'db']
+__all__ = ['create_app', 'db', 'cache']

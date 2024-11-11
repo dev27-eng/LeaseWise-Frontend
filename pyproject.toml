@@ -21,6 +21,7 @@ dependencies = [
     "stripe==7.8.1",
     "flask-talisman>=1.1.0",
     "sqlalchemy==2.0.23",
+    "flask-caching>=2.3.0",
 ]
 
 [tool.uv.sources]

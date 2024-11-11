@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <h1>Cache Management Dashboard</h1>
+    
+    <div class="cache-stats">
+        <h2>Cache Statistics</h2>
+        <ul>
+            <li>Total Keys: {{ stats.total_keys }}</li>
+            <li>Cache Version: {{ stats.version }}</li>
+            <li>Last Cleared: {{ stats.last_cleared }}</li>
+        </ul>
+    </div>
+
+    <div class="cache-actions">
+        <h2>Cache Management Actions</h2>
+        
+        <!-- Clear All Cache -->
+        <form action="{{ url_for('main.admin_clear_cache') }}" method="POST" class="cache-form">
+            <input type="hidden" name="type" value="all">
+            <button type="submit" class="btn btn-danger">Clear All Cache</button>
+        </form>
+
+        <!-- Clear User Cache -->
+        <form action="{{ url_for('main.admin_clear_cache') }}" method="POST" class="cache-form">
+            <input type="hidden" name="type" value="user">
+            <input type="email" name="user_email" placeholder="User Email" required>
+            <button type="submit" class="btn btn-warning">Clear User Cache</button>
+        </form>
+
+        <!-- Clear Document Cache -->
+        <form action="{{ url_for('main.admin_clear_cache') }}" method="POST" class="cache-form">
+            <input type="hidden" name="type" value="document">
+            <input type="text" name="document_id" placeholder="Document ID" required>
+            <button type="submit" class="btn btn-warning">Clear Document Cache</button>
+        </form>
+
+        <!-- Clear Plan Cache -->
+        <form action="{{ url_for('main.admin_clear_cache') }}" method="POST" class="cache-form">
+            <input type="hidden" name="type" value="plan">
+            <button type="submit" class="btn btn-info">Clear Plan Cache</button>
+        </form>
+
+        <!-- Clear Admin Cache -->
+        <form action="{{ url_for('main.admin_clear_cache') }}" method="POST" class="cache-form">
+            <input type="hidden" name="type" value="admin">
+            <button type="submit" class="btn btn-info">Clear Admin Cache</button>
+        </form>
+    </div>
+</div>
+
+<style>
+.admin-dashboard {
+    padding: 2rem;
+}
+
+.cache-stats {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.cache-actions {
+    display: grid;
+    gap: 1rem;
+}
+
+.cache-form {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    color: black;
+}
+
+.btn-info {
+    background-color: #17a2b8;
+    color: white;
+}
+</style>
+{% endblock %}
