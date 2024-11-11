@@ -64,11 +64,11 @@ task = "packager.installForAll"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python3 main.py"
+args = "python -m pytest tests/test_onboarding_flow.py -v"
 waitForPort = 5000
 
 [deployment]
-run = ["sh", "-c", "python3 main.py"]
+run = ["sh", "-c", "python -m pytest tests/test_onboarding_flow.py -v"]
 
 [[ports]]
 localPort = 80

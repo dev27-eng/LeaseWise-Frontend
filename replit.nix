@@ -1,5 +1,8 @@
 {pkgs}: {
   deps = [
+    pkgs.chromedriver
+    pkgs.chromium
+    pkgs.geckodriver
     pkgs.file
     pkgs.zlib
     pkgs.tk
