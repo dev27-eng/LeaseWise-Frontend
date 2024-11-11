@@ -10,30 +10,58 @@
         padding: 20px;
     }
 
+    .green-header {
+        background-color: #7ED321;
+        padding: 20px;
+        text-align: center;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+
+    .green-header h1 {
+        color: black;
+        margin: 0;
+        font-size: 32px;
+        font-weight: bold;
+    }
+
     .upload-box {
-        border: 2px dashed #7ED321;
+        border: 3px dashed #7ED321;
         border-radius: 10px;
         padding: 40px;
         text-align: center;
         background-color: #f8f9fa;
-        transition: border-color 0.3s ease;
+        transition: all 0.3s ease;
         margin-bottom: 20px;
+        cursor: pointer;
     }
 
     .upload-box.drag-over {
         border-color: #28a745;
         background-color: #e8f5e9;
+        transform: scale(1.02);
     }
 
     .upload-icon {
-        font-size: 48px;
+        font-size: 64px;
         color: #7ED321;
         margin-bottom: 20px;
+        transition: transform 0.3s ease;
+    }
+
+    .upload-box:hover .upload-icon {
+        transform: scale(1.1);
     }
 
     .upload-text {
         margin-bottom: 20px;
         color: #666;
+    }
+
+    .upload-text h2 {
+        font-size: 24px;
+        margin-bottom: 10px;
+        color: #333;
     }
 
     .file-input {
@@ -43,27 +71,42 @@
     .browse-btn {
         background-color: #7ED321;
         color: black;
-        padding: 10px 20px;
-        border-radius: 5px;
+        padding: 12px 24px;
+        border-radius: 25px;
         cursor: pointer;
         display: inline-block;
-        margin-top: 10px;
+        font-weight: 500;
+        transition: background-color 0.3s ease;
+    }
+
+    .browse-btn:hover {
+        background-color: #6db91d;
     }
 
     .file-list {
         margin-top: 20px;
-        text-align: left;
     }
 
     .file-item {
         background-color: white;
-        padding: 10px;
-        border-radius: 5px;
+        padding: 15px;
+        border-radius: 8px;
         margin-bottom: 10px;
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateY(-20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
     }
 
     .file-info {
@@ -74,6 +117,7 @@
     .file-name {
         font-weight: 500;
         color: #333;
+        margin-bottom: 5px;
     }
 
     .file-size {
@@ -84,47 +128,58 @@
     .file-remove {
         color: #dc3545;
         cursor: pointer;
-        padding: 5px;
+        padding: 8px;
+        border-radius: 50%;
+        transition: background-color 0.3s ease;
+    }
+
+    .file-remove:hover {
+        background-color: #f8d7da;
     }
 
     .upload-progress {
-        height: 4px;
+        height: 6px;
         width: 100%;
         background-color: #e9ecef;
-        border-radius: 2px;
-        margin-top: 5px;
+        border-radius: 3px;
         overflow: hidden;
-        display: none;
+        margin-top: 8px;
     }
 
     .progress-bar {
         height: 100%;
         background-color: #7ED321;
-        width: 0;
         transition: width 0.3s ease;
+        width: 0;
     }
 
     .error-message {
         color: #dc3545;
         background-color: #f8d7da;
         border: 1px solid #f5c6cb;
-        padding: 10px;
-        border-radius: 5px;
+        padding: 12px;
+        border-radius: 8px;
         margin-top: 10px;
         display: none;
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
 
     .requirements {
         background-color: #e9ecef;
-        padding: 15px;
-        border-radius: 5px;
+        padding: 20px;
+        border-radius: 8px;
         margin-top: 20px;
     }
 
     .requirements h3 {
-        margin: 0 0 10px 0;
-        font-size: 16px;
-        color: #495057;
+        margin: 0 0 15px 0;
+        font-size: 18px;
+        color: #333;
     }
 
     .requirements ul {
@@ -134,14 +189,27 @@
     }
 
     .requirements li {
-        margin-bottom: 5px;
+        margin-bottom: 8px;
+        line-height: 1.4;
+    }
+
+    .upload-success {
+        background-color: #d4edda;
+        color: #155724;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 10px;
+        display: none;
+        animation: fadeIn 0.3s ease;
     }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="upload-container">
-    <h1>Upload Lease Document</h1>
+    <header class="green-header">
+        <h1>Upload Your Lease</h1>
+    </header>
     
     <div id="uploadBox" class="upload-box">
         <div class="upload-icon">📄</div>
@@ -155,6 +223,11 @@
         </div>
     </div>
 
+    <div id="errorMessage" class="error-message"></div>
+    <div id="successMessage" class="upload-success"></div>
+
+    <div id="fileList" class="file-list"></div>
+
     <div class="requirements">
         <h3>File Requirements:</h3>
         <ul>
@@ -162,12 +235,9 @@
             <li>Maximum file size: 10MB</li>
             <li>Files must be clear and legible</li>
             <li>Documents should be in English</li>
+            <li>Each file should be a complete lease agreement</li>
         </ul>
     </div>
-
-    <div id="errorMessage" class="error-message"></div>
-
-    <div id="fileList" class="file-list"></div>
 </div>
 
 <script>
@@ -176,71 +246,56 @@ document.addEventListener('DOMContentLoaded', function() {
     const fileInput = document.getElementById('fileInput');
     const fileList = document.getElementById('fileList');
     const errorMessage = document.getElementById('errorMessage');
+    const successMessage = document.getElementById('successMessage');
     const maxFileSize = 10 * 1024 * 1024; // 10MB in bytes
-    const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-
-    function handleFiles(files) {
-        errorMessage.style.display = 'none';
-        
-        for (let file of files) {
-            // Validate file type
-            if (!allowedTypes.includes(file.type)) {
-                showError('Invalid file type. Please upload PDF, DOC, or DOCX files only.');
-                continue;
-            }
-
-            // Validate file size
-            if (file.size > maxFileSize) {
-                showError('File size exceeds 10MB limit.');
-                continue;
-            }
-
-            uploadFile(file);
-        }
-    }
+    const allowedTypes = {
+        'application/pdf': 'pdf',
+        'application/msword': 'doc',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx'
+    };
 
     function showError(message) {
         errorMessage.textContent = message;
         errorMessage.style.display = 'block';
+        successMessage.style.display = 'none';
+        setTimeout(() => {
+            errorMessage.style.display = 'none';
+        }, 5000);
     }
 
-    function uploadFile(file) {
-        const fileItem = createFileItemElement(file);
-        fileList.appendChild(fileItem);
+    function showSuccess(message) {
+        successMessage.textContent = message;
+        successMessage.style.display = 'block';
+        errorMessage.style.display = 'none';
+        setTimeout(() => {
+            successMessage.style.display = 'none';
+        }, 5000);
+    }
 
-        const formData = new FormData();
-        formData.append('file', file);
+    function validateFile(file) {
+        if (!file) return false;
 
-        const xhr = new XMLHttpRequest();
-        const progressBar = fileItem.querySelector('.progress-bar');
-        const progressContainer = fileItem.querySelector('.upload-progress');
+        // Check file size
+        if (file.size > maxFileSize) {
+            showError('File size exceeds 10MB limit');
+            return false;
+        }
 
-        progressContainer.style.display = 'block';
+        // Check file type
+        if (!allowedTypes[file.type]) {
+            showError('Invalid file type. Please upload PDF, DOC, or DOCX files only');
+            return false;
+        }
 
-        xhr.upload.addEventListener('progress', function(e) {
-            if (e.lengthComputable) {
-                const percentComplete = (e.loaded / e.total) * 100;
-                progressBar.style.width = percentComplete + '%';
-            }
-        });
+        return true;
+    }
 
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4) {
-                if (xhr.status === 200) {
-                    progressBar.style.backgroundColor = '#28a745';
-                    setTimeout(() => {
-                        progressContainer.style.display = 'none';
-                    }, 1000);
-                } else {
-                    progressBar.style.backgroundColor = '#dc3545';
-                    showError('Upload failed. Please try again.');
-                }
-            }
-        };
-
-        xhr.open('POST', '/upload-lease', true);
-        xhr.setRequestHeader('X-CSRFToken', document.querySelector('meta[name="csrf-token"]').content);
-        xhr.send(formData);
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
 
     function createFileItemElement(file) {
@@ -264,12 +319,50 @@ document.addEventListener('DOMContentLoaded', function() {
         return fileItem;
     }
 
-    function formatFileSize(bytes) {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    async function uploadFile(file) {
+        const fileItem = createFileItemElement(file);
+        fileList.appendChild(fileItem);
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const response = await fetch('/upload-lease', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').content
+                }
+            });
+
+            const progressBar = fileItem.querySelector('.progress-bar');
+            progressBar.style.width = '100%';
+
+            if (response.ok) {
+                const data = await response.json();
+                showSuccess('File uploaded successfully!');
+                
+                // Redirect to processing status page
+                if (data.redirect_url) {
+                    window.location.href = data.redirect_url;
+                }
+            } else {
+                const error = await response.json();
+                showError(error.error || 'Upload failed');
+                fileItem.remove();
+            }
+        } catch (error) {
+            showError('Network error occurred');
+            fileItem.remove();
+        }
+    }
+
+    function handleFiles(files) {
+        Array.from(files).forEach(file => {
+            if (validateFile(file)) {
+                uploadFile(file);
+            }
+        });
     }
 
     // Drag and drop handlers
@@ -292,6 +385,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // File input handler
     fileInput.addEventListener('change', function() {
         handleFiles(this.files);
+        this.value = ''; // Reset input
     });
 });
 </script>

@@ -34,6 +34,11 @@ webhook_secret = os.environ.get('STRIPE_WEBHOOK_SECRET')
 # Create blueprint
 bp = Blueprint('main', __name__, cli_group=None)
 
+@bp.route('/lease-upload')
+def lease_upload():
+    """Display lease upload page"""
+    return render_template('lease_upload.html')
+
 def create_invoice(payment):
     """Create an invoice record for a payment"""
     try:
@@ -282,3 +287,116 @@ def download_invoice(invoice_number):
         logger.error(f"Error downloading invoice {invoice_number}: {str(e)}")
         flash('Error downloading invoice', 'error')
         return redirect(url_for('main.select_plan'))
+
+@bp.route('/upload-lease', methods=['POST'])
+def upload_lease():
+    """Handle lease document upload"""
+    try:
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file provided'}), 400
+            
+        file = request.files['file']
+        if not file.filename:
+            return jsonify({'error': 'No file selected'}), 400
+            
+        # Validate file type
+        allowed_types = {'pdf', 'doc', 'docx'}
+        if not ('.' in file.filename and file.filename.rsplit('.', 1)[1].lower() in allowed_types):
+            return jsonify({'error': 'Invalid file type'}), 400
+            
+        # Create upload directory if it doesn't exist
+        upload_dir = os.path.join(current_app.static_folder, 'uploads')
+        os.makedirs(upload_dir, exist_ok=True)
+        
+        # Generate unique filename
+        original_filename = secure_filename(file.filename)
+        file_ext = original_filename.rsplit('.', 1)[1].lower()
+        unique_filename = f"{uuid.uuid4().hex}.{file_ext}"
+        file_path = os.path.join('uploads', unique_filename)
+        
+        # Save file
+        file.save(os.path.join(current_app.static_folder, file_path))
+        
+        # Create document record
+        document = Document(
+            filename=unique_filename,
+            original_filename=original_filename,
+            mimetype=file.mimetype,
+            file_size=os.path.getsize(os.path.join(current_app.static_folder, file_path)),
+            user_email=request.form.get('user_email', 'anonymous@example.com'),  # Replace with actual user email
+            file_path=file_path,
+            status='pending'
+        )
+        
+        db.session.add(document)
+        db.session.commit()
+        
+        # Start processing in background (implement actual processing logic)
+        # For now, we'll just update status after a delay
+        document.status = 'processing'
+        db.session.commit()
+        
+        return jsonify({
+            'status': 'success',
+            'document_id': document.id,
+            'redirect_url': url_for('main.processing_status', document_id=document.id)
+        })
+        
+    except Exception as e:
+        logger.error(f"Error uploading lease document: {str(e)}")
+        db.session.rollback()
+        return jsonify({'error': 'Failed to upload document'}), 500
+
+@bp.route('/processing-status/<int:document_id>')
+def processing_status(document_id):
+    """Show document processing status page"""
+    try:
+        document = Document.query.get_or_404(document_id)
+        return render_template('processing_status.html', document=document)
+    except Exception as e:
+        logger.error(f"Error displaying processing status: {str(e)}")
+        flash('Error loading document status', 'error')
+        return redirect(url_for('main.lease_upload'))
+
+@bp.route('/api/document-status/<int:document_id>')
+def get_document_status(document_id):
+    """API endpoint for checking document processing status"""
+    try:
+        document = Document.query.get_or_404(document_id)
+        
+        # Calculate progress based on status
+        progress_map = {
+            'pending': 0,
+            'validating': 25,
+            'analyzing': 50,
+            'processing': 75,
+            'processed': 100,
+            'error': 0
+        }
+        
+        progress = progress_map.get(document.status, 0)
+        
+        return jsonify({
+            'status': document.status,
+            'progress': progress,
+            'error_message': document.error_message if document.status == 'error' else None
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting document status: {str(e)}")
+        return jsonify({'error': 'Failed to get document status'}), 500
+
+@bp.route('/view-document/<int:document_id>')
+def view_document(document_id):
+    """View processed document results"""
+    try:
+        document = Document.query.get_or_404(document_id)
+        if document.status != 'processed':
+            flash('Document is not ready for viewing', 'warning')
+            return redirect(url_for('main.processing_status', document_id=document_id))
+            
+        return render_template('view_document.html', document=document)
+    except Exception as e:
+        logger.error(f"Error viewing document: {str(e)}")
+        flash('Error loading document', 'error')
+        return redirect(url_for('main.lease_upload'))

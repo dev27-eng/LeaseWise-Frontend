@@ -771,6 +771,15 @@ wheels = [
 ]
 
 [[package]]
+name = "python-magic"
+version = "0.4.27"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/da/db/0b3e28ac047452d079d375ec6798bf76a036a08182dbb39ed38116a49130/python-magic-0.4.27.tar.gz", hash = "sha256:c1ba14b08e4a5f5c31a302b7721239695b2f0f058d125bd5ce1ee36b9d9d3c3b", size = 14677 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6c/73/9f872cb81fc5c3bb48f7227872c28975f998f3e7c2b1c16e95e6432bbb90/python_magic-0.4.27-py2.py3-none-any.whl", hash = "sha256:c212960ad306f700aa0d01e5d7a325d20548ff97eb9920dcd29513174f0294d3", size = 13840 },
+]
+
+[[package]]
 name = "repl-nix-reactfrontendbuilder"
 version = "0.1.0"
 source = { virtual = "." }
@@ -787,11 +796,13 @@ dependencies = [
     { name = "pdfkit" },
     { name = "pillow" },
     { name = "psycopg2-binary" },
+    { name = "python-magic" },
     { name = "reportlab" },
     { name = "requests" },
     { name = "sqlalchemy" },
     { name = "stripe" },
     { name = "weasyprint" },
+    { name = "werkzeug" },
     { name = "wtforms" },
 ]
 
@@ -809,12 +820,14 @@ requires-dist = [
     { name = "pdfkit", specifier = ">=1.0.0" },
     { name = "pillow", specifier = ">=10.4.0" },
     { name = "psycopg2-binary", specifier = ">=2.9.10" },
+    { name = "python-magic", specifier = ">=0.4.27" },
     { name = "repl-nix-reactfrontendbuilder", virtual = "." },
     { name = "reportlab", specifier = ">=4.2.5" },
     { name = "requests", specifier = ">=2.32.3" },
     { name = "sqlalchemy", specifier = "==2.0.23" },
     { name = "stripe", specifier = "==7.8.1" },
     { name = "weasyprint", specifier = ">=63.0" },
+    { name = "werkzeug", specifier = ">=3.0.4" },
     { name = "wtforms", specifier = ">=3.2.1" },
 ]
 
