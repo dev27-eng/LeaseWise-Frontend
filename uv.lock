@@ -1016,7 +1016,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "email-validator", specifier = ">=2.2.0" },
-    { name = "flask", specifier = ">=3.0.3" },
+    { name = "flask", specifier = ">=2.0.0" },
     { name = "flask-mail", specifier = ">=0.10.0" },
     { name = "flask-sqlalchemy", specifier = "==3.1.1" },
     { name = "flask-talisman", specifier = ">=1.1.0" },
@@ -1034,7 +1034,7 @@ requires-dist = [
     { name = "python-magic", specifier = "==0.4.27" },
     { name = "repl-nix-reactfrontendbuilder", virtual = "." },
     { name = "reportlab", specifier = ">=4.2.5" },
-    { name = "requests", specifier = ">=2.32.3" },
+    { name = "requests", specifier = ">=2.32.0" },
     { name = "selenium", specifier = ">=4.26.1" },
     { name = "setuptools", specifier = ">=75.3.0" },
     { name = "sqlalchemy", specifier = "==2.0.23" },

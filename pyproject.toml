@@ -5,10 +5,10 @@ description = "Add your description here"
 requires-python = ">=3.11"
 dependencies = [
     "email-validator>=2.2.0",
-    "flask>=3.0.3",
+    "flask>=2.0.0",
     "flask-sqlalchemy==3.1.1",
     "psycopg2-binary>=2.9.10",
-    "requests>=2.32.3",
+    "requests>=2.32.0",
     "repl-nix-reactfrontendbuilder",
     "google-api-python-client>=2.151.0",
     "google-auth-httplib2>=0.2.0",

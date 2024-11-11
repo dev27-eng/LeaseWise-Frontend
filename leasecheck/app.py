@@ -42,7 +42,7 @@ def create_app():
         logger.error(f"Failed to initialize database: {str(e)}")
         raise
 
-    # Configure security headers with Talisman
+    # Configure security headers with Talisman - Disable HTTPS in development
     csp = {
         'default-src': ["'self'", "https://*"],
         'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://js.stripe.com", "https://*"],
@@ -56,7 +56,7 @@ def create_app():
     Talisman(
         app,
         content_security_policy=csp,
-        force_https=True
+        force_https=False  # Disable HTTPS for development
     )
 
     # Import and register blueprints
@@ -69,4 +69,4 @@ def create_app():
 app = create_app()
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=3000, debug=True)

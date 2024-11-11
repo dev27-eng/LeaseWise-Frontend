@@ -35,6 +35,11 @@ webhook_secret = os.environ.get('STRIPE_WEBHOOK_SECRET')
 # Create blueprint
 bp = Blueprint('main', __name__)
 
+@bp.route('/')
+def welcome():
+    """Display welcome page"""
+    return render_template('welcome_screen.html')
+
 @bp.route('/lease-upload')
 def lease_upload():
     """Display lease upload page"""
