@@ -7,15 +7,31 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/components/error-display.css') }}">
 {% endblock %}
 
-{% from 'components/upload-widget.html' import upload_widget %}
-
 {% block content %}
-<div class="upload-container">
+<div class="upload-container" id="uploadContainer">
     <header class="green-header">
         <h1>Upload Your Lease</h1>
     </header>
     
-    {{ upload_widget() }}
+    <div class="upload-box" id="uploadBox">
+        <div class="upload-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+            </svg>
+        </div>
+        <div class="upload-text">
+            <h2>Drag and drop your lease document here</h2>
+            <p>or</p>
+            <label class="browse-btn">
+                Browse Files
+                <input type="file" id="fileInput" class="file-input" accept=".pdf,.doc,.docx">
+            </label>
+        </div>
+    </div>
+
+    <div id="errorMessage" class="error-message"></div>
+    <div id="successMessage" class="upload-success"></div>
+    <div id="fileList" class="file-list"></div>
 
     <div class="requirements">
         <h3>File Requirements:</h3>
