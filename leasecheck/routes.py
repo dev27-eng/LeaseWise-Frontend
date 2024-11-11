@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request, send_file, jsonify
+from flask import Blueprint, render_template, redirect, url_for, flash, request, send_file, jsonify, current_app
 from .database import db, safe_transaction, DatabaseError, retry_on_operational_error
 from .forms import TermsAcceptanceForm
 from .models import TermsAcceptance, Payment, AdminUser, Document, SupportTicket, Invoice
@@ -14,6 +14,7 @@ import os
 import logging
 import json
 import uuid
+import click
 from werkzeug.exceptions import BadRequest
 from functools import wraps
 from sqlalchemy import func, desc
@@ -31,149 +32,86 @@ stripe.api_key = os.environ.get('STRIPE_SECRET_KEY')
 webhook_secret = os.environ.get('STRIPE_WEBHOOK_SECRET')
 
 # Create blueprint
-bp = Blueprint('main', __name__)
+bp = Blueprint('main', __name__, cli_group=None)
 
-@bp.route('/')
-def index():
-    """Root endpoint redirects to select plan"""
-    return redirect(url_for('main.select_plan'))
-
-@bp.route('/select-plan')
-def select_plan():
-    """Plan selection page"""
-    plans = {
-        'basic': {
-            'name': 'Basic Plan',
-            'price': 9.95,
-            'features': ['1 Lease Analysis', 'Ideal for single lease']
-        },
-        'standard': {
-            'name': 'Standard Plan',
-            'price': 19.95,
-            'features': ['3 uses in 30 days', 'Great for comparing options']
-        },
-        'premium': {
-            'name': 'Premium Plan',
-            'price': 29.95,
-            'features': ['6 uses in 30 days', 'Best value for multiple reviews']
-        }
-    }
-    return render_template('select_plan.html', plans=plans)
-
-@bp.route('/checkout')
-def checkout():
-    """Checkout page for selected plan"""
-    plan_id = request.args.get('plan')
-    if not plan_id:
-        flash('Please select a plan first', 'error')
-        return redirect(url_for('main.select_plan'))
-    
-    plans = {
-        'basic': {
-            'name': 'Basic Plan',
-            'price': 9.95,
-            'features': ['1 Lease Analysis', 'Ideal for single lease']
-        },
-        'standard': {
-            'name': 'Standard Plan',
-            'price': 19.95,
-            'features': ['3 uses in 30 days', 'Great for comparing options']
-        },
-        'premium': {
-            'name': 'Premium Plan',
-            'price': 29.95,
-            'features': ['6 uses in 30 days', 'Best value for multiple reviews']
-        }
-    }
-    
-    plan = plans.get(plan_id)
-    if not plan:
-        flash('Invalid plan selected', 'error')
-        return redirect(url_for('main.select_plan'))
-    
-    stripe_public_key = os.environ.get('STRIPE_PUBLISHABLE_KEY', '')
-    return render_template('checkout.html', plan=plan, stripe_public_key=stripe_public_key)
-
-def generate_invoice_number():
-    """Generate a unique invoice number"""
-    try:
-        prefix = datetime.utcnow().strftime('%Y%m')
-        # Get the latest invoice number for the current month
-        latest_invoice = Invoice.query.filter(
-            Invoice.invoice_number.like(f'INV-{prefix}-%')
-        ).order_by(desc(Invoice.invoice_number)).first()
-        
-        if latest_invoice:
-            # Extract the sequence number and increment it
-            current_seq = int(latest_invoice.invoice_number.split('-')[-1])
-            next_seq = current_seq + 1
-        else:
-            next_seq = 1
-        
-        # Format with leading zeros
-        invoice_number = f"INV-{prefix}-{next_seq:04d}"
-        return invoice_number
-    except Exception as e:
-        logger.error(f"Error generating invoice number: {str(e)}")
-        raise
-
-@retry_on_operational_error
 def create_invoice(payment):
-    """Create an invoice for a successful payment"""
+    """Create an invoice record for a payment"""
     try:
-        # Validate payment data
-        if not all([payment.user_email, payment.amount, payment.plan_name,
-                   payment.customer_name, payment.billing_address]):
-            logger.error(f"Missing required payment data for invoice creation")
-            return None
-
-        with safe_transaction() as session:
-            # Check for existing invoice
-            existing_invoice = session.query(Invoice).filter_by(payment_id=payment.id).first()
-            if existing_invoice:
-                logger.info(f"Invoice already exists for payment {payment.stripe_payment_id}")
-                return existing_invoice
-
-            # Create invoice items
-            items = [{
-                'description': f"{payment.plan_name} - Lease Analysis Service",
-                'quantity': 1,
-                'unit_price': payment.amount,
-                'amount': payment.amount
-            }]
-            
-            # Create invoice record
-            invoice = Invoice()
-            invoice.invoice_number = generate_invoice_number()
-            invoice.payment_id = payment.id
-            invoice.due_date = datetime.utcnow() + timedelta(days=30)
-            invoice.total_amount = payment.amount
-            invoice.currency = payment.currency or 'USD'
-            invoice.status = 'pending'
-            invoice.user_email = payment.user_email
-            invoice.billing_address = payment.billing_address
-            invoice.customer_name = payment.customer_name
-            invoice.items = items
-            
-            session.add(invoice)
-            session.flush()
-
-            # Generate PDF
-            pdf_path = generate_invoice_pdf(invoice)
-            if pdf_path:
-                invoice.pdf_path = pdf_path
-                invoice.status = 'paid'
-                session.commit()
-                logger.info(f"Invoice created successfully: {invoice.invoice_number}")
-                return invoice
-            else:
-                session.rollback()
-                logger.error(f"Failed to generate PDF for invoice: {invoice.invoice_number}")
-                return None
-
+        invoice_number = f"INV-{datetime.now().strftime('%Y%m')}-{str(payment.id).zfill(4)}"
+        
+        # Default billing address if none provided
+        billing_address = payment.billing_address or {
+            'street': 'N/A',
+            'street2': '',
+            'city': 'N/A',
+            'state': 'N/A',
+            'zipCode': 'N/A',
+            'country': 'US'
+        }
+        
+        # Create invoice items
+        items = [{
+            'description': f"{payment.plan_name} Plan",
+            'quantity': 1,
+            'unit_price': payment.amount,
+            'amount': payment.amount
+        }]
+        
+        invoice = Invoice(
+            invoice_number=invoice_number,
+            payment_id=payment.id,
+            created_at=datetime.utcnow(),
+            due_date=datetime.utcnow() + timedelta(days=30),
+            total_amount=payment.amount,
+            currency=payment.currency,
+            status='pending',
+            user_email=payment.user_email,
+            billing_address=billing_address,
+            customer_name=payment.customer_name or 'Customer',
+            items=items
+        )
+        
+        db.session.add(invoice)
+        db.session.commit()
+        logger.info(f"Created invoice {invoice_number} for payment {payment.stripe_payment_id}")
+        return invoice
     except Exception as e:
-        logger.error(f"Error creating invoice: {str(e)}")
+        logger.error(f"Error creating invoice for payment {payment.stripe_payment_id}: {str(e)}")
+        db.session.rollback()
         return None
+
+def generate_pending_invoices():
+    """Generate invoices for all succeeded payments that don't have invoices"""
+    try:
+        with safe_transaction() as session:
+            # Get all succeeded payments without invoices
+            payments = session.query(Payment).outerjoin(
+                Invoice, Payment.id == Invoice.payment_id
+            ).filter(
+                Payment.status == 'succeeded',
+                Invoice.id.is_(None)
+            ).all()
+            
+            generated_count = 0
+            for payment in payments:
+                invoice = create_invoice(payment)
+                if invoice:
+                    pdf_path = generate_invoice_pdf(invoice)
+                    if pdf_path:
+                        invoice.pdf_path = pdf_path
+                        invoice.status = 'completed'
+                        generated_count += 1
+                        logger.info(f"Generated invoice {invoice.invoice_number} for payment {payment.stripe_payment_id}")
+                    else:
+                        logger.error(f"Failed to generate PDF for invoice {invoice.invoice_number}")
+            
+            if generated_count > 0:
+                session.commit()
+            
+            return generated_count
+    except Exception as e:
+        logger.error(f"Error generating pending invoices: {str(e)}")
+        return 0
 
 def generate_invoice_pdf(invoice):
     """Generate PDF invoice using ReportLab"""
@@ -290,6 +228,13 @@ def generate_invoice_pdf(invoice):
         logger.error(f"Error generating PDF invoice: {str(e)}")
         return None
 
+def register_cli_commands(app):
+    @app.cli.command('generate-pending-invoices')
+    def generate_pending_invoices_command():
+        """Generate invoices and PDFs for all succeeded payments without invoices"""
+        count = generate_pending_invoices()
+        click.echo(f"Generated {count} new invoice PDFs")
+
 @bp.route('/invoice/<invoice_number>')
 def view_invoice(invoice_number):
     """View invoice details"""
@@ -337,42 +282,3 @@ def download_invoice(invoice_number):
         logger.error(f"Error downloading invoice {invoice_number}: {str(e)}")
         flash('Error downloading invoice', 'error')
         return redirect(url_for('main.select_plan'))
-
-def update_payment_status(payment_intent_id, new_status, additional_data=None):
-    """Update payment status and generate invoice if payment is successful"""
-    try:
-        with safe_transaction() as session:
-            payment = session.query(Payment).filter_by(
-                stripe_payment_id=payment_intent_id).first()
-            
-            if not payment:
-                logger.warning(f"Payment not found: {payment_intent_id}")
-                return False
-            
-            logger.info(f"Updating payment status for {payment_intent_id} to {new_status}")
-            
-            # Update payment status and additional data
-            payment.status = new_status
-            if additional_data and isinstance(additional_data, dict):
-                for key, value in additional_data.items():
-                    if hasattr(payment, key):
-                        setattr(payment, key, value)
-            
-            # Commit the payment status update first
-            session.commit()
-            
-            # Generate invoice for successful payments
-            if new_status == 'succeeded':
-                invoice = create_invoice(payment)
-                if invoice:
-                    logger.info(f"Invoice {invoice.invoice_number} generated successfully for payment {payment_intent_id}")
-                    return True
-                else:
-                    logger.error(f"Failed to generate invoice for payment {payment_intent_id}")
-                    return False
-            
-            return True
-            
-    except Exception as e:
-        logger.error(f"Error updating payment status: {str(e)}")
-        return False

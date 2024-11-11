@@ -60,8 +60,11 @@ def create_app():
     )
 
     # Import and register blueprints
-    from .routes import bp
+    from .routes import bp, register_cli_commands
     app.register_blueprint(bp)
+    
+    # Register CLI commands
+    register_cli_commands(app)
     
     return app
 

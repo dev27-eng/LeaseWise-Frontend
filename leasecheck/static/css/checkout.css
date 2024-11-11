@@ -94,6 +94,11 @@
     font-weight: 500;
 }
 
+.required {
+    color: #dc3545;
+    margin-left: 2px;
+}
+
 .form-group input,
 .form-group select {
     width: 100%;
@@ -101,6 +106,7 @@
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 16px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .form-group input:focus,
@@ -129,26 +135,35 @@
     animation: fadeIn 0.3s ease-in;
 }
 
-/* Stripe Elements styling */
-.stripe-element {
-    background-color: white !important;
-    padding: 12px !important;
-    border: 1px solid #ddd !important;
-    border-radius: 5px !important;
-    margin-bottom: 20px !important;
-    font-family: "Helvetica Neue", Helvetica, sans-serif !important;
-    font-size: 16px !important;
-    color: #32325d !important;
-    -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
+.error-message.visible {
+    display: block;
 }
 
-#card-element {
+/* Stripe Elements styling */
+.stripe-element-group {
+    margin-bottom: 20px;
+}
+
+.stripe-element {
     background-color: white;
     padding: 12px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    margin-bottom: 20px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stripe-element:focus {
+    border-color: #7ED321;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(126, 211, 33, 0.2);
+}
+
+.stripe-element.StripeElement--focus {
+    border-color: #7ED321;
+}
+
+.stripe-element.StripeElement--invalid {
+    border-color: #dc3545;
 }
 
 #card-errors {
@@ -156,9 +171,13 @@
     margin: 10px 0;
     padding: 10px;
     border-radius: 4px;
-    background-color: #fff;
+    background-color: rgba(220, 53, 69, 0.1);
     border: 1px solid #dc3545;
     display: none;
+}
+
+#card-errors.visible {
+    display: block;
 }
 
 .pay-button {

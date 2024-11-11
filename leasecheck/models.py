@@ -24,9 +24,9 @@ class Invoice(db.Model):
     due_date = db.Column(db.DateTime, nullable=False)
     total_amount = db.Column(db.Integer, nullable=False)  # Amount in cents
     currency = db.Column(db.String(3), nullable=False, default='USD')
-    status = db.Column(db.String(20), nullable=False, default='generated')
+    status = db.Column(db.String(20), nullable=False, default='pending')
     user_email = db.Column(db.String(255), nullable=False)
-    billing_address = db.Column(db.JSON, nullable=False)
+    billing_address = db.Column(db.JSON, nullable=True)  # Made nullable for flexibility
     customer_name = db.Column(db.String(255), nullable=False)
     items = db.Column(db.JSON, nullable=False)  # Store line items
     notes = db.Column(db.Text)
@@ -75,19 +75,38 @@ class Payment(db.Model):
 
     def generate_invoice(self):
         """Generate invoice for successful payment"""
+        from .routes import create_invoice, generate_invoice_pdf
         try:
-            if self.status == 'succeeded':
-                from .routes import create_invoice
-                logger.info(f"Attempting to generate invoice for payment {self.stripe_payment_id}")
-                invoice = create_invoice(self)
-                if invoice:
-                    logger.info(f"Successfully generated invoice {invoice.invoice_number} for payment {self.stripe_payment_id}")
-                    return invoice
+            if self.status != 'succeeded':
+                logger.info(f"Payment {self.stripe_payment_id} is not in succeeded status, skipping invoice generation")
+                return None
+
+            # Check if invoice already exists
+            existing_invoice = Invoice.query.filter_by(payment_id=self.id).first()
+            if existing_invoice:
+                logger.info(f"Invoice already exists for payment {self.stripe_payment_id}")
+                return existing_invoice
+
+            logger.info(f"Generating invoice for payment {self.stripe_payment_id}")
+            invoice = create_invoice(self)
+            if invoice:
+                # Generate PDF immediately after creating invoice
+                pdf_path = generate_invoice_pdf(invoice)
+                if pdf_path:
+                    invoice.pdf_path = pdf_path
+                    invoice.status = 'completed'
+                    db.session.commit()
+                    logger.info(f"Successfully generated invoice PDF at {pdf_path}")
                 else:
-                    logger.error(f"Failed to generate invoice for payment {self.stripe_payment_id}")
-            return None
+                    logger.error(f"Failed to generate PDF for invoice {invoice.invoice_number}")
+                
+                return invoice
+            else:
+                logger.error(f"Failed to create invoice for payment {self.stripe_payment_id}")
+                return None
         except Exception as e:
             logger.error(f"Error generating invoice for payment {self.stripe_payment_id}: {str(e)}")
+            db.session.rollback()
             return None
 
 @event.listens_for(Payment, 'after_update')
