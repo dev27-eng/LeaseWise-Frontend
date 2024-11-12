@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}{{ component_title }} - LeaseCheck{% endblock %}
+
+{% block extra_css %}
+<link rel="preload" href="{{ url_for('static', filename='components/' + component_name + '/' + component_name + '.css') }}" as="style">
+<link rel="stylesheet" href="{{ url_for('static', filename='components/' + component_name + '/' + component_name + '.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="{{ component_name }}-screen" role="main">
+    <!-- Green Header Section -->
+    <header class="{{ component_name }}-header" role="banner">
+        <h1>{{ header_title }}</h1>
+        {% if subheader %}
+        <p class="header-subtitle">{{ subheader }}</p>
+        {% endif %}
+    </header>
+
+    <!-- Main Content Section -->
+    <div class="{{ component_name }}-content">
+        {% block component_content %}
+        <!-- Component specific content goes here -->
+        {% endblock %}
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='components/' + component_name + '/' + component_name + '.js') }}" defer></script>
+{% endblock %}
