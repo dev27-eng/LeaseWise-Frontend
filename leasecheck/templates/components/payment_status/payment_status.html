@@ -1,0 +1,47 @@
+{% extends "components/base_component.html" %}
+
+{% set component_name = 'payment_status' %}
+{% set component_title = 'Payment Status' %}
+{% set header_title = 'Payment Successful' if status == 'success' else 'Payment Failed' %}
+
+{% block component_content %}
+<div class="payment-status-container">
+    {% if status == 'success' %}
+    <div class="status-icon success">✓</div>
+    <div class="status-message">
+        <h2>Thank You for Your Purchase!</h2>
+        <p>Your payment has been processed successfully.</p>
+        <div class="order-details">
+            <h3>Next Steps:</h3>
+            <ol class="steps-list">
+                <li>Upload your lease document for analysis</li>
+                <li>Complete the lease details form</li>
+                <li>Review your comprehensive risk report</li>
+            </ol>
+        </div>
+    </div>
+    <div class="action-buttons">
+        <a href="{{ url_for('main.lease_upload') }}" class="action-btn primary-btn">Upload Lease</a>
+        <a href="{{ url_for('main.index') }}" class="action-btn secondary-btn">Return Home</a>
+    </div>
+    {% else %}
+    <div class="status-icon failure">×</div>
+    <div class="status-message">
+        <h2>Payment Processing Failed</h2>
+        <p>We encountered an issue while processing your payment.</p>
+        <div class="error-details">
+            <h3>What you can do:</h3>
+            <ul class="error-list">
+                <li>Check your payment details and try again</li>
+                <li>Use a different payment method</li>
+                <li>Contact your bank if the issue persists</li>
+            </ul>
+        </div>
+    </div>
+    <div class="action-buttons">
+        <a href="{{ url_for('main.checkout') }}" class="action-btn primary-btn">Try Again</a>
+        <a href="{{ url_for('main.support_issue') }}" class="action-btn secondary-btn">Contact Support</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
