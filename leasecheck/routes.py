@@ -97,12 +97,12 @@ def refund_policy():
 @bp.route('/disclaimer')
 def disclaimer():
     """Disclaimer Screen (5c Disclaimer.png)"""
-    return render_template('disclaimer.html')
+    return render_template('components/disclaimer/disclaimer.html')
 
 @bp.route('/terms-declined')
 def terms_declined():
     """Terms Declined Screen (5d Terms Declined Screen.png)"""
-    return render_template('terms_declined.html')
+    return render_template('components/terms_declined/terms_declined.html')
 
 @bp.route('/checkout')
 def checkout():
@@ -110,111 +110,68 @@ def checkout():
     plan_id = request.args.get('plan')
     if not plan_id or plan_id not in PLANS:
         return redirect(url_for('main.select_plan'))
-    return render_template('checkout.html', plan=PLANS[plan_id], plan_id=plan_id)
+    return render_template('components/checkout/checkout.html', plan=PLANS[plan_id], plan_id=plan_id)
 
 @bp.route('/payment-status')
 def payment_status():
     """Payment Status Screen (7 Payment Status.png)"""
     status = request.args.get('status', 'success')
-    return render_template('payment_status.html', status=status)
+    return render_template('components/payment_status/payment_status.html', status=status)
 
 @bp.route('/lease-upload')
 def lease_upload():
     """Lease Upload Screen (8 Lease Upload.png)"""
-    return render_template('lease_upload.html')
+    return render_template('components/lease_upload/lease_upload.html')
 
 @bp.route('/lease-details')
 def lease_details():
     """Lease Details Screen (9 Lease Details.png)"""
-    return render_template('lease_details.html')
+    return render_template('components/lease_details/lease_details.html')
 
 @bp.route('/error-report')
 def error_report():
     """Error Report Screen (9a Error Report.png)"""
-    return render_template('error_report.html')
+    return render_template('components/error_report/error_report.html')
 
 @bp.route('/support-issue')
 def support_issue():
     """Support Issue Screen (9b Support Issue.png)"""
-    return render_template('support_issue.html')
+    return render_template('components/support_issue/support_issue.html')
 
 @bp.route('/reviewing-lease')
 def reviewing_lease():
     """Reviewing Lease Screen (10 Reviewing Lease.png)"""
-    return render_template('reviewing_lease.html')
+    return render_template('components/reviewing_lease/reviewing_lease.html')
 
 @bp.route('/risk-report')
 def risk_report():
     """Risk Report Screen (11 Risk Report.png)"""
     return render_template('components/risk_report/risk_report.html')
 
-@bp.route('/api/risk-report')
-def get_risk_report_data():
-    """API endpoint for risk report data"""
-    try:
-        risk_data = {
-            'riskLevel': 'Medium',
-            'findings': [
-                {
-                    'title': 'Rent Increase Terms',
-                    'description': 'Unusual rent increase clause detected',
-                    'severity': 'warning'
-                },
-                {
-                    'title': 'Security Deposit',
-                    'description': 'Terms for security deposit return are unclear',
-                    'severity': 'warning'
-                },
-                {
-                    'title': 'Maintenance Responsibilities',
-                    'description': 'Maintenance duties not clearly defined',
-                    'severity': 'warning'
-                }
-            ],
-            'recommendations': [
-                {
-                    'title': 'Clarify Rent Increase Terms',
-                    'description': 'Request specific details about annual rent increase calculations and caps.'
-                },
-                {
-                    'title': 'Security Deposit Return',
-                    'description': 'Ask for explicit timeline and conditions for security deposit return.'
-                },
-                {
-                    'title': 'Define Maintenance Duties',
-                    'description': 'Get written clarification on tenant vs landlord maintenance responsibilities.'
-                }
-            ]
-        }
-        return jsonify(risk_data)
-    except Exception as e:
-        logger.error(f"Error generating risk report data: {str(e)}")
-        return jsonify({'error': 'Internal server error'}), 500
-
 @bp.route('/save-report')
 def save_report():
     """Save Report Screen (11a Save Report.png)"""
-    return render_template('save_report.html')
+    return render_template('components/save_report/save_report.html')
 
 @bp.route('/report-sent')
 def report_sent():
     """Report Sent Screen (11b Report Sent.png)"""
-    return render_template('report_sent.html')
+    return render_template('components/report_sent/report_sent.html')
 
 @bp.route('/thank-you')
 def thank_you():
     """Thank You Screen (11c Thank You - End.png)"""
-    return render_template('thank_you.html')
+    return render_template('components/thank_you/thank_you.html')
 
 @bp.route('/local-attorneys')
 def local_attorneys():
     """Local Attorneys Screen (12 Local Attorneys.png)"""
-    return render_template('local_attorneys.html')
+    return render_template('components/local_attorneys/local_attorneys.html')
 
 @bp.route('/lawyer-message-acknowledgment')
 def lawyer_message_acknowledgment():
     """Lawyer Message Acknowledgment Screen (12a Lawyer Msg Ack.png)"""
-    return render_template('lawyer_message_acknowledgment.html')
+    return render_template('components/lawyer_message_acknowledgment/lawyer_message_acknowledgment.html')
 
 # API Routes
 @bp.route('/api/send-verification-code', methods=['POST'])

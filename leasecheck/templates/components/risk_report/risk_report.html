@@ -1,0 +1,44 @@
+{% extends "components/base_component.html" %}
+
+{% set component_name = 'risk_report' %}
+{% set component_title = 'Risk Report Analysis' %}
+{% set header_title = 'Risk Report Analysis' %}
+{% set subheader = 'Review your lease analysis results below' %}
+
+{% block component_content %}
+<div class="risk-level-indicator">
+    <div class="risk-meter">
+        <div class="risk-level" data-level="medium"></div>
+    </div>
+    <p class="risk-text">Medium Risk Level</p>
+</div>
+
+<div class="risk-sections">
+    <div class="risk-section">
+        <h2>Key Findings</h2>
+        <ul class="findings-list">
+            <!-- Findings will be populated dynamically via JavaScript -->
+        </ul>
+    </div>
+    
+    <div class="risk-section">
+        <h2>Recommendations</h2>
+        <div class="recommendations-list">
+            <!-- Recommendations will be populated dynamically via JavaScript -->
+        </div>
+    </div>
+</div>
+
+<div class="action-buttons">
+    <button class="action-btn primary-btn" id="save-report">Save Report</button>
+    <button class="action-btn secondary-btn" id="contact-attorney">Contact Attorney</button>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='components/risk_report/risk_report.css') }}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='components/risk_report/risk_report.js') }}"></script>
+{% endblock %}
