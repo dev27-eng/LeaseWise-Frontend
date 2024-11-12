@@ -1,219 +1,205 @@
 /* Select Plan Component Styles */
-:root {
-    --plan-primary-green: #7ED321;
-    --plan-primary-black: #000000;
-    --plan-white: #ffffff;
-    --plan-gray-100: #f8f9fa;
-    --plan-gray-200: #e9ecef;
-    --plan-gray-300: #dee2e6;
-    --plan-gray-600: #6c757d;
-    --plan-shadow: rgba(0, 0, 0, 0.1);
-}
-
 .select-plan-screen {
     min-height: 100vh;
-    background-color: var(--plan-white);
+    background-color: #ffffff;
     padding-bottom: 60px;
 }
 
 /* Header Styles */
-.plan-header {
-    background-color: var(--plan-primary-green);
-    padding: 40px 20px;
+.green-header {
+    background-color: #7ED321;
+    padding: 20px;
     text-align: center;
-    margin-bottom: 60px;
+    margin-bottom: 30px;
 }
 
-.plan-header h1 {
-    color: var(--plan-primary-black);
-    font-size: 48px;
-    font-weight: 600;
+.green-header h1 {
+    color: black;
     margin: 0;
-    line-height: 1.2;
+    font-size: 2.5rem;
+    font-weight: bold;
 }
 
-.header-subtitle {
-    font-size: 24px;
-    color: var(--plan-primary-black);
-    margin-top: 16px;
-    opacity: 0.9;
-}
-
-/* Plans Container */
-.plans-container {
+/* Content Section */
+.plan-content {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-    margin-bottom: 60px;
 }
 
-/* Plan Card Styles */
-.plan-card {
-    background: var(--plan-white);
-    border-radius: 12px;
-    padding: 40px 30px;
+.plan-header {
     text-align: center;
-    box-shadow: 0 4px 6px var(--plan-shadow);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+    margin-bottom: 40px;
 }
 
-.plan-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 12px var(--plan-shadow);
+.plan-header h2 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 10px;
 }
 
-.plan-name {
-    font-size: 28px;
-    color: var(--plan-primary-black);
+.plan-header h3 {
+    font-size: 1.5rem;
+    color: #666;
     margin-bottom: 20px;
 }
 
-.plan-price {
-    font-size: 48px;
-    font-weight: 700;
-    color: var(--plan-primary-black);
-    margin-bottom: 30px;
+.features-list {
+    max-width: 800px;
+    margin: 0 auto 40px;
+}
+
+.feature-row {
     display: flex;
-    justify-content: center;
-    align-items: baseline;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
 }
 
-.currency {
-    font-size: 24px;
-    margin-right: 4px;
+.feature-row strong {
+    flex: 0 0 auto;
+    margin-right: 15px;
+    color: #7ED321;
 }
 
-.plan-features {
+.feature-row span {
+    color: #666;
+}
+
+/* Pricing Tiers */
+.pricing-tiers {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.pricing-card {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    transition: transform 0.3s ease;
+}
+
+.pricing-card:hover {
+    transform: translateY(-5px);
+}
+
+.most-popular-tag {
+    position: absolute;
+    top: -12px;
+    right: 20px;
+    background-color: #7ED321;
+    color: black;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.form-check {
+    position: relative;
+}
+
+.form-check-input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.form-check-label {
+    display: block;
+    cursor: pointer;
+}
+
+.plan-name {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.plan-price {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #7ED321;
+    margin-bottom: 20px;
+}
+
+.plan-features ul {
     list-style: none;
     padding: 0;
-    margin: 0 0 30px;
-    flex-grow: 1;
+    margin: 0;
 }
 
-.feature-item {
-    padding: 12px 0;
-    color: var(--plan-gray-600);
-    border-bottom: 1px solid var(--plan-gray-200);
+.plan-features li {
+    padding: 8px 0;
+    color: #666;
+    border-bottom: 1px solid #eee;
 }
 
-.feature-item:last-child {
+.plan-features li:last-child {
     border-bottom: none;
 }
 
-/* Button Styles */
 .select-plan-btn {
-    background-color: var(--plan-primary-green);
-    color: var(--plan-primary-black);
-    padding: 15px 30px;
-    border-radius: 999px;
-    text-decoration: none;
+    display: block;
+    width: 100%;
+    background-color: #7ED321;
+    color: black;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
     font-weight: 600;
-    font-size: 18px;
+    cursor: pointer;
+    margin-top: 30px;
     transition: background-color 0.3s ease;
-    display: inline-block;
 }
 
 .select-plan-btn:hover {
     background-color: #6db91d;
 }
 
-/* Trust Section */
-.trust-section {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-.trust-indicators {
-    display: flex;
-    justify-content: center;
-    gap: 60px;
-    flex-wrap: wrap;
-}
-
-.trust-item {
-    text-align: center;
-}
-
-.trust-icon {
-    width: 48px;
-    height: 48px;
-    margin: 0 auto 12px;
-    background-color: var(--plan-primary-green);
-    mask-size: contain;
-    mask-repeat: no-repeat;
-    mask-position: center;
-    -webkit-mask-size: contain;
-    -webkit-mask-repeat: no-repeat;
-    -webkit-mask-position: center;
-}
-
-.trust-icon.secure {
-    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 6c1.4 0 2.5 1.1 2.5 2.5V13c.6 0 1 .4 1 1v4c0 .6-.4 1-1 1h-5c-.6 0-1-.4-1-1v-4c0-.6.4-1 1-1V9.5C9.5 8.1 10.6 7 12 7z'/%3E%3C/svg%3E");
-    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 6c1.4 0 2.5 1.1 2.5 2.5V13c.6 0 1 .4 1 1v4c0 .6-.4 1-1 1h-5c-.6 0-1-.4-1-1v-4c0-.6.4-1 1-1V9.5C9.5 8.1 10.6 7 12 7z'/%3E%3C/svg%3E");
-}
-
-.trust-icon.guarantee {
-    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2L2 7v10l10 5 10-5V7L12 2zm0 18.5l-8-4V8l8 4v8.5zm0-10.5L4.5 7 12 3.5 19.5 7 12 10z'/%3E%3C/svg%3E");
-    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2L2 7v10l10 5 10-5V7L12 2zm0 18.5l-8-4V8l8 4v8.5zm0-10.5L4.5 7 12 3.5 19.5 7 12 10z'/%3E%3C/svg%3E");
-}
-
-.trust-icon.support {
-    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-14h2v6h-2zm0 8h2v2h-2z'/%3E%3C/svg%3E");
-    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-14h2v6h-2zm0 8h2v2h-2z'/%3E%3C/svg%3E");
-}
-
-.trust-item p {
-    font-size: 16px;
-    color: var(--plan-gray-600);
-    margin: 0;
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
-    .plan-header h1 {
-        font-size: 36px;
+    .plan-content {
+        padding: 0 15px;
     }
 
-    .header-subtitle {
-        font-size: 20px;
-    }
-
-    .plans-container {
+    .pricing-tiers {
         grid-template-columns: 1fr;
         max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
     }
 
-    .trust-indicators {
-        gap: 30px;
-    }
-}
-
-/* Print Styles */
-@media print {
-    .plan-header {
-        background-color: transparent;
+    .green-header h1 {
+        font-size: 2rem;
     }
 
-    .select-plan-btn {
-        display: none;
+    .plan-header h2 {
+        font-size: 1.75rem;
     }
 
-    .plan-card {
-        box-shadow: none;
-        border: 1px solid var(--plan-gray-300);
-        break-inside: avoid;
+    .plan-header h3 {
+        font-size: 1.25rem;
     }
 }
 
-/* Accessibility Focus Styles */
+/* Accessibility */
+.form-check-input:focus + .form-check-label {
+    outline: 2px solid #7ED321;
+    outline-offset: 2px;
+}
+
 .select-plan-btn:focus {
-    outline: 3px solid var(--plan-primary-green);
+    outline: 2px solid #7ED321;
     outline-offset: 2px;
 }
