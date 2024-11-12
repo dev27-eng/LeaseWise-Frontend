@@ -1,0 +1,294 @@
+{% extends "base.html" %}
+
+{% block title %}Support Issue - LeaseCheck{% endblock %}
+
+{% block extra_css %}
+<style>
+    .support-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+    }
+
+    .support-header {
+        background-color: #7ED321;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .support-header h1 {
+        color: black;
+        margin: 0;
+        font-size: 2rem;
+    }
+
+    .support-content {
+        background-color: white;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+        font-weight: 500;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #7ED321;
+        box-shadow: 0 0 0 2px rgba(126, 211, 33, 0.2);
+    }
+
+    select.form-control {
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23333'%3E%3Cpath d='M6 9L1 4h10L6 9z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 12px;
+    }
+
+    textarea.form-control {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .priority-options {
+        display: flex;
+        gap: 15px;
+        margin-top: 10px;
+    }
+
+    .priority-option {
+        flex: 1;
+        text-align: center;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .priority-option.selected {
+        background-color: #7ED321;
+        color: black;
+        border-color: #7ED321;
+    }
+
+    .submit-btn {
+        background-color: #7ED321;
+        color: black;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 5px;
+        font-weight: 500;
+        cursor: pointer;
+        width: 100%;
+        font-size: 16px;
+        margin-top: 20px;
+    }
+
+    .submit-btn:hover {
+        background-color: #6db91d;
+    }
+
+    .support-info {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #ddd;
+    }
+
+    .info-title {
+        font-weight: 500;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .support-channels {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+    }
+
+    .channel-item {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        text-align: center;
+    }
+
+    .channel-icon {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+
+    .channel-name {
+        font-weight: 500;
+        margin-bottom: 5px;
+    }
+
+    .channel-description {
+        font-size: 14px;
+        color: #666;
+    }
+
+    @media (max-width: 768px) {
+        .support-container {
+            padding: 10px;
+        }
+
+        .priority-options {
+            flex-direction: column;
+        }
+
+        .priority-option {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="support-container">
+    <header class="support-header">
+        <h1>Contact Support</h1>
+    </header>
+
+    <div class="support-content">
+        <form id="supportForm" onsubmit="submitSupportRequest(event)">
+            <div class="form-group">
+                <label for="issueType">Issue Type</label>
+                <select class="form-control" id="issueType" required>
+                    <option value="">Select an issue type</option>
+                    <option value="technical">Technical Issue</option>
+                    <option value="billing">Billing Question</option>
+                    <option value="feature">Feature Request</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Priority Level</label>
+                <div class="priority-options">
+                    <div class="priority-option" data-priority="low" onclick="selectPriority(this)">
+                        Low
+                    </div>
+                    <div class="priority-option" data-priority="medium" onclick="selectPriority(this)">
+                        Medium
+                    </div>
+                    <div class="priority-option" data-priority="high" onclick="selectPriority(this)">
+                        High
+                    </div>
+                </div>
+                <input type="hidden" id="priorityLevel" value="medium">
+            </div>
+
+            <div class="form-group">
+                <label for="issueDescription">Describe Your Issue</label>
+                <textarea class="form-control" id="issueDescription" required
+                    placeholder="Please provide as much detail as possible..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="contactEmail">Email Address</label>
+                <input type="email" class="form-control" id="contactEmail" required>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit Support Request</button>
+        </form>
+
+        <div class="support-info">
+            <h3 class="info-title">Other Ways to Get Help</h3>
+            <div class="support-channels">
+                <div class="channel-item">
+                    <div class="channel-icon">📚</div>
+                    <div class="channel-name">Knowledge Base</div>
+                    <div class="channel-description">Search our help articles</div>
+                </div>
+                <div class="channel-item">
+                    <div class="channel-icon">💬</div>
+                    <div class="channel-name">Live Chat</div>
+                    <div class="channel-description">Chat with our support team</div>
+                </div>
+                <div class="channel-item">
+                    <div class="channel-icon">📞</div>
+                    <div class="channel-name">Phone Support</div>
+                    <div class="channel-description">Call us during business hours</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function selectPriority(element) {
+    // Remove selected class from all options
+    document.querySelectorAll('.priority-option').forEach(opt => {
+        opt.classList.remove('selected');
+    });
+    
+    // Add selected class to clicked option
+    element.classList.add('selected');
+    
+    // Update hidden input
+    document.getElementById('priorityLevel').value = element.dataset.priority;
+}
+
+async function submitSupportRequest(event) {
+    event.preventDefault();
+    
+    const formData = {
+        issueType: document.getElementById('issueType').value,
+        priority: document.getElementById('priorityLevel').value,
+        description: document.getElementById('issueDescription').value,
+        email: document.getElementById('contactEmail').value
+    };
+
+    try {
+        const response = await fetch('/api/support-ticket', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify(formData)
+        });
+
+        if (response.ok) {
+            alert('Support ticket submitted successfully. We will get back to you soon.');
+            window.location.href = "{{ url_for('main.index') }}";
+        } else {
+            throw new Error('Failed to submit support ticket');
+        }
+    } catch (error) {
+        console.error('Error submitting support ticket:', error);
+        alert('Failed to submit support ticket. Please try again.');
+    }
+}
+
+// Set default priority on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const mediumPriority = document.querySelector('[data-priority="medium"]');
+    selectPriority(mediumPriority);
+});
+</script>
+{% endblock %}

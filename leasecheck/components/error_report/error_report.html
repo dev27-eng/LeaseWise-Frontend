@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+
+{% block title %}Error Report - LeaseCheck{% endblock %}
+
+{% block extra_css %}
+<style>
+    .error-report-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+    }
+
+    .error-header {
+        background-color: #dc3545;
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .error-header h1 {
+        margin: 0;
+        font-size: 2rem;
+    }
+
+    .error-content {
+        background-color: white;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .error-details {
+        margin-bottom: 30px;
+    }
+
+    .error-title {
+        font-size: 1.2rem;
+        color: #dc3545;
+        margin-bottom: 10px;
+    }
+
+    .error-message {
+        color: #666;
+        line-height: 1.6;
+    }
+
+    .error-code {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        font-family: monospace;
+        margin: 15px 0;
+        color: #333;
+    }
+
+    .solutions-section {
+        margin-top: 30px;
+    }
+
+    .solution-item {
+        margin-bottom: 20px;
+        padding-left: 25px;
+        position: relative;
+    }
+
+    .solution-item:before {
+        content: "•";
+        color: #7ED321;
+        font-size: 20px;
+        position: absolute;
+        left: 0;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+    }
+
+    .action-btn {
+        padding: 12px 24px;
+        border-radius: 5px;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        flex: 1;
+        text-align: center;
+    }
+
+    .retry-btn {
+        background-color: #7ED321;
+        color: black;
+    }
+
+    .support-btn {
+        background-color: #f8f9fa;
+        color: #333;
+        border: 1px solid #ddd;
+    }
+
+    .technical-details {
+        margin-top: 30px;
+        border-top: 1px solid #ddd;
+        padding-top: 20px;
+    }
+
+    .technical-details h3 {
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .details-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .details-table td {
+        padding: 8px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .details-table td:first-child {
+        font-weight: 500;
+        width: 30%;
+    }
+
+    @media (max-width: 768px) {
+        .error-report-container {
+            padding: 10px;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .action-btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="error-report-container">
+    <header class="error-header">
+        <h1>Processing Error Detected</h1>
+    </header>
+
+    <div class="error-content">
+        <div class="error-details">
+            <h2 class="error-title">Error Details</h2>
+            <p class="error-message" id="errorMessage">
+                We encountered an issue while processing your lease document. This could be due to:
+            </p>
+            <div class="error-code" id="errorCode">
+                Error Code: LEASE_PROC_ERR_001
+            </div>
+        </div>
+
+        <div class="solutions-section">
+            <h2>Recommended Solutions</h2>
+            <div class="solution-item">
+                Check if the document is properly formatted and readable
+            </div>
+            <div class="solution-item">
+                Ensure the document is not password protected
+            </div>
+            <div class="solution-item">
+                Try uploading the document in a different format (PDF, DOC, or DOCX)
+            </div>
+        </div>
+
+        <div class="technical-details">
+            <h3>Technical Details</h3>
+            <table class="details-table">
+                <tr>
+                    <td>Document ID</td>
+                    <td id="documentId">DOC123456</td>
+                </tr>
+                <tr>
+                    <td>Time</td>
+                    <td id="errorTime">2024-11-12 14:30:00 UTC</td>
+                </tr>
+                <tr>
+                    <td>File Format</td>
+                    <td id="fileFormat">PDF</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="action-buttons">
+            <a href="{{ url_for('main.lease_upload') }}" class="action-btn retry-btn">Try Again</a>
+            <a href="{{ url_for('main.support_issue') }}" class="action-btn support-btn">Contact Support</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get error details from URL parameters or session storage
+    const urlParams = new URLSearchParams(window.location.search);
+    const errorDetails = {
+        documentId: urlParams.get('docId') || sessionStorage.getItem('errorDocId') || 'Unknown',
+        errorCode: urlParams.get('errorCode') || sessionStorage.getItem('errorCode') || 'LEASE_PROC_ERR_001',
+        fileFormat: urlParams.get('format') || sessionStorage.getItem('errorFileFormat') || 'Unknown'
+    };
+
+    // Update the UI with error details
+    document.getElementById('documentId').textContent = errorDetails.documentId;
+    document.getElementById('errorCode').textContent = `Error Code: ${errorDetails.errorCode}`;
+    document.getElementById('fileFormat').textContent = errorDetails.fileFormat;
+    document.getElementById('errorTime').textContent = new Date().toISOString().replace('T', ' ').substr(0, 19) + ' UTC';
+
+    // Clear session storage
+    sessionStorage.removeItem('errorDocId');
+    sessionStorage.removeItem('errorCode');
+    sessionStorage.removeItem('errorFileFormat');
+});
+</script>
+{% endblock %}

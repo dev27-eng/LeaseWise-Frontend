@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+
+{% block title %}Message Sent - LeaseCheck{% endblock %}
+
+{% block extra_css %}
+<style>
+    .acknowledgment-container {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .success-icon {
+        font-size: 64px;
+        color: #7ED321;
+        margin-bottom: 20px;
+    }
+
+    .message-title {
+        font-size: 2rem;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .message-content {
+        color: #666;
+        margin-bottom: 30px;
+        line-height: 1.6;
+    }
+
+    .attorney-name {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+    }
+
+    .action-btn {
+        padding: 12px 24px;
+        border-radius: 5px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        text-decoration: none;
+    }
+
+    .home-btn {
+        background-color: #7ED321;
+        color: black;
+    }
+
+    .view-documents-btn {
+        background-color: #f8f9fa;
+        color: #333;
+        border: 1px solid #ddd;
+    }
+
+    .timeline {
+        max-width: 400px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+    }
+
+    .timeline-title {
+        font-weight: 500;
+        color: #333;
+        margin-bottom: 15px;
+    }
+
+    .timeline-items {
+        text-align: left;
+    }
+
+    .timeline-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+
+    .timeline-icon {
+        width: 24px;
+        height: 24px;
+        background-color: #7ED321;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 12px;
+    }
+
+    .timeline-text {
+        flex: 1;
+        color: #666;
+        font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+        .acknowledgment-container {
+            padding: 10px;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .action-btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="acknowledgment-container">
+    <div class="success-icon">✓</div>
+    
+    <h1 class="message-title">Message Sent Successfully!</h1>
+    
+    <p class="message-content">
+        Your message has been sent to <span class="attorney-name" id="attorneyName"></span>. 
+        They will review your case and contact you within 1-2 business days.
+    </p>
+
+    <div class="timeline">
+        <h3 class="timeline-title">What happens next?</h3>
+        <div class="timeline-items">
+            <div class="timeline-item">
+                <div class="timeline-icon">1</div>
+                <div class="timeline-text">Attorney reviews your lease analysis</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-icon">2</div>
+                <div class="timeline-text">Initial consultation scheduled</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-icon">3</div>
+                <div class="timeline-text">Receive personalized legal advice</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <a href="{{ url_for('main.index') }}" class="action-btn home-btn">Return to Home</a>
+        <a href="{{ url_for('main.documents') }}" class="action-btn view-documents-btn">View Documents</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the attorney name from session storage
+    const attorneyName = sessionStorage.getItem('selectedAttorney') || 'the attorney';
+    document.getElementById('attorneyName').textContent = attorneyName;
+    
+    // Clear the session storage
+    sessionStorage.removeItem('selectedAttorney');
+});
+</script>
+{% endblock %}
