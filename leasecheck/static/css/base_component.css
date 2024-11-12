@@ -6,24 +6,24 @@
     --header-bg-color: #7ED321;
     --border-radius: 10px;
     --spacing-unit: 20px;
+    --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Screen Layout */
-.screen {
+main {
     min-height: 100vh;
     background-color: var(--background-color);
 }
 
-/* Header Styles */
-.header {
+/* Green Header */
+.green-header {
     background-color: var(--header-bg-color);
-    padding: var(--spacing-unit);
+    padding: calc(var(--spacing-unit) * 2) var(--spacing-unit);
     text-align: center;
     margin-bottom: calc(var(--spacing-unit) * 1.5);
-    border-radius: var(--border-radius);
 }
 
-.header h1 {
+.green-header h1 {
     color: black;
     margin: 0;
     font-size: 2.5rem;
@@ -31,58 +31,85 @@
 }
 
 .header-subtitle {
-    color: var(--text-color);
+    color: black;
     font-size: 1.2rem;
     margin-top: calc(var(--spacing-unit) * 0.5);
+    opacity: 0.8;
 }
 
-/* Content Section */
-.content {
+/* Main Content */
+.main-content {
     max-width: 1200px;
     margin: 0 auto;
     padding: var(--spacing-unit);
 }
 
-/* Action Buttons */
-.action-buttons {
-    display: flex;
-    gap: var(--spacing-unit);
-    justify-content: center;
-    margin-top: calc(var(--spacing-unit) * 1.5);
-}
-
-.action-btn {
+/* Common Components */
+.btn {
+    display: inline-block;
     padding: 12px 24px;
-    border-radius: 999px;
+    border-radius: var(--border-radius);
     font-weight: 500;
-    cursor: pointer;
     text-decoration: none;
-    transition: background-color 0.3s ease;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    border: none;
 }
 
-.primary-btn {
+.btn.primary {
     background-color: var(--primary-color);
     color: black;
 }
 
-.secondary-btn {
+.btn.secondary {
     background-color: #f8f9fa;
     color: var(--text-color);
     border: 1px solid #ddd;
 }
 
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--box-shadow);
+}
+
+/* Form Elements */
+.form-group {
+    margin-bottom: var(--spacing-unit);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: calc(var(--border-radius) / 2);
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
-    .header h1 {
+    .green-header h1 {
         font-size: 2rem;
     }
 
-    .action-buttons {
-        flex-direction: column;
+    .header-subtitle {
+        font-size: 1rem;
     }
 
-    .action-btn {
-        width: 100%;
-        text-align: center;
+    .main-content {
+        padding: calc(var(--spacing-unit) / 2);
     }
 }

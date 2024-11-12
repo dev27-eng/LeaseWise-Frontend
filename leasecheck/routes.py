@@ -54,11 +54,10 @@ PLANS = {
     }
 }
 
-# Screen Routes
 @bp.route('/')
 @cache.cached(timeout=300)
 def index():
-    """Welcome Screen (1 Welcome.png)"""
+    """Welcome Screen"""
     return render_template('components/welcome/welcome.html')
 
 @bp.route('/onboarding')
@@ -106,7 +105,7 @@ def terms_declined():
 
 @bp.route('/checkout')
 def checkout():
-    """Checkout Screen (6 Checkout.png)"""
+    """Checkout Screen"""
     plan_id = request.args.get('plan')
     if not plan_id or plan_id not in PLANS:
         return redirect(url_for('main.select_plan'))
@@ -114,7 +113,7 @@ def checkout():
 
 @bp.route('/payment-status')
 def payment_status():
-    """Payment Status Screen (7 Payment Status.png)"""
+    """Payment Status Screen"""
     status = request.args.get('status', 'success')
     return render_template('components/payment_status/payment_status.html', status=status)
 
@@ -145,7 +144,7 @@ def reviewing_lease():
 
 @bp.route('/risk-report')
 def risk_report():
-    """Risk Report Screen (11 Risk Report.png)"""
+    """Risk Report Screen"""
     return render_template('components/risk_report/risk_report.html')
 
 @bp.route('/save-report')

@@ -1,0 +1,54 @@
+{% extends "components/base_component.html" %}
+
+{% set component_name = 'disclaimer' %}
+{% set component_title = 'Legal Disclaimer' %}
+{% set header_title = 'Legal Disclaimer' %}
+{% set subheader = 'Important Information About Our Service' %}
+
+{% block component_content %}
+<div class="disclaimer-content">
+    <section class="disclaimer-section">
+        <h2>Not Legal Advice</h2>
+        <p>LeaseCheck is a lease analysis tool that provides information for general purposes only. The information provided through our service:</p>
+        <ul>
+            <li>Is not legal advice</li>
+            <li>Does not create an attorney-client relationship</li>
+            <li>Should not be relied upon as a substitute for legal counsel</li>
+        </ul>
+    </section>
+
+    <section class="disclaimer-section">
+        <h2>Accuracy of Information</h2>
+        <p>While we strive to keep the information on LeaseCheck accurate and up-to-date:</p>
+        <ul>
+            <li>Laws and regulations change frequently</li>
+            <li>Information may not be complete or current</li>
+            <li>Results may vary based on specific circumstances</li>
+        </ul>
+    </section>
+
+    <section class="disclaimer-section">
+        <h2>Recommendation</h2>
+        <p>We strongly recommend:</p>
+        <ul>
+            <li>Consulting with a qualified attorney for legal advice</li>
+            <li>Verifying any information provided through our service</li>
+            <li>Understanding local laws and regulations that may apply to your situation</li>
+        </ul>
+    </section>
+
+    <section class="disclaimer-section">
+        <h2>Limitation of Liability</h2>
+        <p>LeaseCheck and its operators are not liable for:</p>
+        <ul>
+            <li>Any decisions made based on our analysis</li>
+            <li>Accuracy of lease analysis results</li>
+            <li>Any damages arising from the use of our service</li>
+        </ul>
+    </section>
+
+    <div class="disclaimer-actions">
+        <a href="{{ url_for('main.legal_stuff') }}" class="btn primary">Back to Legal Information</a>
+    </div>
+</div>
+{% endblock %}

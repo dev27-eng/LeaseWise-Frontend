@@ -1,0 +1,53 @@
+{% extends "components/base_component.html" %}
+
+{% set component_name = 'lawyer_message_acknowledgment' %}
+{% set component_title = 'Message Sent' %}
+{% set header_title = 'Message Sent Successfully!' %}
+{% set subheader = 'Your message has been delivered to the attorney' %}
+
+{% block component_content %}
+<div class="acknowledgment-container">
+    <div class="success-icon">✓</div>
+    
+    <p class="message-content">
+        Your message has been sent to <span class="attorney-name" id="attorneyName"></span>. 
+        They will review your case and contact you within 1-2 business days.
+    </p>
+
+    <div class="timeline">
+        <h3 class="timeline-title">What happens next?</h3>
+        <div class="timeline-items">
+            <div class="timeline-item">
+                <div class="timeline-icon">1</div>
+                <div class="timeline-text">Attorney reviews your lease analysis</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-icon">2</div>
+                <div class="timeline-text">Initial consultation scheduled</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-icon">3</div>
+                <div class="timeline-text">Receive personalized legal advice</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <a href="{{ url_for('main.index') }}" class="btn primary">Return to Home</a>
+        <a href="{{ url_for('main.documents') }}" class="btn secondary">View Documents</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the attorney name from session storage
+    const attorneyName = sessionStorage.getItem('selectedAttorney') || 'the attorney';
+    document.getElementById('attorneyName').textContent = attorneyName;
+    
+    // Clear the session storage
+    sessionStorage.removeItem('selectedAttorney');
+});
+</script>
+{% endblock %}

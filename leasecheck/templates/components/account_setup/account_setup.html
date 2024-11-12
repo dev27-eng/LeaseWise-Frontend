@@ -1,0 +1,56 @@
+{% extends "components/base_component.html" %}
+
+{% set component_name = 'account_setup' %}
+{% set component_title = 'Account Setup' %}
+{% set header_title = 'Account Setup' %}
+{% set subheader = 'Verify your email to get started' %}
+
+{% block component_content %}
+<!-- Email Info Section -->
+<section class="info-section">
+    <h2>Why We Need Your Email</h2>
+    <p>We need your email address to securely set up your account and protect your lease information. Your email will only be used to:</p>
+    <ul class="info-list">
+        <li>Verify your identity</li>
+        <li>Send your lease analysis results</li>
+        <li>Provide important updates about your review</li>
+        <li>Keep your information secure</li>
+    </ul>
+</section>
+
+<!-- Email Input Section -->
+<section class="email-section">
+    <h2>Verify Your Email</h2>
+    <form id="email-form" class="setup-form">
+        <div class="input-group">
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            <div class="error-message" id="email-error"></div>
+        </div>
+        <button type="submit" class="btn primary">Send Verification Code</button>
+    </form>
+</section>
+
+<!-- Verification Code Section -->
+<section class="verification-section" style="display: none;">
+    <h2>Enter Verification Code</h2>
+    <form id="verification-form" class="setup-form">
+        <div class="input-group">
+            <div class="code-inputs">
+                {% for i in range(6) %}
+                <input type="text" maxlength="1" pattern="[0-9]" class="code-input" required>
+                {% endfor %}
+            </div>
+            <div class="error-message" id="verification-error"></div>
+        </div>
+        <button type="submit" class="btn primary">Verify Code</button>
+        <p class="resend-text">Didn't receive the code? <a href="#" id="resend-code">Resend Code</a></p>
+    </form>
+</section>
+
+<!-- Final Section -->
+<section class="final-section" style="display: none;">
+    <h2>Almost there!</h2>
+    <p>Your email has been verified successfully.</p>
+    <a href="{{ url_for('main.legal_stuff') }}" class="btn primary">Continue to Legal Stuff</a>
+</section>
+{% endblock %}

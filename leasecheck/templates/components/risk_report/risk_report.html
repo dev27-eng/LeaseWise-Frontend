@@ -30,15 +30,7 @@
 </div>
 
 <div class="action-buttons">
-    <button class="action-btn primary-btn" id="save-report">Save Report</button>
-    <button class="action-btn secondary-btn" id="contact-attorney">Contact Attorney</button>
+    <button class="btn primary" id="save-report">Save Report</button>
+    <button class="btn secondary" id="contact-attorney">Contact Attorney</button>
 </div>
-{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='components/risk_report/risk_report.css') }}">
-{% endblock %}
-
-{% block extra_js %}
-<script src="{{ url_for('static', filename='components/risk_report/risk_report.js') }}"></script>
 {% endblock %}

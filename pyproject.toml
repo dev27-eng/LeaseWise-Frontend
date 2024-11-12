@@ -16,10 +16,11 @@ dependencies = [
     "pdfkit>=1.0.0",
     "weasyprint>=63.0",
     "stripe==7.8.1",
-    "flask-talisman>=1.0.0",
-    "sqlalchemy==2.0.23",
+    "flask-talisman>=0.8.0",
+    "sqlalchemy>=1.4.0",
     "flask-caching>=2.3.0",
     "werkzeug>=2.0.0",
+    "jinja2>=3.0.0",
 ]
 
 [tool.uv.sources]

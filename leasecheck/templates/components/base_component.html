@@ -3,14 +3,14 @@
 {% block title %}{{ component_title }} - LeaseCheck{% endblock %}
 
 {% block extra_css %}
-<link rel="preload" href="{{ url_for('static', filename='components/' + component_name + '/' + component_name + '.css') }}" as="style">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base_component.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='components/' + component_name + '/' + component_name + '.css') }}">
 {% endblock %}
 
 {% block content %}
 <main class="{{ component_name }}-screen" role="main">
     <!-- Green Header Section -->
-    <header class="{{ component_name }}-header" role="banner">
+    <header class="{{ component_name }}-header green-header" role="banner">
         <h1>{{ header_title }}</h1>
         {% if subheader %}
         <p class="header-subtitle">{{ subheader }}</p>
@@ -18,7 +18,7 @@
     </header>
 
     <!-- Main Content Section -->
-    <div class="{{ component_name }}-content">
+    <div class="{{ component_name }}-content main-content">
         {% block component_content %}
         <!-- Component specific content goes here -->
         {% endblock %}

@@ -6,50 +6,51 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         initializeElements() {
-            this.form = document.getElementById('accountSetupForm');
-            this.sendCodeBtn = document.getElementById('sendCodeBtn');
-            this.verifyCodeBtn = document.getElementById('verifyCodeBtn');
-            this.emailInput = document.getElementById('email');
-            this.verificationCodeInput = document.getElementById('verificationCode');
+            this.emailForm = document.getElementById('email-form');
+            this.verificationForm = document.getElementById('verification-form');
+            this.emailSection = document.querySelector('.email-section');
+            this.verificationSection = document.querySelector('.verification-section');
+            this.finalSection = document.querySelector('.final-section');
+            this.codeInputs = document.querySelectorAll('.code-input');
+            this.resendCodeBtn = document.getElementById('resend-code');
+            this.emailInput = document.querySelector('input[type="email"]');
+            this.emailError = document.getElementById('email-error');
+            this.verificationError = document.getElementById('verification-error');
         }
 
         bindEvents() {
-            this.form.addEventListener('submit', (e) => this.handleSubmit(e));
-            this.sendCodeBtn.addEventListener('click', () => this.handleSendCode());
-            this.verifyCodeBtn.addEventListener('click', () => this.handleVerifyCode());
-            this.emailInput.addEventListener('input', () => this.validateEmail());
+            this.emailForm.addEventListener('submit', (e) => this.handleEmailSubmit(e));
+            this.verificationForm.addEventListener('submit', (e) => this.handleVerificationSubmit(e));
+            this.resendCodeBtn.addEventListener('click', (e) => this.handleResendCode(e));
+            this.setupCodeInputs();
         }
 
-        async handleSubmit(e) {
-            e.preventDefault();
-            if (!this.validateForm()) {
-                return;
-            }
-
-            try {
-                const formData = new FormData(this.form);
-                const response = await fetch('/api/account-setup', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(Object.fromEntries(formData))
+        setupCodeInputs() {
+            this.codeInputs.forEach((input, index) => {
+                input.addEventListener('input', (e) => {
+                    if (e.target.value.length === 1) {
+                        if (index < this.codeInputs.length - 1) {
+                            this.codeInputs[index + 1].focus();
+                        }
+                    }
                 });
 
-                if (response.ok) {
-                    window.location.href = '/legal-stuff';
-                } else {
-                    const data = await response.json();
-                    this.showError(data.error || 'Failed to create account');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                this.showError('An unexpected error occurred');
-            }
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && !e.target.value) {
+                        if (index > 0) {
+                            this.codeInputs[index - 1].focus();
+                        }
+                    }
+                });
+            });
         }
 
-        async handleSendCode() {
-            if (!this.validateEmail()) {
+        async handleEmailSubmit(e) {
+            e.preventDefault();
+            const email = this.emailInput.value;
+            
+            if (!this.validateEmail(email)) {
+                this.showError(this.emailError, 'Please enter a valid email address');
                 return;
             }
 
@@ -57,31 +58,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 const response = await fetch('/api/send-verification-code', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ email: this.emailInput.value })
+                    body: JSON.stringify({ email })
                 });
 
                 if (response.ok) {
-                    this.showSuccess('Verification code sent');
-                    this.sendCodeBtn.disabled = true;
-                    setTimeout(() => {
-                        this.sendCodeBtn.disabled = false;
-                    }, 60000); // Enable after 1 minute
+                    this.emailSection.style.display = 'none';
+                    this.verificationSection.style.display = 'block';
                 } else {
                     const data = await response.json();
-                    this.showError(data.error || 'Failed to send code');
+                    this.showError(this.emailError, data.error || 'Failed to send verification code');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                this.showError('Failed to send verification code');
+                this.showError(this.emailError, 'An unexpected error occurred');
             }
         }
 
-        async handleVerifyCode() {
-            const code = this.verificationCodeInput.value.trim();
-            if (!code) {
-                this.showError('Please enter verification code');
+        async handleVerificationSubmit(e) {
+            e.preventDefault();
+            const code = Array.from(this.codeInputs).map(input => input.value).join('');
+            
+            if (code.length !== 6) {
+                this.showError(this.verificationError, 'Please enter a valid verification code');
                 return;
             }
 
@@ -89,62 +89,57 @@ document.addEventListener('DOMContentLoaded', function() {
                 const response = await fetch('/api/verify-code', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ code })
                 });
 
                 if (response.ok) {
-                    this.showSuccess('Email verified successfully');
-                    this.verificationCodeInput.disabled = true;
-                    this.verifyCodeBtn.disabled = true;
+                    this.verificationSection.style.display = 'none';
+                    this.finalSection.style.display = 'block';
                 } else {
                     const data = await response.json();
-                    this.showError(data.error || 'Invalid verification code');
+                    this.showError(this.verificationError, data.error || 'Invalid verification code');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                this.showError('Failed to verify code');
+                this.showError(this.verificationError, 'An unexpected error occurred');
             }
         }
 
-        validateEmail() {
+        async handleResendCode(e) {
+            e.preventDefault();
             const email = this.emailInput.value;
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            const isValid = emailRegex.test(email);
-            
-            if (!isValid) {
-                this.showError('Please enter a valid email address');
-            }
-            
-            return isValid;
-        }
 
-        validateForm() {
-            const requiredFields = this.form.querySelectorAll('[required]');
-            let isValid = true;
+            try {
+                const response = await fetch('/api/send-verification-code', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email })
+                });
 
-            requiredFields.forEach(field => {
-                if (!field.value.trim()) {
-                    this.showError(`${field.name} is required`);
-                    isValid = false;
+                if (!response.ok) {
+                    const data = await response.json();
+                    this.showError(this.verificationError, data.error || 'Failed to resend code');
                 }
-            });
-
-            return isValid && this.validateEmail();
+            } catch (error) {
+                console.error('Error:', error);
+                this.showError(this.verificationError, 'Failed to resend verification code');
+            }
         }
 
-        showSuccess(message) {
-            // Implementation for success notification
-            alert(message); // Replace with proper notification system
+        validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
         }
 
-        showError(message) {
-            // Implementation for error notification
-            alert(message); // Replace with proper notification system
+        showError(element, message) {
+            element.textContent = message;
+            element.style.display = 'block';
         }
     }
 
-    // Initialize the account setup
+    // Initialize the account setup component
     new AccountSetup();
 });
