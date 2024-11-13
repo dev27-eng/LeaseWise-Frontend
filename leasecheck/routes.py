@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, render_template, redirect, url_for, flash, request, send_file, jsonify, session, current_app
+from flask import Blueprint, render_template, redirect, url_for, flash, request, send_file, jsonify, session, current_app, make_response
 from .database import db, safe_transaction, DatabaseError, retry_on_operational_error
 from .forms import TermsAcceptanceForm
 from .models import TermsAcceptance, Payment, AdminUser, Document, SupportTicket
@@ -21,10 +21,48 @@ logger = logging.getLogger(__name__)
 # Create blueprint
 bp = Blueprint('main', __name__)
 
+# Component categories for preview system
+COMPONENT_CATEGORIES = {
+    'primary': [
+        {'id': 'welcome', 'name': '1. Welcome'},
+        {'id': 'onboarding', 'name': '2. Onboarding'},
+        {'id': 'select_plan', 'name': '3. Select Plan'},
+        {'id': 'account_setup', 'name': '4. Account Setup'},
+        {'id': 'legal_stuff', 'name': '5. Legal Stuff'},
+        {'id': 'checkout', 'name': '6. Checkout'},
+        {'id': 'payment_status', 'name': '7. Payment Status'},
+        {'id': 'lease_upload', 'name': '8. Lease Upload'},
+        {'id': 'lease_details', 'name': '9. Lease Details'},
+        {'id': 'reviewing_lease', 'name': '10. Reviewing Lease'},
+        {'id': 'risk_report', 'name': '11. Risk Report'},
+        {'id': 'local_attorneys', 'name': '12. Local Attorneys'}
+    ],
+    'supporting': [
+        {'id': 'terms_of_service', 'name': 'Terms of Service'},
+        {'id': 'refund_policy', 'name': 'Refund Policy'},
+        {'id': 'disclaimer', 'name': 'Disclaimer'},
+        {'id': 'terms_declined', 'name': 'Terms Declined'},
+        {'id': 'save_report', 'name': 'Save Report'},
+        {'id': 'report_sent', 'name': 'Report Sent'},
+        {'id': 'thank_you', 'name': 'Thank You'},
+        {'id': 'lawyer_message_acknowledgment', 'name': 'Lawyer Message Acknowledgment'},
+        {'id': 'error_report', 'name': 'Error Report'},
+        {'id': 'support_issue', 'name': 'Support Issue'}
+    ]
+}
+
+def get_component_info(component_name):
+    """Get information about a specific component"""
+    for category in COMPONENT_CATEGORIES.values():
+        for component in category:
+            if component['id'] == component_name:
+                return component
+    return None
+
 def get_available_components():
     """Get list of available components from the templates directory"""
     components_dir = os.path.join(current_app.root_path, 'templates', 'components')
-    components = []
+    components = {'primary': [], 'supporting': []}
     
     try:
         # Get all subdirectories in the components directory
@@ -34,23 +72,37 @@ def get_available_components():
                 # Check for required component files
                 html_file = os.path.join(component_path, f"{item}.html")
                 if os.path.exists(html_file):
-                    components.append(item)
-                    logger.info(f"Found valid component: {item}")
+                    # Determine category
+                    is_primary = any(comp['id'] == item for comp in COMPONENT_CATEGORIES['primary'])
+                    category = 'primary' if is_primary else 'supporting'
+                    components[category].append({
+                        'id': item,
+                        'name': get_component_info(item)['name'] if get_component_info(item) else item
+                    })
+                    logger.info(f"Found valid component: {item} in category {category}")
         
-        return sorted(components)
+        return components
     except Exception as e:
         logger.error(f"Error scanning components directory: {str(e)}")
-        return []
+        return {'primary': [], 'supporting': []}
+
+def add_security_headers(response):
+    """Add security headers to response"""
+    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+    response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    return response
 
 @bp.route('/')
 def index():
     """Landing page route"""
-    return render_template('welcome_screen.html')
-
-@bp.route('/onboarding')
-def onboarding():
-    """Onboarding page route"""
-    return render_template('components/onboarding/onboarding.html')
+    try:
+        response = make_response(render_template('welcome_screen.html'))
+        return add_security_headers(response)
+    except Exception as e:
+        logger.error(f"Error rendering index page: {str(e)}")
+        return "Error loading page", 500
 
 @bp.route('/preview/<component_name>')
 def preview_component(component_name):
@@ -59,13 +111,21 @@ def preview_component(component_name):
         # Get available components
         available_components = get_available_components()
         
-        if not available_components:
+        if not available_components['primary'] and not available_components['supporting']:
             flash('No components available for preview', 'error')
             return redirect(url_for('main.index'))
         
-        if component_name not in available_components:
+        # Check if component exists
+        component_exists = False
+        for category in available_components.values():
+            if any(comp['id'] == component_name for comp in category):
+                component_exists = True
+                break
+        
+        if not component_exists:
             flash(f'Component "{component_name}" not found', 'error')
-            return redirect(url_for('main.preview_component', component_name=available_components[0]))
+            all_components = available_components['primary'] + available_components['supporting']
+            return redirect(url_for('main.preview_component', component_name=all_components[0]['id']))
         
         # Construct paths for component assets
         component_template = f"components/{component_name}/{component_name}.html"
@@ -74,22 +134,37 @@ def preview_component(component_name):
         
         # Check if files exist
         static_folder = os.path.join(current_app.root_path, 'static')
+        templates_folder = os.path.join(current_app.root_path, 'templates')
+        
+        template_exists = os.path.exists(os.path.join(templates_folder, component_template))
         css_exists = os.path.exists(os.path.join(static_folder, component_css))
         js_exists = os.path.exists(os.path.join(static_folder, component_js))
+        
+        if not template_exists:
+            flash(f'Template file not found for component: {component_name}', 'error')
+            return redirect(url_for('main.index'))
         
         # Get the port from environment or use default 5000
         port = int(os.environ.get("PORT", 5000))
         
         logger.info(f"Rendering preview for component: {component_name}")
         
-        return render_template('preview.html',
-                           component_name=component_name,
-                           component_template=component_template,
-                           component_css=component_css if css_exists else None,
-                           component_js=component_js if js_exists else None,
-                           available_components=available_components,
-                           port=port)
+        response = make_response(render_template(
+            'preview.html',
+            component_name=component_name,
+            component_template=component_template,
+            component_css=component_css if css_exists else None,
+            component_js=component_js if js_exists else None,
+            available_components=available_components,
+            port=port
+        ))
+        
+        return add_security_headers(response)
     
+    except TemplateNotFound as e:
+        logger.error(f"Template not found: {str(e)}")
+        flash('Component template not found', 'error')
+        return redirect(url_for('main.index'))
     except Exception as e:
         logger.error(f"Error rendering component preview: {str(e)}")
         flash('Error rendering component preview', 'error')
@@ -98,11 +173,42 @@ def preview_component(component_name):
 @bp.route('/preview')
 def preview_index():
     """Redirect to the first available component preview"""
-    available_components = get_available_components()
-    if not available_components:
-        flash('No components available for preview', 'error')
+    try:
+        available_components = get_available_components()
+        if not available_components['primary'] and not available_components['supporting']:
+            flash('No components available for preview', 'error')
+            return redirect(url_for('main.index'))
+        
+        first_component = (available_components['primary'][0]['id'] 
+                         if available_components['primary'] 
+                         else available_components['supporting'][0]['id'])
+        
+        return redirect(url_for('main.preview_component', component_name=first_component))
+    except Exception as e:
+        logger.error(f"Error in preview index: {str(e)}")
+        flash('Error accessing preview system', 'error')
         return redirect(url_for('main.index'))
-    return redirect(url_for('main.preview_component', component_name=available_components[0]))
+
+@bp.route('/onboarding')
+def onboarding():
+    """Onboarding page route"""
+    response = make_response(render_template('components/onboarding/onboarding.html'))
+    return add_security_headers(response)
+
+@bp.route('/legal-stuff')
+def legal_stuff():
+    """Legal information page route"""
+    response = make_response(render_template('components/legal_stuff/legal_stuff.html'))
+    return add_security_headers(response)
+
+@bp.route('/preview/legal_stuff')
+def preview_legal_stuff():
+    """Preview the legal_stuff component"""
+    response = make_response(render_template('preview.html',
+                           component_name='legal_stuff',
+                           component_template='components/legal_stuff/legal_stuff.html',
+                           available_components=get_available_components()))
+    return add_security_headers(response)
 
 # Plan configuration
 PLANS = {
@@ -144,7 +250,8 @@ def admin_settings():
     if 'admin_id' not in session:
         return redirect(url_for('main.login'))
     admin_user = AdminUser.query.get(session['admin_id'])
-    return render_template('admin_settings.html', admin_user=admin_user)
+    response = make_response(render_template('admin_settings.html', admin_user=admin_user))
+    return add_security_headers(response)
 
 @bp.route('/admin/settings/update', methods=['POST'])
 def admin_settings_update():
@@ -169,7 +276,8 @@ def admin_users():
     if 'admin_id' not in session:
         return redirect(url_for('main.login'))
     users = AdminUser.query.all()
-    return render_template('admin_users.html', users=users)
+    response = make_response(render_template('admin_users.html', users=users))
+    return add_security_headers(response)
 
 @bp.route('/admin/users/add', methods=['POST'])
 def admin_users_add():
@@ -210,7 +318,8 @@ def admin_documents():
     if 'admin_id' not in session:
         return redirect(url_for('main.login'))
     documents = Document.query.all()
-    return render_template('admin_documents.html', documents=documents)
+    response = make_response(render_template('admin_documents.html', documents=documents))
+    return add_security_headers(response)
 
 @bp.route('/admin/documents/add', methods=['POST'])
 def admin_documents_add():
@@ -257,7 +366,8 @@ def admin_support():
     if 'admin_id' not in session:
         return redirect(url_for('main.login'))
     tickets = SupportTicket.query.all()
-    return render_template('admin_support.html', tickets=tickets)
+    response = make_response(render_template('admin_support.html', tickets=tickets))
+    return add_security_headers(response)
 
 @bp.route('/admin/support/mark-resolved/<int:ticket_id>')
 def admin_support_mark_resolved(ticket_id):
@@ -292,7 +402,8 @@ def admin_support_delete(ticket_id):
 @bp.route('/admin/login')
 def admin_login():
     """Admin login page"""
-    return render_template('admin_login.html')
+    response = make_response(render_template('admin_login.html'))
+    return add_security_headers(response)
 
 @bp.route('/admin/login', methods=['POST'])
 def admin_login_post():
@@ -341,12 +452,14 @@ def support():
             return redirect(url_for('main.support'))
         else:
             flash('Please fill in all fields', 'error')
-    return render_template('support.html')
+    response = make_response(render_template('support.html'))
+    return add_security_headers(response)
 
 @bp.route('/plans')
 def plans():
     """Plans page"""
-    return render_template('plans.html', plans=PLANS)
+    response = make_response(render_template('plans.html', plans=PLANS))
+    return add_security_headers(response)
 
 @bp.route('/payment/<plan_name>')
 def payment(plan_name):
@@ -355,7 +468,8 @@ def payment(plan_name):
         return redirect(url_for('main.login'))
     plan = PLANS.get(plan_name)
     if plan:
-        return render_template('payment.html', plan=plan)
+        response = make_response(render_template('payment.html', plan=plan))
+        return add_security_headers(response)
     else:
         flash('Invalid plan selected', 'error')
         return redirect(url_for('main.plans'))
@@ -371,7 +485,8 @@ def payment_success(plan_name):
         db.session.add(new_payment)
         db.session.commit()
         flash('Payment successful! You can now access your selected plan.', 'success')
-        return render_template('payment_success.html', plan=plan)
+        response = make_response(render_template('payment_success.html', plan=plan))
+        return add_security_headers(response)
     else:
         flash('Invalid plan selected', 'error')
         return redirect(url_for('main.plans'))
@@ -386,7 +501,8 @@ def payment_cancel():
 def terms():
     """Terms and conditions page"""
     form = TermsAcceptanceForm()
-    return render_template('terms.html', form=form)
+    response = make_response(render_template('terms.html', form=form))
+    return add_security_headers(response)
 
 @bp.route('/terms', methods=['POST'])
 def terms_post():
@@ -434,7 +550,8 @@ def signup():
                 return redirect(url_for('main.index'))
         else:
             flash('Please fill in all fields', 'error')
-    return render_template('signup.html')
+    response = make_response(render_template('signup.html'))
+    return add_security_headers(response)
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -451,7 +568,8 @@ def login():
             return redirect(url_for('main.index'))
         else:
             flash('Invalid email or password', 'error')
-    return render_template('login.html')
+    response = make_response(render_template('login.html'))
+    return add_security_headers(response)
 
 @bp.route('/logout')
 def logout():
@@ -465,7 +583,8 @@ def lease_analysis():
     """Lease analysis page"""
     if 'user_id' not in session:
         return redirect(url_for('main.login'))
-    return render_template('lease_analysis.html')
+    response = make_response(render_template('lease_analysis.html'))
+    return add_security_headers(response)
 
 @bp.route('/lease-analysis/upload', methods=['POST'])
 def lease_analysis_upload():
@@ -491,7 +610,8 @@ def lease_analysis_result(filename):
         return redirect(url_for('main.login'))
     # Retrieve analysis results from database or cache based on filename
     # ...
-    return render_template('lease_analysis_result.html', filename=filename)
+    response = make_response(render_template('lease_analysis_result.html', filename=filename))
+    return add_security_headers(response)
 
 @bp.route('/lease-analysis/download/<filename>')
 def lease_analysis_download(filename):
@@ -504,16 +624,3 @@ def lease_analysis_download(filename):
     else:
         flash('File not found', 'error')
         return redirect(url_for('main.lease_analysis'))
-
-@bp.route('/legal-stuff')
-def legal_stuff():
-    """Legal information page route"""
-    return render_template('components/legal_stuff/legal_stuff.html')
-
-@bp.route('/preview/legal_stuff')
-def preview_legal_stuff():
-    """Preview the legal_stuff component"""
-    return render_template('preview.html',
-                           component_name='legal_stuff',
-                           component_template='components/legal_stuff/legal_stuff.html',
-                           available_components=get_available_components())

@@ -78,32 +78,15 @@
     border-color: var(--preview-primary-color);
 }
 
-.component-info {
-    border-top: 1px solid var(--preview-border-color);
-    padding-top: 20px;
-}
-
-.component-info ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.component-info li {
-    padding: 5px 0;
-    color: #666;
-    font-size: 14px;
-}
-
 .preview-content {
     margin-left: var(--preview-sidebar-width);
     flex: 1;
     padding: 20px;
-    overflow: auto;
+    display: flex;
+    justify-content: center;
 }
 
 .preview-frame {
-    margin: 0 auto;
     background: #fff;
     min-height: calc(100vh - 40px);
     transition: width 0.3s ease;

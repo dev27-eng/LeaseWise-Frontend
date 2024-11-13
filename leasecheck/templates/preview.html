@@ -17,11 +17,20 @@
         <div class="component-selector">
             <label for="componentSelect">Select Component:</label>
             <select id="componentSelect">
-                {% for comp in available_components %}
-                <option value="{{ comp }}" {% if comp == component_name %}selected{% endif %}>
-                    {{ comp|replace('_', ' ')|title }}
-                </option>
-                {% endfor %}
+                <optgroup label="Primary Screens">
+                    {% for component in available_components['primary'] %}
+                    <option value="{{ component.id }}" {% if component_name == component.id %}selected{% endif %}>
+                        {{ component.name }}
+                    </option>
+                    {% endfor %}
+                </optgroup>
+                <optgroup label="Supporting Screens">
+                    {% for component in available_components['supporting'] %}
+                    <option value="{{ component.id }}" {% if component_name == component.id %}selected{% endif %}>
+                        {{ component.name }}
+                    </option>
+                    {% endfor %}
+                </optgroup>
             </select>
         </div>
         <div class="viewport-controls">
@@ -43,15 +52,13 @@
     
     <div class="preview-content">
         <div class="preview-frame" id="previewFrame">
-            {% with %}
-                {% include component_template ignore missing %}
-                {% if not component_template %}
-                <div class="error-message">
-                    <h3>Error Loading Component</h3>
-                    <p>Component template not found: {{ component_template }}</p>
-                </div>
-                {% endif %}
-            {% endwith %}
+            {% include component_template ignore missing %}
+            {% if not component_template %}
+            <div class="error-message">
+                <h3>Error Loading Component</h3>
+                <p>Component template not found: {{ component_template }}</p>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -63,8 +70,8 @@ const previewFrame = document.getElementById('previewFrame');
 const viewportBtns = document.querySelectorAll('.viewport-btn');
 const componentSelect = document.getElementById('componentSelect');
 
-// Get the port from the server or use the current window location port
-const port = {{ port }} || window.location.port || '5000';
+// Get the port from the server
+const port = {{ port }};
 
 function setViewport(size) {
     const sizes = {
