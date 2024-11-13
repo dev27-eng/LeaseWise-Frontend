@@ -1,3 +1,4 @@
+import os
 from flask import Blueprint, render_template, redirect, url_for, flash, request, send_file, jsonify, session, current_app
 from .database import db, safe_transaction, DatabaseError, retry_on_operational_error
 from .forms import TermsAcceptanceForm
@@ -8,10 +9,10 @@ from .cache import (
     get_cache_stats, cached_with_key
 )
 from datetime import datetime, timedelta
-import os
 import logging
 from werkzeug.utils import secure_filename
 import uuid
+from jinja2.exceptions import TemplateNotFound
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -19,6 +20,85 @@ logger = logging.getLogger(__name__)
 
 # Create blueprint
 bp = Blueprint('main', __name__)
+
+def get_available_components():
+    """Get list of available components from the templates directory"""
+    components_dir = os.path.join(current_app.root_path, 'templates', 'components')
+    components = []
+    
+    try:
+        # Get all subdirectories in the components directory
+        for item in os.listdir(components_dir):
+            component_path = os.path.join(components_dir, item)
+            if os.path.isdir(component_path) and not item.startswith('_'):
+                # Check for required component files
+                html_file = os.path.join(component_path, f"{item}.html")
+                if os.path.exists(html_file):
+                    components.append(item)
+                    logger.info(f"Found valid component: {item}")
+        
+        return sorted(components)
+    except Exception as e:
+        logger.error(f"Error scanning components directory: {str(e)}")
+        return []
+
+@bp.route('/')
+def index():
+    """Landing page route"""
+    return render_template('welcome_screen.html')
+
+@bp.route('/onboarding')
+def onboarding():
+    """Onboarding page route"""
+    return render_template('components/onboarding/onboarding.html')
+
+@bp.route('/preview/<component_name>')
+def preview_component(component_name):
+    """Preview a specific component in isolation"""
+    try:
+        # Get available components
+        available_components = get_available_components()
+        
+        if not available_components:
+            flash('No components available for preview', 'error')
+            return redirect(url_for('main.index'))
+        
+        if component_name not in available_components:
+            flash(f'Component "{component_name}" not found', 'error')
+            return redirect(url_for('main.preview_component', component_name=available_components[0]))
+        
+        # Construct paths for component assets
+        component_template = f"components/{component_name}/{component_name}.html"
+        component_css = f"components/{component_name}/{component_name}.css"
+        component_js = f"components/{component_name}/{component_name}.js"
+        
+        # Check if files exist
+        static_folder = os.path.join(current_app.root_path, 'static')
+        css_exists = os.path.exists(os.path.join(static_folder, component_css))
+        js_exists = os.path.exists(os.path.join(static_folder, component_js))
+        
+        logger.info(f"Rendering preview for component: {component_name}")
+        
+        return render_template('preview.html',
+                           component_name=component_name,
+                           component_template=component_template,
+                           component_css=component_css if css_exists else None,
+                           component_js=component_js if js_exists else None,
+                           available_components=available_components)
+    
+    except Exception as e:
+        logger.error(f"Error rendering component preview: {str(e)}")
+        flash('Error rendering component preview', 'error')
+        return redirect(url_for('main.index'))
+
+@bp.route('/preview')
+def preview_index():
+    """Redirect to the first available component preview"""
+    available_components = get_available_components()
+    if not available_components:
+        flash('No components available for preview', 'error')
+        return redirect(url_for('main.index'))
+    return redirect(url_for('main.preview_component', component_name=available_components[0]))
 
 # Plan configuration
 PLANS = {
@@ -54,252 +134,369 @@ PLANS = {
     }
 }
 
-@bp.route('/')
-@cache.cached(timeout=300)
-def index():
-    """Welcome Screen"""
-    return render_template('components/welcome/welcome.html')
+@bp.route('/admin/settings')
+def admin_settings():
+    """Admin settings page"""
+    if 'admin_id' not in session:
+        return redirect(url_for('main.login'))
+    admin_user = AdminUser.query.get(session['admin_id'])
+    return render_template('admin_settings.html', admin_user=admin_user)
 
-@bp.route('/onboarding')
-@cached_with_key('onboarding')
-def onboarding():
-    """Onboarding Screen (2 On Boarding.png)"""
-    return render_template('components/onboarding/onboarding.html')
+@bp.route('/admin/settings/update', methods=['POST'])
+def admin_settings_update():
+    """Update admin settings"""
+    if 'admin_id' not in session:
+        return redirect(url_for('main.login'))
+    admin_user = AdminUser.query.get(session['admin_id'])
+    if admin_user:
+        admin_user.name = request.form.get('name')
+        admin_user.email = request.form.get('email')
+        admin_user.password = request.form.get('password')
+        db.session.commit()
+        flash('Settings updated successfully', 'success')
+        return redirect(url_for('main.admin_settings'))
+    else:
+        flash('Error updating settings', 'error')
+        return redirect(url_for('main.admin_settings'))
 
-@bp.route('/select-plan')
-@cached_with_key('plan_selection')
-def select_plan():
-    """Select Plan Screen (3 Select Plan.png)"""
-    return render_template('components/select_plan/select_plan.html', plans=PLANS)
+@bp.route('/admin/users')
+def admin_users():
+    """Admin users management page"""
+    if 'admin_id' not in session:
+        return redirect(url_for('main.login'))
+    users = AdminUser.query.all()
+    return render_template('admin_users.html', users=users)
 
-@bp.route('/account-setup')
-def account_setup():
-    """Account Setup Screen (4 Account Setup.png)"""
-    return render_template('components/account_setup/account_setup.html')
+@bp.route('/admin/users/add', methods=['POST'])
+def admin_users_add():
+    """Add a new admin user"""
+    if 'admin_id' not in session:
+        return redirect(url_for('main.login'))
+    name = request.form.get('name')
+    email = request.form.get('email')
+    password = request.form.get('password')
+    if name and email and password:
+        new_user = AdminUser(name=name, email=email, password=password)
+        db.session.add(new_user)
+        db.session.commit()
+        flash('User added successfully', 'success')
+        return redirect(url_for('main.admin_users'))
+    else:
+        flash('Error adding user', 'error')
+        return redirect(url_for('main.admin_users'))
 
-@bp.route('/legal-stuff')
-def legal_stuff():
-    """Legal Stuff Screen (5 Legal Stuff.png)"""
-    return render_template('components/legal_stuff/legal_stuff.html')
+@bp.route('/admin/users/delete/<int:user_id>')
+def admin_users_delete(user_id):
+    """Delete an admin user"""
+    if 'admin_id' not in session:
+        return redirect(url_for('main.login'))
+    user = AdminUser.query.get(user_id)
+    if user:
+        db.session.delete(user)
+        db.session.commit()
+        flash('User deleted successfully', 'success')
+        return redirect(url_for('main.admin_users'))
+    else:
+        flash('Error deleting user', 'error')
+        return redirect(url_for('main.admin_users'))
 
-@bp.route('/terms-of-service')
-def terms_of_service():
-    """Terms of Service Screen (5a Terms of Service.png)"""
-    last_updated = datetime.now().strftime("%B %d, %Y")
-    return render_template('components/terms_of_service/terms_of_service.html', last_updated=last_updated)
+@bp.route('/admin/documents')
+def admin_documents():
+    """Admin documents management page"""
+    if 'admin_id' not in session:
+        return redirect(url_for('main.login'))
+    documents = Document.query.all()
+    return render_template('admin_documents.html', documents=documents)
 
-@bp.route('/refund-policy')
-def refund_policy():
-    """Refund Policy Screen (5b Refund Policy.png)"""
-    return render_template('components/refund_policy/refund_policy.html')
+@bp.route('/admin/documents/add', methods=['POST'])
+def admin_documents_add():
+    """Add a new document"""
+    if 'admin_id' not in session:
+        return redirect(url_for('main.login'))
+    document_name = request.form.get('name')
+    document_file = request.files.get('file')
+    if document_name and document_file:
+        if document_file.filename == '':
+            flash('No file selected', 'error')
+            return redirect(url_for('main.admin_documents'))
+        filename = secure_filename(document_file.filename)
+        document_file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+        new_document = Document(name=document_name, file_path=filename)
+        db.session.add(new_document)
+        db.session.commit()
+        flash('Document added successfully', 'success')
+        return redirect(url_for('main.admin_documents'))
+    else:
+        flash('Error adding document', 'error')
+        return redirect(url_for('main.admin_documents'))
 
-@bp.route('/disclaimer')
-def disclaimer():
-    """Disclaimer Screen (5c Disclaimer.png)"""
-    return render_template('components/disclaimer/disclaimer.html')
+@bp.route('/admin/documents/delete/<int:document_id>')
+def admin_documents_delete(document_id):
+    """Delete a document"""
+    if 'admin_id' not in session:
+        return redirect(url_for('main.login'))
+    document = Document.query.get(document_id)
+    if document:
+        if os.path.exists(os.path.join(current_app.config['UPLOAD_FOLDER'], document.file_path)):
+            os.remove(os.path.join(current_app.config['UPLOAD_FOLDER'], document.file_path))
+        db.session.delete(document)
+        db.session.commit()
+        flash('Document deleted successfully', 'success')
+        return redirect(url_for('main.admin_documents'))
+    else:
+        flash('Error deleting document', 'error')
+        return redirect(url_for('main.admin_documents'))
 
-@bp.route('/terms-declined')
-def terms_declined():
-    """Terms Declined Screen (5d Terms Declined Screen.png)"""
-    return render_template('components/terms_declined/terms_declined.html')
+@bp.route('/admin/support')
+def admin_support():
+    """Admin support tickets management page"""
+    if 'admin_id' not in session:
+        return redirect(url_for('main.login'))
+    tickets = SupportTicket.query.all()
+    return render_template('admin_support.html', tickets=tickets)
 
-@bp.route('/checkout')
-def checkout():
-    """Checkout Screen"""
-    plan_id = request.args.get('plan')
-    if not plan_id or plan_id not in PLANS:
-        return redirect(url_for('main.select_plan'))
-    return render_template('components/checkout/checkout.html', plan=PLANS[plan_id], plan_id=plan_id)
+@bp.route('/admin/support/mark-resolved/<int:ticket_id>')
+def admin_support_mark_resolved(ticket_id):
+    """Mark a support ticket as resolved"""
+    if 'admin_id' not in session:
+        return redirect(url_for('main.login'))
+    ticket = SupportTicket.query.get(ticket_id)
+    if ticket:
+        ticket.resolved = True
+        db.session.commit()
+        flash('Ticket marked as resolved', 'success')
+        return redirect(url_for('main.admin_support'))
+    else:
+        flash('Error marking ticket as resolved', 'error')
+        return redirect(url_for('main.admin_support'))
 
-@bp.route('/payment-status')
-def payment_status():
-    """Payment Status Screen"""
-    status = request.args.get('status', 'success')
-    return render_template('components/payment_status/payment_status.html', status=status)
+@bp.route('/admin/support/delete/<int:ticket_id>')
+def admin_support_delete(ticket_id):
+    """Delete a support ticket"""
+    if 'admin_id' not in session:
+        return redirect(url_for('main.login'))
+    ticket = SupportTicket.query.get(ticket_id)
+    if ticket:
+        db.session.delete(ticket)
+        db.session.commit()
+        flash('Ticket deleted successfully', 'success')
+        return redirect(url_for('main.admin_support'))
+    else:
+        flash('Error deleting ticket', 'error')
+        return redirect(url_for('main.admin_support'))
 
-@bp.route('/lease-upload')
-def lease_upload():
-    """Lease Upload Screen (8 Lease Upload.png)"""
-    return render_template('components/lease_upload/lease_upload.html')
+@bp.route('/admin/login')
+def admin_login():
+    """Admin login page"""
+    return render_template('admin_login.html')
 
-@bp.route('/lease-details')
-def lease_details():
-    """Lease Details Screen (9 Lease Details.png)"""
-    return render_template('components/lease_details/lease_details.html')
+@bp.route('/admin/login', methods=['POST'])
+def admin_login_post():
+    """Process admin login"""
+    email = request.form.get('email')
+    password = request.form.get('password')
+    admin_user = AdminUser.query.filter_by(email=email).first()
+    if admin_user and admin_user.check_password(password):
+        session['admin_id'] = admin_user.id
+        flash('Login successful', 'success')
+        return redirect(url_for('main.admin_settings'))
+    else:
+        flash('Invalid email or password', 'error')
+        return redirect(url_for('main.admin_login'))
 
-@bp.route('/error-report')
-def error_report():
-    """Error Report Screen (9a Error Report.png)"""
-    return render_template('components/error_report/error_report.html')
+@bp.route('/admin/logout')
+def admin_logout():
+    """Admin logout"""
+    session.pop('admin_id', None)
+    flash('Logged out successfully', 'success')
+    return redirect(url_for('main.index'))
 
-@bp.route('/support-issue')
-def support_issue():
-    """Support Issue Screen (9b Support Issue.png)"""
-    return render_template('components/support_issue/support_issue.html')
-
-@bp.route('/reviewing-lease')
-def reviewing_lease():
-    """Reviewing Lease Screen (10 Reviewing Lease.png)"""
-    return render_template('components/reviewing_lease/reviewing_lease.html')
-
-@bp.route('/risk-report')
-def risk_report():
-    """Risk Report Screen"""
-    return render_template('components/risk_report/risk_report.html')
-
-@bp.route('/save-report')
-def save_report():
-    """Save Report Screen (11a Save Report.png)"""
-    return render_template('components/save_report/save_report.html')
-
-@bp.route('/report-sent')
-def report_sent():
-    """Report Sent Screen (11b Report Sent.png)"""
-    return render_template('components/report_sent/report_sent.html')
-
-@bp.route('/thank-you')
-def thank_you():
-    """Thank You Screen (11c Thank You - End.png)"""
-    return render_template('components/thank_you/thank_you.html')
-
-@bp.route('/local-attorneys')
-def local_attorneys():
-    """Local Attorneys Screen (12 Local Attorneys.png)"""
-    return render_template('components/local_attorneys/local_attorneys.html')
-
-@bp.route('/lawyer-message-acknowledgment')
-def lawyer_message_acknowledgment():
-    """Lawyer Message Acknowledgment Screen (12a Lawyer Msg Ack.png)"""
-    return render_template('components/lawyer_message_acknowledgment/lawyer_message_acknowledgment.html')
-
-# API Routes
-@bp.route('/api/send-verification-code', methods=['POST'])
-def send_verification_code():
-    email = request.json.get('email')
-    if not email:
-        return jsonify({'error': 'Email is required'}), 400
-    
-    verification_code = ''.join([str(uuid.uuid4())[:6]])
-    # TODO: Implement email sending logic
-    return jsonify({'message': 'Verification code sent'})
-
-@bp.route('/api/verify-code', methods=['POST'])
-def verify_code():
-    code = request.json.get('code')
-    if not code:
-        return jsonify({'error': 'Verification code is required'}), 400
-    # TODO: Implement verification logic
-    return jsonify({'message': 'Code verified successfully'})
-
-# Error handlers
-@bp.errorhandler(404)
-def not_found_error(error):
-    return render_template('errors/404.html'), 404
-
-@bp.errorhandler(500)
-def internal_error(error):
-    db.session.rollback()
-    return render_template('errors/500.html'), 500
-
-# File upload route from original code (not removed)
-@bp.route('/upload-lease', methods=['POST'])
-def upload_lease():
-    if 'file' not in request.files:
-        return jsonify({'error': 'No file part'}), 400
-    
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({'error': 'No selected file'}), 400
-    
-    if file and allowed_file(file.filename):
-        # Create upload directory if it doesn't exist
-        upload_dir = os.path.join(current_app.root_path, UPLOAD_FOLDER)
-        if not os.path.exists(upload_dir):
-            os.makedirs(upload_dir)
-        
-        # Generate unique filename
-        filename = secure_filename(file.filename)
-        unique_filename = f"{str(uuid.uuid4())}_{filename}"
-        file_path = os.path.join(upload_dir, unique_filename)
-        
-        try:
-            file.save(file_path)
-            
-            # Save file info to database
-            document = Document(
-                original_filename=filename,
-                stored_filename=unique_filename,
-                file_path=file_path,
-                file_size=os.path.getsize(file_path),
-                upload_date=datetime.utcnow(),
-                status='pending'
-            )
-            db.session.add(document)
-            db.session.commit()
-            
-            return jsonify({
-                'message': 'File uploaded successfully',
-                'document_id': document.id
-            }), 200
-            
-        except Exception as e:
-            return jsonify({'error': str(e)}), 500
-    
-    return jsonify({'error': 'File type not allowed'}), 400
-
-# File download route
-@bp.route('/download-document/<int:document_id>')
-def download_document(document_id):
-    document = Document.query.get_or_404(document_id)
-    return send_file(
-        document.file_path,
-        as_attachment=True,
-        download_name=document.original_filename
-    )
-
-# Allowed file check function
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'pdf', 'doc', 'docx'}
-
-# Add cache control headers to all responses
-@bp.after_request
-def add_cache_control(response):
-    if request.endpoint != 'static':
-        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
-    return response
-
-# Admin cache routes
-@bp.route('/admin/cache')
-def admin_cache_dashboard():
-    if not session.get('is_admin'):
-        flash('Access denied. Admin privileges required.', 'error')
+@bp.route('/documents/<filename>')
+def download_document(filename):
+    """Download a document"""
+    file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+    if os.path.exists(file_path):
+        return send_file(file_path, as_attachment=True)
+    else:
+        flash('File not found', 'error')
         return redirect(url_for('main.index'))
-    stats = get_cache_stats()
-    return render_template('admin/cache_dashboard.html', stats=stats)
 
-@bp.route('/admin/cache/clear', methods=['POST'])
-def admin_clear_cache():
-    try:
-        cache_type = request.form.get('type', 'all')
-        if cache_type == 'all':
-            clear_all_caches()
-            flash('All caches cleared successfully', 'success')
-        elif cache_type == 'user':
-            user_email = request.form.get('user_email')
-            if user_email:
-                clear_user_cache(user_email)
-                flash(f'Cache cleared for user: {user_email}', 'success')
-        elif cache_type == 'document':
-            document_id = request.form.get('document_id')
-            if document_id:
-                clear_document_cache(document_id)
-                flash(f'Cache cleared for document: {document_id}', 'success')
-        elif cache_type == 'plan':
-            clear_plan_cache()
-            flash('Plan cache cleared successfully', 'success')
-        elif cache_type == 'admin':
-            clear_admin_cache()
-            flash('Admin cache cleared successfully', 'success')
-    except Exception as e:
-        flash(f'Error clearing cache: {str(e)}', 'error')
-    return redirect(url_for('main.admin_cache_dashboard'))
+@bp.route('/support', methods=['GET', 'POST'])
+def support():
+    """Support ticket submission page"""
+    if 'user_id' not in session:
+        return redirect(url_for('main.login'))
+    if request.method == 'POST':
+        subject = request.form.get('subject')
+        message = request.form.get('message')
+        if subject and message:
+            new_ticket = SupportTicket(subject=subject, message=message, user_id=session['user_id'])
+            db.session.add(new_ticket)
+            db.session.commit()
+            flash('Ticket submitted successfully', 'success')
+            return redirect(url_for('main.support'))
+        else:
+            flash('Please fill in all fields', 'error')
+    return render_template('support.html')
+
+@bp.route('/plans')
+def plans():
+    """Plans page"""
+    return render_template('plans.html', plans=PLANS)
+
+@bp.route('/payment/<plan_name>')
+def payment(plan_name):
+    """Payment page for a specific plan"""
+    if 'user_id' not in session:
+        return redirect(url_for('main.login'))
+    plan = PLANS.get(plan_name)
+    if plan:
+        return render_template('payment.html', plan=plan)
+    else:
+        flash('Invalid plan selected', 'error')
+        return redirect(url_for('main.plans'))
+
+@bp.route('/payment/success/<plan_name>')
+def payment_success(plan_name):
+    """Payment successful page"""
+    if 'user_id' not in session:
+        return redirect(url_for('main.login'))
+    plan = PLANS.get(plan_name)
+    if plan:
+        new_payment = Payment(user_id=session['user_id'], plan_name=plan_name, amount=plan['price'], timestamp=datetime.now())
+        db.session.add(new_payment)
+        db.session.commit()
+        flash('Payment successful! You can now access your selected plan.', 'success')
+        return render_template('payment_success.html', plan=plan)
+    else:
+        flash('Invalid plan selected', 'error')
+        return redirect(url_for('main.plans'))
+
+@bp.route('/payment/cancel')
+def payment_cancel():
+    """Payment cancelled page"""
+    flash('Payment cancelled', 'error')
+    return redirect(url_for('main.plans'))
+
+@bp.route('/terms')
+def terms():
+    """Terms and conditions page"""
+    form = TermsAcceptanceForm()
+    return render_template('terms.html', form=form)
+
+@bp.route('/terms', methods=['POST'])
+def terms_post():
+    """Process terms and conditions acceptance"""
+    form = TermsAcceptanceForm(request.form)
+    if form.validate_on_submit():
+        if 'user_id' in session:
+            existing_acceptance = TermsAcceptance.query.filter_by(user_id=session['user_id']).first()
+            if existing_acceptance:
+                flash('You have already accepted the terms', 'info')
+                return redirect(url_for('main.index'))
+            else:
+                new_acceptance = TermsAcceptance(user_id=session['user_id'], timestamp=datetime.now())
+                db.session.add(new_acceptance)
+                db.session.commit()
+                flash('Terms accepted successfully', 'success')
+                return redirect(url_for('main.index'))
+        else:
+            flash('Please login to accept the terms', 'error')
+            return redirect(url_for('main.login'))
+    else:
+        flash('Please accept the terms', 'error')
+        return render_template('terms.html', form=form)
+
+@bp.route('/signup', methods=['GET', 'POST'])
+def signup():
+    """Sign up page"""
+    if 'user_id' in session:
+        return redirect(url_for('main.index'))
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        if name and email and password:
+            existing_user = AdminUser.query.filter_by(email=email).first()
+            if existing_user:
+                flash('Email already exists', 'error')
+                return redirect(url_for('main.signup'))
+            else:
+                new_user = AdminUser(name=name, email=email, password=password)
+                db.session.add(new_user)
+                db.session.commit()
+                session['user_id'] = new_user.id
+                flash('Signup successful', 'success')
+                return redirect(url_for('main.index'))
+        else:
+            flash('Please fill in all fields', 'error')
+    return render_template('signup.html')
+
+@bp.route('/login', methods=['GET', 'POST'])
+def login():
+    """Login page"""
+    if 'user_id' in session:
+        return redirect(url_for('main.index'))
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        user = AdminUser.query.filter_by(email=email).first()
+        if user and user.check_password(password):
+            session['user_id'] = user.id
+            flash('Login successful', 'success')
+            return redirect(url_for('main.index'))
+        else:
+            flash('Invalid email or password', 'error')
+    return render_template('login.html')
+
+@bp.route('/logout')
+def logout():
+    """Logout"""
+    session.pop('user_id', None)
+    flash('Logged out successfully', 'success')
+    return redirect(url_for('main.index'))
+
+@bp.route('/lease-analysis', methods=['GET', 'POST'])
+def lease_analysis():
+    """Lease analysis page"""
+    if 'user_id' not in session:
+        return redirect(url_for('main.login'))
+    return render_template('lease_analysis.html')
+
+@bp.route('/lease-analysis/upload', methods=['POST'])
+def lease_analysis_upload():
+    """Upload lease document for analysis"""
+    if 'user_id' not in session:
+        return redirect(url_for('main.login'))
+    file = request.files.get('file')
+    if file:
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+        # Process the uploaded file (e.g., send for analysis)
+        # ...
+        flash('Lease document uploaded successfully', 'success')
+        return redirect(url_for('main.lease_analysis'))
+    else:
+        flash('Please select a file to upload', 'error')
+        return redirect(url_for('main.lease_analysis'))
+
+@bp.route('/lease-analysis/result/<filename>')
+def lease_analysis_result(filename):
+    """Display lease analysis results"""
+    if 'user_id' not in session:
+        return redirect(url_for('main.login'))
+    # Retrieve analysis results from database or cache based on filename
+    # ...
+    return render_template('lease_analysis_result.html', filename=filename)
+
+@bp.route('/lease-analysis/download/<filename>')
+def lease_analysis_download(filename):
+    """Download lease analysis results"""
+    if 'user_id' not in session:
+        return redirect(url_for('main.login'))
+    file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+    if os.path.exists(file_path):
+        return send_file(file_path, as_attachment=True)
+    else:
+        flash('File not found', 'error')
+        return redirect(url_for('main.lease_analysis'))

@@ -1,0 +1,137 @@
+/* Preview System Styles */
+:root {
+    --preview-sidebar-width: 300px;
+    --preview-primary-color: #7ED321;
+    --preview-border-color: #ddd;
+    --preview-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.preview-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+}
+
+.preview-sidebar {
+    width: var(--preview-sidebar-width);
+    background-color: #ffffff;
+    padding: 20px;
+    border-right: 1px solid var(--preview-border-color);
+    box-shadow: var(--preview-shadow);
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.preview-sidebar h2 {
+    margin: 0 0 20px;
+    color: #333;
+    font-size: 1.5rem;
+}
+
+.preview-sidebar h3 {
+    font-size: 1.1rem;
+    color: #333;
+    margin: 20px 0 10px;
+}
+
+.component-selector {
+    margin-bottom: 30px;
+}
+
+.component-selector label {
+    display: block;
+    margin-bottom: 8px;
+    color: #666;
+}
+
+.component-selector select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--preview-border-color);
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.viewport-controls {
+    margin-bottom: 30px;
+}
+
+.viewport-btn {
+    padding: 8px 16px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    border: 1px solid var(--preview-border-color);
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.viewport-btn:hover {
+    background: #f0f0f0;
+}
+
+.viewport-btn.active {
+    background: var(--preview-primary-color);
+    color: black;
+    border-color: var(--preview-primary-color);
+}
+
+.component-info {
+    border-top: 1px solid var(--preview-border-color);
+    padding-top: 20px;
+}
+
+.component-info ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.component-info li {
+    padding: 5px 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.preview-content {
+    margin-left: var(--preview-sidebar-width);
+    flex: 1;
+    padding: 20px;
+    overflow: auto;
+}
+
+.preview-frame {
+    margin: 0 auto;
+    background: #fff;
+    min-height: calc(100vh - 40px);
+    transition: width 0.3s ease;
+    box-shadow: var(--preview-shadow);
+}
+
+.error-message {
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 4px;
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .preview-sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+    
+    .preview-content {
+        margin-left: 0;
+    }
+    
+    .preview-container {
+        flex-direction: column;
+    }
+}

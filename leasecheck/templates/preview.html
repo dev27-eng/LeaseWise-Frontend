@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Component Preview - {{ component_name }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/preview.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base_component.css') }}">
+{% if component_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename=component_css) }}">
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="preview-container">
+    <div class="preview-sidebar">
+        <h2>Component Preview</h2>
+        <div class="component-selector">
+            <label for="componentSelect">Select Component:</label>
+            <select id="componentSelect" onchange="window.location.href=`/preview/${this.value}`">
+                {% for comp in available_components %}
+                <option value="{{ comp }}" {% if comp == component_name %}selected{% endif %}>
+                    {{ comp|replace('_', ' ')|title }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="viewport-controls">
+            <h3>Viewport Size</h3>
+            <button onclick="setViewport('mobile')" class="viewport-btn" data-size="mobile">Mobile (375px)</button>
+            <button onclick="setViewport('tablet')" class="viewport-btn" data-size="tablet">Tablet (768px)</button>
+            <button onclick="setViewport('desktop')" class="viewport-btn" data-size="desktop">Desktop (1024px)</button>
+        </div>
+        <div class="component-info">
+            <h3>Component Details</h3>
+            <ul>
+                <li>Name: {{ component_name }}</li>
+                <li>Template: {{ component_template }}</li>
+                <li>CSS: {{ 'Yes' if component_css else 'No' }}</li>
+                <li>JavaScript: {{ 'Yes' if component_js else 'No' }}</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="preview-content">
+        <div class="preview-frame" id="previewFrame">
+            {% with %}
+                {% include component_template ignore missing %}
+                {% if not component_template %}
+                <div class="error-message">
+                    <h3>Error Loading Component</h3>
+                    <p>Component template not found: {{ component_template }}</p>
+                </div>
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const previewFrame = document.getElementById('previewFrame');
+const viewportBtns = document.querySelectorAll('.viewport-btn');
+
+function setViewport(size) {
+    const sizes = {
+        'mobile': '375px',
+        'tablet': '768px',
+        'desktop': '1024px'
+    };
+    
+    previewFrame.style.width = sizes[size];
+    
+    // Update active button state
+    viewportBtns.forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.size === size) {
+            btn.classList.add('active');
+        }
+    });
+    
+    // Store preference
+    localStorage.setItem('preferredViewport', size);
+}
+
+// Initialize with last used viewport size or desktop default
+document.addEventListener('DOMContentLoaded', () => {
+    const savedSize = localStorage.getItem('preferredViewport') || 'desktop';
+    setViewport(savedSize);
+});
+
+{% if component_js %}
+    // Load component specific JavaScript
+    const script = document.createElement('script');
+    script.src = "{{ url_for('static', filename=component_js) }}";
+    script.defer = true;
+    document.body.appendChild(script);
+{% endif %}
+</script>
+{% endblock %}
