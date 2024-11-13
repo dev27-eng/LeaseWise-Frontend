@@ -3,7 +3,7 @@
 {% block title %}Welcome - LeaseCheck{% endblock %}
 
 {% block extra_css %}
-<link rel="preload" href="{{ url_for('static', filename='components/welcome/welcome.css') }}" as="style">
+<link rel="preload" href="{{ url_for('static', filename='components/welcome/logo.svg') }}" as="style">
 <link rel="stylesheet" href="{{ url_for('static', filename='components/welcome/welcome.css') }}">
 {% endblock %}
 
@@ -15,7 +15,7 @@
             <h1 class="welcome-logo-text">LeaseCheck</h1>
             
             <div class="welcome-logo-container">
-                <img src="{{ url_for('static', filename='images/Logov2.svg') }}"
+                <img src="{{ url_for('static', filename='components/welcome/logo.svg') }}"
                      alt="LeaseCheck Logo"
                      class="welcome-logo-image"
                      width="350"

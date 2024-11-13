@@ -1,8 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="350" height="350" viewBox="0 0 350 350">
-  <style>
-    .logo-text { font: bold 48px sans-serif; }
-    .logo-check { fill: #7ED321; }
-  </style>
-  <circle cx="175" cy="175" r="150" fill="#fff" stroke="#7ED321" stroke-width="8"/>
-  <path class="logo-check" d="M 100 175 L 150 225 L 250 125" fill="none" stroke="#7ED321" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <defs>
+    <style>
+      .monogram { font-family: Arial, sans-serif; font-weight: bold; }
+      .circle { fill: none; stroke: #7ED321; stroke-width: 10; }
+      .letters { fill: #000000; }
+    </style>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle class="circle" cx="175" cy="175" r="150"/>
+  
+  <!-- LC Monogram -->
+  <text class="monogram letters" x="175" y="200" text-anchor="middle" font-size="120">LC</text>
+  
+  <!-- Checkmark accent -->
+  <path d="M140 240 L160 260 L210 210" fill="none" stroke="#7ED321" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
