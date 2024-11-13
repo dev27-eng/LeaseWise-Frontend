@@ -77,6 +77,9 @@ def preview_component(component_name):
         css_exists = os.path.exists(os.path.join(static_folder, component_css))
         js_exists = os.path.exists(os.path.join(static_folder, component_js))
         
+        # Get the port from environment or use default 5000
+        port = int(os.environ.get("PORT", 5000))
+        
         logger.info(f"Rendering preview for component: {component_name}")
         
         return render_template('preview.html',
@@ -84,7 +87,8 @@ def preview_component(component_name):
                            component_template=component_template,
                            component_css=component_css if css_exists else None,
                            component_js=component_js if js_exists else None,
-                           available_components=available_components)
+                           available_components=available_components,
+                           port=port)
     
     except Exception as e:
         logger.error(f"Error rendering component preview: {str(e)}")

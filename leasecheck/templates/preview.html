@@ -16,7 +16,7 @@
         <h2>Component Preview</h2>
         <div class="component-selector">
             <label for="componentSelect">Select Component:</label>
-            <select id="componentSelect" onchange="window.location.href=`/preview/${this.value}`">
+            <select id="componentSelect">
                 {% for comp in available_components %}
                 <option value="{{ comp }}" {% if comp == component_name %}selected{% endif %}>
                     {{ comp|replace('_', ' ')|title }}
@@ -61,6 +61,10 @@
 <script>
 const previewFrame = document.getElementById('previewFrame');
 const viewportBtns = document.querySelectorAll('.viewport-btn');
+const componentSelect = document.getElementById('componentSelect');
+
+// Get the port from the server or use the current window location port
+const port = {{ port }} || window.location.port || '5000';
 
 function setViewport(size) {
     const sizes = {
@@ -82,6 +86,13 @@ function setViewport(size) {
     // Store preference
     localStorage.setItem('preferredViewport', size);
 }
+
+// Handle component selection
+componentSelect.addEventListener('change', function() {
+    const protocol = window.location.protocol;
+    const hostname = window.location.hostname;
+    window.location.href = `${protocol}//${hostname}:${port}/preview/${this.value}`;
+});
 
 // Initialize with last used viewport size or desktop default
 document.addEventListener('DOMContentLoaded', () => {
