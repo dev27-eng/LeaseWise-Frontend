@@ -504,3 +504,16 @@ def lease_analysis_download(filename):
     else:
         flash('File not found', 'error')
         return redirect(url_for('main.lease_analysis'))
+
+@bp.route('/legal-stuff')
+def legal_stuff():
+    """Legal information page route"""
+    return render_template('components/legal_stuff/legal_stuff.html')
+
+@bp.route('/preview/legal_stuff')
+def preview_legal_stuff():
+    """Preview the legal_stuff component"""
+    return render_template('preview.html',
+                           component_name='legal_stuff',
+                           component_template='components/legal_stuff/legal_stuff.html',
+                           available_components=get_available_components())
