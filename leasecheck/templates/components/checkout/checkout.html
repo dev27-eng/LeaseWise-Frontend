@@ -6,6 +6,7 @@
 
 {% block component_content %}
 <div class="checkout-container">
+    <!-- Plan Details Section -->
     <div class="plan-details">
         <h2>Selected Plan</h2>
         <div class="plan-card">
@@ -19,6 +20,7 @@
         </div>
     </div>
 
+    <!-- Payment Form Section -->
     <div class="payment-section">
         <h2>Payment Details</h2>
         <form id="payment-form" class="payment-form">
@@ -29,18 +31,18 @@
             
             <div class="form-group">
                 <label for="card-number">Card Number</label>
-                <div id="card-number" class="card-input"></div>
+                <input type="text" id="card-number" required pattern="[0-9]{16}" placeholder="1234 5678 9012 3456">
             </div>
 
             <div class="form-row">
                 <div class="form-group half">
                     <label for="card-expiry">Expiry Date</label>
-                    <div id="card-expiry" class="card-input"></div>
+                    <input type="text" id="card-expiry" required pattern="[0-9]{2}/[0-9]{2}" placeholder="MM/YY">
                 </div>
                 
                 <div class="form-group half">
                     <label for="card-cvc">CVC</label>
-                    <div id="card-cvc" class="card-input"></div>
+                    <input type="text" id="card-cvc" required pattern="[0-9]{3,4}" placeholder="123">
                 </div>
             </div>
 
@@ -48,9 +50,17 @@
 
             <div class="action-buttons">
                 <button type="submit" class="submit-button">Pay ${{ "%.2f"|format(plan.price) }}</button>
-                <a href="{{ url_for('main.select_plan') }}" class="return-button">Return to Plans</a>
+                <a href="{{ url_for('main.preview_component', component_name='select_plan') }}" class="return-button">Return to Plans</a>
             </div>
         </form>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='components/checkout/checkout.js') }}" defer></script>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='components/checkout/checkout.css') }}">
 {% endblock %}

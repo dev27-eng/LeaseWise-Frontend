@@ -21,8 +21,8 @@
         </div>
     </div>
     <div class="action-buttons">
-        <a href="{{ url_for('main.lease_upload') }}" class="action-btn primary-btn">Upload Lease</a>
-        <a href="{{ url_for('main.index') }}" class="action-btn secondary-btn">Return Home</a>
+        <a href="{{ url_for('main.preview_component', component_name='lease_upload') }}" class="action-btn primary-btn">Upload Lease</a>
+        <a href="{{ url_for('main.preview_component', component_name='welcome') }}" class="action-btn secondary-btn">Return Home</a>
     </div>
     {% else %}
     <div class="status-icon failure">×</div>
@@ -39,9 +39,17 @@
         </div>
     </div>
     <div class="action-buttons">
-        <a href="{{ url_for('main.checkout') }}" class="action-btn primary-btn">Try Again</a>
-        <a href="{{ url_for('main.support_issue') }}" class="action-btn secondary-btn">Contact Support</a>
+        <a href="{{ url_for('main.preview_component', component_name='checkout') }}" class="action-btn primary-btn">Try Again</a>
+        <a href="{{ url_for('main.preview_component', component_name='support_issue') }}" class="action-btn secondary-btn">Contact Support</a>
     </div>
     {% endif %}
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='components/payment_status/payment_status.js') }}" defer></script>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='components/payment_status/payment_status.css') }}">
 {% endblock %}
