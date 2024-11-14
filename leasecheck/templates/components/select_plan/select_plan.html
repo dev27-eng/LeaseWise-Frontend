@@ -1,12 +1,10 @@
-{% extends "base.html" %}
+{% extends "components/base_component.html" %}
 
-{% block title %}Select Plan - LeaseCheck{% endblock %}
+{% set component_name = 'select_plan' %}
+{% set component_title = 'Select Plan' %}
+{% set header_title = 'Select A Plan' %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='components/select_plan/select_plan.css') }}">
-{% endblock %}
-
-{% block content %}
+{% block component_content %}
 <div class="select-plan-screen">
     <!-- Green header bar -->
     <header class="green-header" role="banner">
@@ -66,17 +64,9 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('planSelectionForm');
-    const plans = document.querySelectorAll('.pricing-card');
-    
-    plans.forEach(plan => {
-        plan.addEventListener('click', function() {
-            const radio = this.querySelector('input[type="radio"]');
-            radio.checked = true;
-        });
-    });
-});
-</script>
+<script src="{{ url_for('static', filename='components/select_plan/select_plan.js') }}" defer></script>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='components/select_plan/select_plan.css') }}">
 {% endblock %}

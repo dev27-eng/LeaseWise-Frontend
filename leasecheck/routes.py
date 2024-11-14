@@ -51,165 +51,6 @@ COMPONENT_CATEGORIES = {
     ]
 }
 
-def get_component_info(component_name):
-    """Get information about a specific component"""
-    for category in COMPONENT_CATEGORIES.values():
-        for component in category:
-            if component['id'] == component_name:
-                return component
-    return None
-
-def get_available_components():
-    """Get list of available components from the templates directory"""
-    components_dir = os.path.join(current_app.root_path, 'templates', 'components')
-    components = {'primary': [], 'supporting': []}
-    
-    try:
-        # Get all subdirectories in the components directory
-        for item in os.listdir(components_dir):
-            component_path = os.path.join(components_dir, item)
-            if os.path.isdir(component_path) and not item.startswith('_'):
-                # Check for required component files
-                html_file = os.path.join(component_path, f"{item}.html")
-                if os.path.exists(html_file):
-                    # Determine category
-                    is_primary = any(comp['id'] == item for comp in COMPONENT_CATEGORIES['primary'])
-                    category = 'primary' if is_primary else 'supporting'
-                    components[category].append({
-                        'id': item,
-                        'name': get_component_info(item)['name'] if get_component_info(item) else item
-                    })
-                    logger.info(f"Found valid component: {item} in category {category}")
-        
-        return components
-    except Exception as e:
-        logger.error(f"Error scanning components directory: {str(e)}")
-        return {'primary': [], 'supporting': []}
-
-def add_security_headers(response):
-    """Add security headers to response"""
-    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
-    response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
-    response.headers['X-Content-Type-Options'] = 'nosniff'
-    response.headers['X-XSS-Protection'] = '1; mode=block'
-    return response
-
-@bp.route('/')
-def index():
-    """Landing page route"""
-    try:
-        response = make_response(render_template('welcome_screen.html'))
-        return add_security_headers(response)
-    except Exception as e:
-        logger.error(f"Error rendering index page: {str(e)}")
-        return "Error loading page", 500
-
-@bp.route('/preview/<component_name>')
-def preview_component(component_name):
-    """Preview a specific component in isolation"""
-    try:
-        # Get available components
-        available_components = get_available_components()
-        
-        if not available_components['primary'] and not available_components['supporting']:
-            flash('No components available for preview', 'error')
-            return redirect(url_for('main.index'))
-        
-        # Check if component exists
-        component_exists = False
-        for category in available_components.values():
-            if any(comp['id'] == component_name for comp in category):
-                component_exists = True
-                break
-        
-        if not component_exists:
-            flash(f'Component "{component_name}" not found', 'error')
-            all_components = available_components['primary'] + available_components['supporting']
-            return redirect(url_for('main.preview_component', component_name=all_components[0]['id']))
-        
-        # Construct paths for component assets
-        component_template = f"components/{component_name}/{component_name}.html"
-        component_css = f"components/{component_name}/{component_name}.css"
-        component_js = f"components/{component_name}/{component_name}.js"
-        
-        # Check if files exist
-        static_folder = os.path.join(current_app.root_path, 'static')
-        templates_folder = os.path.join(current_app.root_path, 'templates')
-        
-        template_exists = os.path.exists(os.path.join(templates_folder, component_template))
-        css_exists = os.path.exists(os.path.join(static_folder, component_css))
-        js_exists = os.path.exists(os.path.join(static_folder, component_js))
-        
-        if not template_exists:
-            flash(f'Template file not found for component: {component_name}', 'error')
-            return redirect(url_for('main.index'))
-        
-        # Get the port from environment or use default 5000
-        port = int(os.environ.get("PORT", 5000))
-        
-        logger.info(f"Rendering preview for component: {component_name}")
-        
-        response = make_response(render_template(
-            'preview.html',
-            component_name=component_name,
-            component_template=component_template,
-            component_css=component_css if css_exists else None,
-            component_js=component_js if js_exists else None,
-            available_components=available_components,
-            port=port
-        ))
-        
-        return add_security_headers(response)
-    
-    except TemplateNotFound as e:
-        logger.error(f"Template not found: {str(e)}")
-        flash('Component template not found', 'error')
-        return redirect(url_for('main.index'))
-    except Exception as e:
-        logger.error(f"Error rendering component preview: {str(e)}")
-        flash('Error rendering component preview', 'error')
-        return redirect(url_for('main.index'))
-
-@bp.route('/preview')
-def preview_index():
-    """Redirect to the first available component preview"""
-    try:
-        available_components = get_available_components()
-        if not available_components['primary'] and not available_components['supporting']:
-            flash('No components available for preview', 'error')
-            return redirect(url_for('main.index'))
-        
-        first_component = (available_components['primary'][0]['id'] 
-                         if available_components['primary'] 
-                         else available_components['supporting'][0]['id'])
-        
-        return redirect(url_for('main.preview_component', component_name=first_component))
-    except Exception as e:
-        logger.error(f"Error in preview index: {str(e)}")
-        flash('Error accessing preview system', 'error')
-        return redirect(url_for('main.index'))
-
-@bp.route('/onboarding')
-def onboarding():
-    """Onboarding page route"""
-    response = make_response(render_template('components/onboarding/onboarding.html'))
-    return add_security_headers(response)
-
-@bp.route('/legal-stuff')
-def legal_stuff():
-    """Legal information page route"""
-    response = make_response(render_template('components/legal_stuff/legal_stuff.html'))
-    return add_security_headers(response)
-
-@bp.route('/preview/legal_stuff')
-def preview_legal_stuff():
-    """Preview the legal_stuff component"""
-    response = make_response(render_template('preview.html',
-                           component_name='legal_stuff',
-                           component_template='components/legal_stuff/legal_stuff.html',
-                           available_components=get_available_components()))
-    return add_security_headers(response)
-
 # Plan configuration
 PLANS = {
     'basic': {
@@ -243,6 +84,113 @@ PLANS = {
         ]
     }
 }
+
+@bp.route('/')
+def index():
+    """Landing page route"""
+    try:
+        response = make_response(render_template('components/welcome/welcome.html'))
+        return add_security_headers(response)
+    except Exception as e:
+        logger.error(f"Error rendering index page: {str(e)}")
+        return "Error loading page", 500
+
+@bp.route('/onboarding')
+def onboarding():
+    """Onboarding page route"""
+    response = make_response(render_template('components/onboarding/onboarding.html'))
+    return add_security_headers(response)
+
+@bp.route('/select-plan')
+def select_plan():
+    """Select plan page route"""
+    response = make_response(render_template('components/select_plan/select_plan.html', plans=PLANS))
+    return add_security_headers(response)
+
+@bp.route('/account-setup')
+def account_setup():
+    """Account setup page route"""
+    response = make_response(render_template('components/account_setup/account_setup.html'))
+    return add_security_headers(response)
+
+@bp.route('/preview/<component_name>')
+def preview_component(component_name):
+    """Preview a specific component in isolation"""
+    try:
+        # Get available components
+        available_components = COMPONENT_CATEGORIES
+        
+        if not available_components['primary'] and not available_components['supporting']:
+            flash('No components available for preview', 'error')
+            return redirect(url_for('main.index'))
+        
+        # Check if component exists
+        component_exists = False
+        component_data = None
+        for category in available_components.values():
+            for comp in category:
+                if comp['id'] == component_name:
+                    component_exists = True
+                    component_data = comp
+                    break
+            if component_exists:
+                break
+        
+        if not component_exists:
+            flash(f'Component "{component_name}" not found', 'error')
+            return redirect(url_for('main.index'))
+        
+        # Construct paths for component assets
+        component_template = f"components/{component_name}/{component_name}.html"
+        component_css = f"components/{component_name}/{component_name}.css"
+        component_js = f"components/{component_name}/{component_name}.js"
+        
+        # Get the port from environment or use default 5000
+        port = int(os.environ.get("PORT", 5000))
+        
+        logger.info(f"Rendering preview for component: {component_name}")
+        
+        # Add any required data for specific components
+        extra_data = {}
+        if component_name == 'select_plan':
+            extra_data['plans'] = PLANS
+        
+        response = make_response(render_template(
+            'preview.html',
+            component_name=component_name,
+            component_template=component_template,
+            component_css=component_css,
+            component_js=component_js,
+            available_components=available_components,
+            port=port,
+            **extra_data
+        ))
+        
+        return add_security_headers(response)
+    
+    except TemplateNotFound as e:
+        logger.error(f"Template not found: {str(e)}")
+        flash('Component template not found', 'error')
+        return redirect(url_for('main.index'))
+    except Exception as e:
+        logger.error(f"Error rendering component preview: {str(e)}")
+        flash('Error rendering component preview', 'error')
+        return redirect(url_for('main.index'))
+
+@bp.route('/legal-stuff')
+def legal_stuff():
+    """Legal information page route"""
+    response = make_response(render_template('components/legal_stuff/legal_stuff.html'))
+    return add_security_headers(response)
+
+@bp.route('/preview/legal_stuff')
+def preview_legal_stuff():
+    """Preview the legal_stuff component"""
+    response = make_response(render_template('preview.html',
+                           component_name='legal_stuff',
+                           component_template='components/legal_stuff/legal_stuff.html',
+                           available_components=get_available_components()))
+    return add_security_headers(response)
 
 @bp.route('/admin/settings')
 def admin_settings():
@@ -624,3 +572,65 @@ def lease_analysis_download(filename):
     else:
         flash('File not found', 'error')
         return redirect(url_for('main.lease_analysis'))
+
+def get_component_info(component_name):
+    """Get information about a specific component"""
+    for category in COMPONENT_CATEGORIES.values():
+        for component in category:
+            if component['id'] == component_name:
+                return component
+    return None
+
+def get_available_components():
+    """Get list of available components from the templates directory"""
+    components_dir = os.path.join(current_app.root_path, 'templates', 'components')
+    components = {'primary': [], 'supporting': []}
+    
+    try:
+        # Get all subdirectories in the components directory
+        for item in os.listdir(components_dir):
+            component_path = os.path.join(components_dir, item)
+            if os.path.isdir(component_path) and not item.startswith('_'):
+                # Check for required component files
+                html_file = os.path.join(component_path, f"{item}.html")
+                if os.path.exists(html_file):
+                    # Determine category
+                    is_primary = any(comp['id'] == item for comp in COMPONENT_CATEGORIES['primary'])
+                    category = 'primary' if is_primary else 'supporting'
+                    components[category].append({
+                        'id': item,
+                        'name': get_component_info(item)['name'] if get_component_info(item) else item
+                    })
+                    logger.info(f"Found valid component: {item} in category {category}")
+        
+        return components
+    except Exception as e:
+        logger.error(f"Error scanning components directory: {str(e)}")
+        return {'primary': [], 'supporting': []}
+
+def add_security_headers(response):
+    """Add security headers to response"""
+    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+    response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    return response
+
+@bp.route('/preview')
+def preview_index():
+    """Redirect to the first available component preview"""
+    try:
+        available_components = get_available_components()
+        if not available_components['primary'] and not available_components['supporting']:
+            flash('No components available for preview', 'error')
+            return redirect(url_for('main.index'))
+        
+        first_component = (available_components['primary'][0]['id'] 
+                         if available_components['primary'] 
+                         else available_components['supporting'][0]['id'])
+        
+        return redirect(url_for('main.preview_component', component_name=first_component))
+    except Exception as e:
+        logger.error(f"Error in preview index: {str(e)}")
+        flash('Error accessing preview system', 'error')
+        return redirect(url_for('main.index'))
