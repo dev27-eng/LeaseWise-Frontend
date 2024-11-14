@@ -15,7 +15,7 @@ import uuid
 from jinja2.exceptions import TemplateNotFound
 from flask_wtf import FlaskForm
 from wtforms import FileField, StringField, SelectField, TextAreaField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Email
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -202,14 +202,22 @@ def preview_component(component_name):
                     }
                 ]
             })
-        elif component_name == 'support_issue':
+        elif component_name == 'thank_you':
             extra_data.update({
-                'document': {
-                    'id': 'DOC123',
-                    'filename': 'lease_agreement.pdf',
-                    'upload_date': datetime.now()
-                },
-                'error_count': 5
+                'message': 'Thank you for using our service!',
+                'next_steps': [
+                    'Check your email for the report',
+                    'Review our recommendations',
+                    'Contact a local attorney if needed'
+                ]
+            })
+        elif component_name == 'lawyer_message_acknowledgment':
+            extra_data.update({
+                'attorney': {
+                    'name': 'Law Office of John Doe',
+                    'contact': 'contact@johndoelaw.example.com',
+                    'message': 'Your message has been sent to the attorney.'
+                }
             })
         
         response = make_response(render_template(
@@ -233,6 +241,38 @@ def preview_component(component_name):
         logger.error(f"Error rendering component preview: {str(e)}")
         flash('Error rendering component preview', 'error')
         return redirect(url_for('main.index'))
+
+# Add new routes for Review Flow Components
+@bp.route('/save-report', methods=['GET', 'POST'])
+def save_report():
+    """Save report page route"""
+    if request.method == 'POST':
+        email = request.form.get('email')
+        name = request.form.get('name')
+        # TODO: Implement report saving logic
+        return jsonify({'success': True, 'message': 'Report saved successfully'})
+    response = make_response(render_template('components/save_report/save_report.html'))
+    return add_security_headers(response)
+
+@bp.route('/report-sent')
+def report_sent():
+    """Report sent confirmation page route"""
+    response = make_response(render_template('components/report_sent/report_sent.html'))
+    return add_security_headers(response)
+
+@bp.route('/thank-you')
+def thank_you():
+    """Thank you page route"""
+    extra_data = {
+        'message': 'Thank you for using our service!',
+        'next_steps': [
+            'Check your email for the report',
+            'Review our recommendations',
+            'Contact a local attorney if needed'
+        ]
+    }
+    response = make_response(render_template('components/thank_you/thank_you.html', **extra_data))
+    return add_security_headers(response)
 
 @bp.route('/legal-stuff')
 def legal_stuff():
@@ -679,10 +719,10 @@ def get_available_components():
 
 def add_security_headers(response):
     """Add security headers to response"""
-    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
-    response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
+    response.headers['X-Frame-Options'] = 'DENY'
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.headers['X-XSS-Protection'] = '1; mode=block'
+    response.headers['Content-Security-Policy'] = "default-src 'self'"
     return response
 
 @bp.route('/preview')

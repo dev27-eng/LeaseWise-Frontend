@@ -1,0 +1,20 @@
+{% extends "components/base_component.html" %}
+
+{% block component_content %}
+<div class="thank-you-container">
+    <div class="success-icon">✓</div>
+    <h2>{{ message }}</h2>
+    <div class="next-steps">
+        <h3>Next Steps:</h3>
+        <ul>
+            {% for step in next_steps %}
+            <li>{{ step }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="action-buttons">
+        <a href="{{ url_for('main.preview', component='local_attorneys') }}" class="btn btn-primary">Find Local Attorneys</a>
+        <a href="{{ url_for('main.index') }}" class="btn btn-secondary">Back to Home</a>
+    </div>
+</div>
+{% endblock %}
