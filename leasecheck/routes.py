@@ -13,6 +13,9 @@ import logging
 from werkzeug.utils import secure_filename
 import uuid
 from jinja2.exceptions import TemplateNotFound
+from flask_wtf import FlaskForm
+from wtforms import FileField, StringField, SelectField, TextAreaField
+from wtforms.validators import DataRequired
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -85,6 +88,11 @@ PLANS = {
     }
 }
 
+# Add Form classes
+class LeaseUploadForm(FlaskForm):
+    lease_file = FileField('Lease File', validators=[DataRequired()])
+    csrf_token = StringField()
+
 @bp.route('/')
 def index():
     """Landing page route"""
@@ -150,16 +158,59 @@ def preview_component(component_name):
         
         logger.info(f"Rendering preview for component: {component_name}")
         
-        # Add any required data for specific components
+        # Add mock data for specific components
         extra_data = {}
         if component_name == 'select_plan':
             extra_data['plans'] = PLANS
-        elif component_name == 'checkout':
-            # Default to standard plan for preview
-            extra_data['plan'] = PLANS['standard']
-        elif component_name == 'payment_status':
-            # Default to success status for preview
-            extra_data['status'] = request.args.get('status', 'success')
+        elif component_name == 'lease_upload':
+            extra_data['form'] = LeaseUploadForm()
+        elif component_name == 'lease_details':
+            extra_data.update({
+                'document': {
+                    'filename': 'sample_lease.pdf',
+                    'upload_date': datetime.now(),
+                    'file_size': '2.5 MB'
+                },
+                'lease_details': {
+                    'property_address': '123 Sample St, San Francisco, CA 94105',
+                    'lease_term': '12 months',
+                    'monthly_rent': '2,500',
+                    'security_deposit': '3,750'
+                },
+                'status': 'Under Review'
+            })
+        elif component_name == 'error_report':
+            extra_data.update({
+                'error_count': 5,
+                'critical_errors': 2,
+                'warnings': 2,
+                'suggestions': 1,
+                'errors': [
+                    {
+                        'id': 1,
+                        'severity': 'critical',
+                        'title': 'Missing Security Deposit Terms',
+                        'description': 'The lease agreement does not specify security deposit terms.',
+                        'recommendation': 'Add clear security deposit terms including amount and return conditions.'
+                    },
+                    {
+                        'id': 2,
+                        'severity': 'warning',
+                        'title': 'Unclear Maintenance Responsibilities',
+                        'description': 'Maintenance responsibilities are not clearly defined.',
+                        'recommendation': 'Specify which maintenance tasks are tenant vs landlord responsibilities.'
+                    }
+                ]
+            })
+        elif component_name == 'support_issue':
+            extra_data.update({
+                'document': {
+                    'id': 'DOC123',
+                    'filename': 'lease_agreement.pdf',
+                    'upload_date': datetime.now()
+                },
+                'error_count': 5
+            })
         
         response = make_response(render_template(
             'preview.html',
