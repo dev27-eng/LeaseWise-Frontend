@@ -16,55 +16,35 @@ document.addEventListener('DOMContentLoaded', function() {
             this.currentProgress = 0;
             this.statuses = ['document', 'clauses', 'compliance', 'risks', 'report'];
             this.currentStatusIndex = 0;
+            
+            // Mock data for preview
+            this.mockData = {
+                pageCount: 12,
+                totalTime: 90 // 90 seconds for preview
+            };
         }
 
         bindEvents() {
             this.cancelButton.addEventListener('click', () => this.handleCancel());
         }
 
-        async startReview() {
-            try {
-                await this.initializeReview();
-                this.startProgressSimulation();
-            } catch (error) {
-                console.error('Error starting review:', error);
-                this.handleError('Failed to start review process');
-            }
+        startReview() {
+            this.initializeReview();
+            this.startProgressSimulation();
         }
 
-        async initializeReview() {
-            try {
-                const response = await fetch('/api/review/initialize', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                if (!response.ok) {
-                    throw new Error('Failed to initialize review');
-                }
-
-                const data = await response.json();
-                this.updateDocumentInfo(data);
-            } catch (error) {
-                console.error('Error initializing review:', error);
-                throw error;
-            }
+        initializeReview() {
+            this.updateDocumentInfo();
         }
 
-        updateDocumentInfo(data) {
-            if (data.pageCount) {
-                this.pageCount.textContent = `${data.pageCount} pages`;
-            }
-            this.updateEstimatedTime(data.pageCount || 1);
+        updateDocumentInfo() {
+            this.pageCount.textContent = `${this.mockData.pageCount} pages`;
+            this.updateEstimatedTime(this.mockData.pageCount);
         }
 
         updateEstimatedTime(pageCount) {
-            const baseTime = 30; // Base time in seconds
-            const estimatedSeconds = baseTime + (pageCount * 5);
-            this.totalTime = estimatedSeconds;
-            this.updateTimeRemaining(estimatedSeconds);
+            this.totalTime = this.mockData.totalTime;
+            this.updateTimeRemaining(this.totalTime);
         }
 
         updateTimeRemaining(seconds) {
@@ -124,46 +104,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        async completeReview() {
-            try {
-                const response = await fetch('/api/review/complete', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                if (response.ok) {
-                    window.location.href = '/risk-report';
-                } else {
-                    throw new Error('Failed to complete review');
-                }
-            } catch (error) {
-                console.error('Error completing review:', error);
-                this.handleError('Failed to complete review process');
-            }
+        completeReview() {
+            // For preview, just redirect to risk report
+            window.location.href = '/risk-report';
         }
 
-        async handleCancel() {
+        handleCancel() {
             if (confirm('Are you sure you want to cancel the review? All progress will be lost.')) {
-                try {
-                    await fetch('/api/review/cancel', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    });
-                    window.location.href = '/lease-upload';
-                } catch (error) {
-                    console.error('Error canceling review:', error);
-                    this.handleError('Failed to cancel review');
-                }
+                window.location.href = '/lease-upload';
             }
-        }
-
-        handleError(message) {
-            // Implementation for error toast/notification
-            alert(message); // Replace with proper notification system
         }
     }
 
