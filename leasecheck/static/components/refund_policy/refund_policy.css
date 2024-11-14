@@ -68,25 +68,32 @@
     font-weight: bold;
 }
 
+/* Button Styles - Updated to match legal components */
 .navigation-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
     margin-top: 40px;
-    text-align: center;
 }
 
 .back-btn {
     display: inline-block;
     padding: 12px 30px;
+    border-radius: 999px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
     background-color: var(--refund-primary-green);
     color: var(--refund-primary-black);
-    text-decoration: none;
-    border-radius: 999px;
-    font-weight: 600;
-    transition: all 0.3s ease;
 }
 
 .back-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #6db91d;
 }
 
 /* Responsive Design */
@@ -103,9 +110,15 @@
         font-size: 20px;
     }
 
+    .navigation-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
     .back-btn {
         width: 100%;
         max-width: 280px;
+        text-align: center;
     }
 }
 
