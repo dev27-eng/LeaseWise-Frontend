@@ -1,0 +1,58 @@
+{% extends "components/base_component.html" %}
+
+{% set component_name = 'terms_of_service' %}
+{% set component_title = 'Terms of Service' %}
+{% set header_title = 'Terms of Service' %}
+
+{% block component_content %}
+<div class="legal-stuff-screen">
+    <header class="legal-header">
+        <h1>{{ header_title }}</h1>
+        <div class="download-button-container">
+            <a href="#" class="download-btn" id="downloadPdf">Download as PDF</a>
+        </div>
+    </header>
+
+    <main class="legal-content">
+        <div class="legal-container">
+            <p class="last-updated">Last Updated: November 14, 2024</p>
+
+            <div class="terms-content">
+                <div class="terms-section">
+                    <h2>1. Acceptance of Terms</h2>
+                    <p>Welcome to Lease Check! By accessing or using our app (the "Service"), you agree to comply with and be bound by these Terms of Service ("Terms"). Please read them carefully. If you do not agree to these Terms, you should not use the Service.</p>
+                </div>
+
+                <div class="terms-section">
+                    <h2>2. Description of Service</h2>
+                    <p>Lease Check provides users with tools to analyze lease agreements for legal compliance and potential risks. Our Service includes lease analysis reports, risk identification, and referrals to local attorneys.</p>
+                </div>
+
+                <div class="terms-section">
+                    <h2>3. Eligibility</h2>
+                    <p>You must be at least 18 years old to use the Service. By using Lease Check, you represent and warrant that you meet this eligibility requirement.</p>
+                </div>
+
+                <div class="terms-section">
+                    <h2>4. Account Registration</h2>
+                    <p>To access certain features of the Service, you may need to create an account. You agree to provide accurate, current, and complete information during registration and to update such information to keep it accurate. You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account.</p>
+                </div>
+
+                <!-- Additional sections omitted for brevity but would include sections 5-16 -->
+
+                <div class="navigation-buttons">
+                    <a href="{{ url_for('main.preview_component', component_name='legal_stuff') }}" class="back-btn">Back to Legal Stuff</a>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='components/terms_of_service/terms_of_service.css') }}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='components/terms_of_service/terms_of_service.js') }}" defer></script>
+{% endblock %}

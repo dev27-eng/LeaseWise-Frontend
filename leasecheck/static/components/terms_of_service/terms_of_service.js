@@ -6,19 +6,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         initializeElements() {
-            // Add any specific elements that need to be tracked
+            this.downloadBtn = document.getElementById('downloadPdf');
             this.sections = document.querySelectorAll('.terms-section');
-            this.backButton = document.querySelector('.btn.primary');
+            this.backButton = document.querySelector('.back-btn');
+            this.lastViewed = null;
         }
 
         bindEvents() {
-            // Track section visibility for analytics
-            this.setupIntersectionObserver();
-            
-            // Track back button clicks
+            if (this.downloadBtn) {
+                this.downloadBtn.addEventListener('click', (e) => this.handleDownload(e));
+            }
+
             if (this.backButton) {
                 this.backButton.addEventListener('click', () => this.handleBackClick());
             }
+
+            // Track section visibility for analytics
+            this.setupIntersectionObserver();
         }
 
         setupIntersectionObserver() {
@@ -33,10 +37,25 @@ document.addEventListener('DOMContentLoaded', function() {
         handleSectionVisibility(entries) {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    // Could be used for analytics or progress tracking
-                    console.log(`Section viewed: ${entry.target.querySelector('h2').textContent}`);
+                    const sectionTitle = entry.target.querySelector('h2')?.textContent;
+                    if (sectionTitle && this.lastViewed !== sectionTitle) {
+                        this.lastViewed = sectionTitle;
+                        console.log(`Section viewed: ${sectionTitle}`);
+                    }
                 }
             });
+        }
+
+        async handleDownload(e) {
+            e.preventDefault();
+            
+            try {
+                // In preview mode, just show a success message
+                alert('PDF download would be triggered here. In preview mode, this is just a demonstration.');
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                alert('There was an error generating the PDF. Please try again later.');
+            }
         }
 
         handleBackClick() {

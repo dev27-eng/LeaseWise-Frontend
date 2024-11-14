@@ -5,56 +5,21 @@
     --disclaimer-white: #ffffff;
     --disclaimer-gray-100: #f8f9fa;
     --disclaimer-gray-200: #e9ecef;
-    --disclaimer-gray-300: #dee2e6;
     --disclaimer-gray-600: #6c757d;
 }
 
-.disclaimer-screen {
-    min-height: 100vh;
-    background-color: var(--disclaimer-white);
-}
-
-/* Header Styles */
-.disclaimer-header {
-    background-color: var(--disclaimer-primary-green);
-    padding: 40px 20px;
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.disclaimer-header h1 {
-    color: var(--disclaimer-primary-black);
-    font-size: 48px;
-    font-weight: 600;
-    margin: 0;
-    line-height: 1.2;
-}
-
-.header-subtitle {
-    font-size: 24px;
-    color: var(--disclaimer-primary-black);
-    margin-top: 16px;
-    opacity: 0.9;
-}
-
-/* Container Styles */
-.disclaimer-container {
+.disclaimer-content {
     max-width: 800px;
     margin: 0 auto;
-    padding: 0 20px 40px;
+    padding: 40px 20px;
 }
 
-.disclaimer-content {
+.disclaimer-section {
     background: var(--disclaimer-white);
     border-radius: 12px;
-    padding: 40px;
+    padding: 30px;
+    margin-bottom: 30px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 30px;
-}
-
-/* Section Styles */
-.disclaimer-section {
-    margin-bottom: 30px;
 }
 
 .disclaimer-section:last-child {
@@ -73,8 +38,31 @@
     margin-bottom: 15px;
 }
 
+.disclaimer-section ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.disclaimer-section li {
+    position: relative;
+    padding-left: 24px;
+    margin-bottom: 12px;
+    color: var(--disclaimer-gray-600);
+    line-height: 1.5;
+}
+
+.disclaimer-section li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--disclaimer-primary-green);
+    font-weight: bold;
+}
+
 /* Button Styles */
 .disclaimer-actions {
+    margin-top: 40px;
     text-align: center;
 }
 
@@ -106,33 +94,30 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .disclaimer-header h1 {
-        font-size: 36px;
-    }
-
-    .header-subtitle {
-        font-size: 20px;
-    }
-
     .disclaimer-content {
+        padding: 20px;
+    }
+
+    .disclaimer-section {
         padding: 20px;
     }
 
     .disclaimer-section h2 {
         font-size: 20px;
     }
+
+    .btn {
+        width: 100%;
+        max-width: 280px;
+    }
 }
 
 /* Print Styles */
 @media print {
-    .disclaimer-header {
-        background: none;
-        color: var(--disclaimer-primary-black);
-    }
-
-    .disclaimer-content {
+    .disclaimer-section {
         box-shadow: none;
         padding: 0;
+        margin-bottom: 20px;
     }
 
     .disclaimer-actions {

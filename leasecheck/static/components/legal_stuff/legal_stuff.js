@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
             this.acceptCheckbox = document.getElementById('acceptTerms');
             this.declineButton = document.getElementById('declineBtn');
             this.submitButton = this.form.querySelector('button[type="submit"]');
+            this.toggleSubmitButton();
         }
 
         bindEvents() {
@@ -19,7 +20,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         toggleSubmitButton() {
-            this.submitButton.disabled = !this.acceptCheckbox.checked;
+            if (this.submitButton) {
+                this.submitButton.disabled = !this.acceptCheckbox.checked;
+                this.submitButton.classList.toggle('disabled', !this.acceptCheckbox.checked);
+            }
         }
 
         async handleSubmit(e) {
@@ -31,19 +35,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             try {
-                const response = await fetch('/api/accept-terms', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                });
-
-                if (response.ok) {
-                    window.location.href = '/checkout';
-                } else {
-                    const data = await response.json();
-                    this.showError(data.error || 'Failed to process terms acceptance');
-                }
+                // In preview mode, just redirect to the next step
+                window.location.href = '/preview/checkout';
             } catch (error) {
                 console.error('Error:', error);
                 this.showError('An unexpected error occurred');
@@ -51,12 +44,28 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         handleDecline() {
-            window.location.href = '/terms-declined';
+            window.location.href = '/preview/terms_declined';
         }
 
         showError(message) {
-            // Implementation for error notification
-            alert(message); // Replace with proper notification system
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            
+            // Remove any existing error messages
+            const existingError = this.form.querySelector('.error-message');
+            if (existingError) {
+                existingError.remove();
+            }
+            
+            // Insert error message after the checkbox group
+            const checkboxGroup = this.form.querySelector('.checkbox-group');
+            checkboxGroup.insertAdjacentElement('afterend', errorDiv);
+            
+            // Remove error message after 5 seconds
+            setTimeout(() => {
+                errorDiv.remove();
+            }, 5000);
         }
     }
 
