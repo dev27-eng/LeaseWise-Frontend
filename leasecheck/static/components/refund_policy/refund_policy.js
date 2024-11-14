@@ -3,11 +3,12 @@ document.addEventListener('DOMContentLoaded', function() {
         constructor() {
             this.initializeElements();
             this.bindEvents();
+            this.lastViewed = null;
         }
 
         initializeElements() {
-            this.sections = document.querySelectorAll('.refund-section');
-            this.backButton = document.querySelector('.btn.primary');
+            this.sections = document.querySelectorAll('.policy-section');
+            this.backButton = document.querySelector('.back-btn');
         }
 
         bindEvents() {
@@ -32,8 +33,11 @@ document.addEventListener('DOMContentLoaded', function() {
         handleSectionVisibility(entries) {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    // Could be used for analytics or progress tracking
-                    console.log(`Section viewed: ${entry.target.querySelector('h2').textContent}`);
+                    const sectionTitle = entry.target.querySelector('h3')?.textContent;
+                    if (sectionTitle && this.lastViewed !== sectionTitle) {
+                        this.lastViewed = sectionTitle;
+                        console.log(`Section viewed: ${sectionTitle}`);
+                    }
                 }
             });
         }

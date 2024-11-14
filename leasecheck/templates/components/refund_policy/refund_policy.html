@@ -1,0 +1,64 @@
+{% extends "components/base_component.html" %}
+
+{% set component_name = 'refund_policy' %}
+{% set component_title = 'Refund Policy' %}
+{% set header_title = 'Refund Policy' %}
+
+{% block component_content %}
+<div class="refund-content">
+    <section class="refund-section">
+        <h2>Our Refund Policy</h2>
+        
+        <div class="policy-section">
+            <h3>30-Day Money-Back Guarantee</h3>
+            <p>We stand behind our service with a 30-day money-back guarantee. If you're not satisfied with your lease analysis, you can request a full refund within 30 days of your purchase.</p>
+        </div>
+
+        <div class="policy-section">
+            <h3>Eligibility for Refund</h3>
+            <ul>
+                <li>Request must be made within 30 days of purchase</li>
+                <li>Service has not been fully utilized (lease analysis not completed)</li>
+                <li>Valid reason for dissatisfaction provided</li>
+            </ul>
+        </div>
+
+        <div class="policy-section">
+            <h3>How to Request a Refund</h3>
+            <p>To request a refund, please contact our support team at support@coloradoleasecheck.com with your:</p>
+            <ul>
+                <li>Order number</li>
+                <li>Reason for refund request</li>
+                <li>Date of purchase</li>
+            </ul>
+        </div>
+
+        <div class="policy-section">
+            <h3>Processing Time</h3>
+            <p>Refund requests are typically processed within 5-7 business days. The refund will be issued to the original payment method used for the purchase.</p>
+        </div>
+
+        <div class="policy-section">
+            <h3>Exceptions</h3>
+            <p>Refunds may not be available if:</p>
+            <ul>
+                <li>The 30-day period has expired</li>
+                <li>The lease analysis service has been fully utilized</li>
+                <li>The request violates our Terms of Service</li>
+            </ul>
+        </div>
+    </section>
+
+    <div class="navigation-buttons">
+        <a href="{{ url_for('main.preview_component', component_name='legal_stuff') }}" class="back-btn">Back to Legal Stuff</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='components/refund_policy/refund_policy.css') }}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='components/refund_policy/refund_policy.js') }}" defer></script>
+{% endblock %}
