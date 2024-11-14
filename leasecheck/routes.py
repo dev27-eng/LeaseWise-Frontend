@@ -154,6 +154,12 @@ def preview_component(component_name):
         extra_data = {}
         if component_name == 'select_plan':
             extra_data['plans'] = PLANS
+        elif component_name == 'checkout':
+            # Default to standard plan for preview
+            extra_data['plan'] = PLANS['standard']
+        elif component_name == 'payment_status':
+            # Default to success status for preview
+            extra_data['status'] = request.args.get('status', 'success')
         
         response = make_response(render_template(
             'preview.html',
