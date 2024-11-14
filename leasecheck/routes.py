@@ -439,6 +439,18 @@ def payment_success(plan_name):
         flash('Invalid plan selected', 'error')
         return redirect(url_for('main.plans'))
 
+@bp.route('/checkout')
+def checkout():
+    """Checkout page route"""
+    plan_id = request.args.get('plan')
+    if not plan_id or plan_id not in PLANS:
+        flash('Invalid plan selected', 'error')
+        return redirect(url_for('main.select_plan'))
+    
+    plan = PLANS[plan_id]
+    response = make_response(render_template('components/checkout/checkout.html', plan=plan))
+    return add_security_headers(response)
+
 @bp.route('/payment/cancel')
 def payment_cancel():
     """Payment cancelled page"""

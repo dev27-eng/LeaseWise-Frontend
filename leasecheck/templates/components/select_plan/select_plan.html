@@ -33,7 +33,7 @@
         </section>
 
         <!-- Pricing Tiers -->
-        <form class="pricing-tiers" action="{{ url_for('main.checkout') }}" method="GET" id="planSelectionForm">
+        <div class="pricing-tiers">
             {% for plan_id, plan in plans.items() %}
             <div class="pricing-card {{ plan_id }}{% if plan_id == 'standard' %} most-popular{% endif %}">
                 {% if plan_id == 'standard' %}
@@ -56,9 +56,9 @@
                 </div>
             </div>
             {% endfor %}
+        </div>
 
-            <button type="submit" class="select-plan-btn">Continue with Selected Plan</button>
-        </form>
+        <a href="{{ url_for('main.account_setup') }}" class="select-plan-btn">Continue with Selected Plan</a>
     </div>
 </div>
 {% endblock %}
