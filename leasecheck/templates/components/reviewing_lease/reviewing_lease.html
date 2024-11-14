@@ -1,0 +1,55 @@
+{% extends "components/base_component.html" %}
+
+{% set component_name = 'reviewing_lease' %}
+{% set component_title = 'Lease Review in Progress' %}
+{% set header_title = 'Reviewing Your Lease' %}
+{% set subheader = 'Please wait while we analyze your lease agreement' %}
+
+{% block component_content %}
+<div class="review-container">
+    <div class="progress-section">
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+            <p class="progress-text">Analysis Progress: <span id="progressText">0%</span></p>
+        </div>
+        
+        <div class="status-updates">
+            <h3>Current Status</h3>
+            <ul class="status-list" id="statusList">
+                <li class="status-item pending" data-status="document">Processing Document</li>
+                <li class="status-item" data-status="clauses">Analyzing Clauses</li>
+                <li class="status-item" data-status="compliance">Checking Compliance</li>
+                <li class="status-item" data-status="risks">Identifying Risks</li>
+                <li class="status-item" data-status="report">Generating Report</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="info-section">
+        <div class="document-info">
+            <h3>Document Information</h3>
+            <p>File: <span id="fileName">{{ document.filename }}</span></p>
+            <p>Pages: <span id="pageCount">Analyzing...</span></p>
+        </div>
+        
+        <div class="estimated-time">
+            <h3>Estimated Time</h3>
+            <p>Time remaining: <span id="timeRemaining">Calculating...</span></p>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <button class="btn secondary" id="cancelReview">Cancel Review</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='components/reviewing_lease/reviewing_lease.css') }}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='components/reviewing_lease/reviewing_lease.js') }}"></script>
+{% endblock %}
