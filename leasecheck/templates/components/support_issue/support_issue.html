@@ -1,0 +1,82 @@
+{% extends "components/base_component.html" %}
+
+{% block component_content %}
+<div class="support-issue-container">
+    <h2>Support Request</h2>
+    
+    <div class="issue-context">
+        <div class="context-header">
+            <h3>Document Information</h3>
+            <span class="document-id">ID: {{ document.id }}</span>
+        </div>
+        <div class="context-details">
+            <div class="detail-item">
+                <label>Document Name:</label>
+                <span>{{ document.filename }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Upload Date:</label>
+                <span>{{ document.upload_date.strftime('%B %d, %Y') }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Error Count:</label>
+                <span>{{ error_count }} issues found</span>
+            </div>
+        </div>
+    </div>
+
+    <form id="supportForm" class="support-form">
+        <div class="form-group">
+            <label for="issueType">Issue Type</label>
+            <select id="issueType" name="issue_type" required>
+                <option value="">Select an issue type</option>
+                <option value="technical">Technical Issue</option>
+                <option value="document">Document Processing Issue</option>
+                <option value="billing">Billing Issue</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="priority">Priority Level</label>
+            <select id="priority" name="priority" required>
+                <option value="">Select priority</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+                <option value="urgent">Urgent</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Issue Description</label>
+            <textarea id="description" name="description" rows="5" required
+                placeholder="Please describe your issue in detail..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="contactMethod">Preferred Contact Method</label>
+            <select id="contactMethod" name="contact_method" required>
+                <option value="">Select contact method</option>
+                <option value="email">Email</option>
+                <option value="phone">Phone</option>
+            </select>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="btn-secondary" onclick="window.history.back()">Back</button>
+            <button type="submit" class="btn-primary">Submit Support Request</button>
+        </div>
+    </form>
+
+    <div class="support-info">
+        <h3>Support Information</h3>
+        <p>Our support team typically responds within 24 hours during business days.</p>
+        <p>For urgent matters, please contact us directly at:</p>
+        <ul>
+            <li>Phone: 1-800-SUPPORT</li>
+            <li>Email: support@example.com</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

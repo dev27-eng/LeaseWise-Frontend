@@ -1,0 +1,54 @@
+{% extends "components/base_component.html" %}
+
+{% block component_content %}
+<div class="lease-details-container">
+    <h2>Lease Document Details</h2>
+    <div class="document-preview">
+        <div class="preview-header">
+            <h3>Document Information</h3>
+            <span class="document-status">Status: {{ status }}</span>
+        </div>
+        <div class="document-info">
+            <div class="info-item">
+                <label>File Name:</label>
+                <span>{{ document.filename }}</span>
+            </div>
+            <div class="info-item">
+                <label>Upload Date:</label>
+                <span>{{ document.upload_date.strftime('%B %d, %Y') }}</span>
+            </div>
+            <div class="info-item">
+                <label>File Size:</label>
+                <span>{{ document.file_size }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="lease-content">
+        <h3>Lease Details</h3>
+        <div class="details-grid">
+            <div class="detail-item">
+                <label>Property Address:</label>
+                <p>{{ lease_details.property_address }}</p>
+            </div>
+            <div class="detail-item">
+                <label>Lease Term:</label>
+                <p>{{ lease_details.lease_term }}</p>
+            </div>
+            <div class="detail-item">
+                <label>Monthly Rent:</label>
+                <p>${{ lease_details.monthly_rent }}</p>
+            </div>
+            <div class="detail-item">
+                <label>Security Deposit:</label>
+                <p>${{ lease_details.security_deposit }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <button class="btn-secondary" onclick="window.location.href='{{ url_for('preview.lease_upload') }}'">Upload New Document</button>
+        <button class="btn-primary" onclick="confirmDetails()">Confirm Details</button>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "components/base_component.html" %}
+
+{% block component_content %}
+<div class="error-report-container">
+    <div class="error-header">
+        <h2>Document Error Report</h2>
+        <span class="error-status">{{ error_count }} Issues Found</span>
+    </div>
+
+    <div class="error-summary">
+        <div class="summary-card">
+            <h3>Document Analysis Summary</h3>
+            <div class="summary-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Critical Issues</span>
+                    <span class="stat-value critical">{{ critical_errors }}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Warnings</span>
+                    <span class="stat-value warning">{{ warnings }}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Suggestions</span>
+                    <span class="stat-value info">{{ suggestions }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="error-list">
+        {% for error in errors %}
+        <div class="error-item {{ error.severity }}">
+            <div class="error-content">
+                <h4>{{ error.title }}</h4>
+                <p>{{ error.description }}</p>
+                {% if error.recommendation %}
+                <div class="recommendation">
+                    <strong>Recommendation:</strong>
+                    <p>{{ error.recommendation }}</p>
+                </div>
+                {% endif %}
+            </div>
+            <div class="error-actions">
+                <button class="btn-outline" onclick="toggleResolved({{ error.id }})">
+                    Mark Resolved
+                </button>
+                <button class="btn-link" onclick="showDetails({{ error.id }})">
+                    View Details
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="action-buttons">
+        <button class="btn-secondary" onclick="downloadReport()">Download Report</button>
+        <button class="btn-primary" onclick="proceedToSupport()">Get Support</button>
+    </div>
+</div>
+{% endblock %}

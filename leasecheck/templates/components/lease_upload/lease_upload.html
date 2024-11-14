@@ -1,0 +1,32 @@
+{% extends "components/base_component.html" %}
+
+{% block component_content %}
+<div class="lease-upload-container">
+    <h2>Upload Your Lease Document</h2>
+    <div class="upload-section">
+        <form id="leaseUploadForm" method="POST" enctype="multipart/form-data">
+            {{ form.csrf_token }}
+            <div class="file-drop-zone" id="dropZone">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Drag and drop your lease document here</p>
+                <p>or</p>
+                <label for="leaseFile" class="upload-button">Choose File</label>
+                <input type="file" id="leaseFile" name="lease_file" accept=".pdf,.doc,.docx" style="display: none;">
+            </div>
+            <div class="file-info" id="fileInfo" style="display: none;">
+                <p>Selected file: <span id="fileName"></span></p>
+                <button type="button" id="removeFile" class="btn-secondary">Remove</button>
+            </div>
+            <button type="submit" class="btn-primary" id="uploadButton" disabled>Upload Document</button>
+        </form>
+    </div>
+    <div class="upload-requirements">
+        <h3>Requirements:</h3>
+        <ul>
+            <li>Accepted formats: PDF, DOC, DOCX</li>
+            <li>Maximum file size: 10MB</li>
+            <li>Must be a valid lease agreement</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
