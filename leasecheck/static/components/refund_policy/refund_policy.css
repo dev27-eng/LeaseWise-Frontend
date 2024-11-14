@@ -68,7 +68,7 @@
     font-weight: bold;
 }
 
-/* Button Styles - Updated to match legal components */
+/* Button Styles - Updated to match component pattern */
 .navigation-buttons {
     display: flex;
     gap: 20px;
@@ -76,7 +76,7 @@
     margin-top: 40px;
 }
 
-.back-btn {
+.btn {
     display: inline-block;
     padding: 12px 30px;
     border-radius: 999px;
@@ -86,11 +86,14 @@
     transition: all 0.3s ease;
     border: none;
     cursor: pointer;
+}
+
+.btn.primary {
     background-color: var(--refund-primary-green);
     color: var(--refund-primary-black);
 }
 
-.back-btn:hover {
+.btn.primary:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     background-color: #6db91d;
@@ -115,7 +118,7 @@
         align-items: center;
     }
 
-    .back-btn {
+    .btn {
         width: 100%;
         max-width: 280px;
         text-align: center;
