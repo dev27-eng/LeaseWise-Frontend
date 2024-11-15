@@ -27,6 +27,10 @@ args = "Git Status Check"
 task = "workflow.run"
 args = "Create GitHub Repo"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Flask Installation Check"
+
 [[workflows.workflow]]
 name = "Google Drive Upload"
 author = "agent"
@@ -83,6 +87,20 @@ task = "packager.installForAll"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python create_github_repo.py"
+
+[[workflows.workflow]]
+name = "Flask Installation Check"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python3 -c 'import flask; print(f\"Flask version: {flask.__version__}\")'"
 
 [deployment]
 run = ["sh", "-c", "python main.py"]
