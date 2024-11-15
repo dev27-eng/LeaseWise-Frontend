@@ -23,6 +23,8 @@ dependencies = [
     "jinja2>=3.0.0",
     "python-dotenv>=1.0.1",
     "flask-migrate>=4.0.0",
+    "google-auth",
+    "google-api-python-client",
 ]
 
 [tool.uv.sources]
