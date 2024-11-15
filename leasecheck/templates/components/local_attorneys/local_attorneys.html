@@ -1,0 +1,26 @@
+{% extends "components/base_component.html" %}
+
+{% set component_name = 'local_attorneys' %}
+{% set component_title = 'Local Attorneys' %}
+{% set header_title = 'Find Local Attorneys' %}
+{% set subheader = 'Connect with experienced real estate attorneys in your area' %}
+
+{% block component_content %}
+<div class="attorneys-container">
+    <section class="search-section">
+        <div class="search-box">
+            <input type="text" class="search-input" placeholder="Enter your location" id="locationInput">
+            <button class="search-btn" onclick="searchAttorneys()">Find Attorneys</button>
+        </div>
+    </section>
+
+    <div class="attorneys-grid" id="attorneysGrid">
+        <!-- Attorney cards will be dynamically inserted here -->
+    </div>
+
+    <div class="no-results" id="noResults" style="display: none;">
+        <h2>No Attorneys Found</h2>
+        <p>Try searching in a different location or expanding your search radius.</p>
+    </div>
+</div>
+{% endblock %}
