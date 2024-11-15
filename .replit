@@ -19,6 +19,10 @@ args = "Google Drive Upload"
 task = "workflow.run"
 args = "Flask Server"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Git Status Check"
+
 [[workflows.workflow]]
 name = "Google Drive Upload"
 author = "agent"
@@ -47,6 +51,20 @@ task = "packager.installForAll"
 task = "shell.exec"
 args = "python main.py"
 waitForPort = 5000
+
+[[workflows.workflow]]
+name = "Git Status Check"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "git status && git log --oneline -n 1"
 
 [deployment]
 run = ["sh", "-c", "python main.py"]
