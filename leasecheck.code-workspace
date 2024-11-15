@@ -15,7 +15,9 @@
             "**/__pycache__": true,
             "**/*.pyc": true,
             ".pytest_cache": true,
-            "**/*.egg-info": true
+            "**/*.egg-info": true,
+            ".coverage": true,
+            "htmlcov": true
         },
         "python.testing.pytestEnabled": true,
         "python.testing.unittestEnabled": false,
@@ -34,6 +36,13 @@
         },
         "[jinja-html]": {
             "editor.formatOnSave": false
+        },
+        "python.analysis.extraPaths": [
+            "./leasecheck"
+        ],
+        "python.envFile": "${workspaceFolder}/.env",
+        "terminal.integrated.env.linux": {
+            "PYTHONPATH": "${workspaceFolder}"
         }
     },
     "extensions": {
@@ -41,7 +50,37 @@
             "ms-python.python",
             "ms-python.vscode-pylance",
             "wholroyd.jinja",
-            "samuelcolvin.jinjahtml"
+            "samuelcolvin.jinjahtml",
+            "ms-python.black-formatter",
+            "ms-python.isort",
+            "ms-python.flake8"
+        ]
+    },
+    "launch": {
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "name": "Flask",
+                "type": "python",
+                "request": "launch",
+                "module": "flask",
+                "env": {
+                    "FLASK_APP": "main.py",
+                    "FLASK_ENV": "development",
+                    "FLASK_DEBUG": "1"
+                },
+                "args": [
+                    "run",
+                    "--no-debugger",
+                    "--no-reload",
+                    "--host",
+                    "0.0.0.0",
+                    "--port",
+                    "5000"
+                ],
+                "jinja": true,
+                "justMyCode": true
+            }
         ]
     }
 }
